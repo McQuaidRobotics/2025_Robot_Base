@@ -94,6 +94,7 @@ public class DriverController {
                 .onlyIf(shouldAutoAlign))
         .onFalse(SuperStructureCommands.holdAt(superStructure, SuperStructureState.Stow));
 
+    // spotless:off
     this.Y.whileTrue(SuperStructureCommands.holdAt(superStructure, SuperStructureState.Net))
         .whileTrue(
             new TeleopSwerveHeadingCmd(
@@ -104,11 +105,12 @@ public class DriverController {
                     new ChassisConstraints(
                         new Constraints(
                             kSwerve.MAX_DRIVE_VELOCITY * 0.5,
-			    kSwerve.MAX_DRIVE_ACCELERATION),
+                            kSwerve.MAX_DRIVE_ACCELERATION),
                         kSwerve.CONSTRAINTS.rotation()),
-                        true)
+                    true)
                 .onlyIf(shouldAutoAlign))
         .onFalse(SuperStructureCommands.holdAt(superStructure, SuperStructureState.Stow));
+    // spotless:on
 
     // BUMPER
     this.RB.whileTrue(

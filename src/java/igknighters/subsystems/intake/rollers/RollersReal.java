@@ -128,8 +128,8 @@ public class RollersReal extends Rollers {
         intakeDebouncer.calculate(
             laserTrippedSignal.getValue() == ReverseLimitValue.ClosedToGround);
     super.gamepieceDistance =
-        (DISTANCE_LERP.lerp(movingAverage.calculate(distance.getValueAsDouble()))
-            + CORAL_HALF_WIDTH)
+        DISTANCE_LERP.lerp(movingAverage.calculate(distance.getValueAsDouble()))
+            + CORAL_HALF_WIDTH
             - (INTAKE_WIDTH / 2.0);
 
     super.radiansPerSecond = velocity.getValueAsDouble() * Conv.ROTATIONS_TO_RADIANS;
