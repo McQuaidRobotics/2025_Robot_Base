@@ -1,16 +1,15 @@
 package igknighters;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-
 import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 
 /**
  * An api for creating NT tunable values. Bools, Ints and Doubles are supported.

@@ -2,20 +2,21 @@ package igknighters.commands.teleop;
 
 import java.util.function.DoubleSupplier;
 
-import dev.doglog.*;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.struct.Struct;
 import edu.wpi.first.util.struct.StructSerializable;
 import edu.wpi.first.wpilibj2.command.Command;
 import igknighters.TunableValues;
 import igknighters.TunableValues.TunableDouble;
 import igknighters.controllers.DriverController;
-import igknighters.subsystems.swerve.generated.TunerConstants;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
+import igknighters.subsystems.swerve.generated.TunerConstants;
 import monologue.ProceduralStructGenerator;
 import wpilibExt.AllianceSymmetry;
 
-public class TeleopSwerveBaseCmd extends Command{
+public class TeleopSwerveBaseCmd extends Command {
   protected final CommandSwerveDrivetrain swerve;
 
   private final DoubleSupplier rawTranslationXSup;
@@ -90,7 +91,7 @@ public class TeleopSwerveBaseCmd extends Command{
 
   @Override
   public void end(boolean interrupted) {
-    swerve.log("teleopCommand", TeleopSwerveCommandSummary.kZero);
+    DogLog.log("Robot/Commands/Teleop/teleopCommand", TeleopSwerveCommandSummary.kZero);
   }
 
   protected record TeleopSwerveCommandSummary(
