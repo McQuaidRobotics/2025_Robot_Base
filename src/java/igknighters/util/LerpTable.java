@@ -1,4 +1,4 @@
-package igknighters;
+package igknighters.util;
 
 public class LerpTable {
   public static class LerpTableEntry {

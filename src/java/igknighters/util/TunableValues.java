@@ -1,4 +1,4 @@
-package igknighters;
+package igknighters.util;
 
 import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.networktables.DoubleEntry;

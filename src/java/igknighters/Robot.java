@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final DriverController driverController = new DriverController(0);
+
   private final Telemetry logger =
       new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
@@ -28,8 +29,9 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     subsytems.swerve.setDefaultCommand(
-        new TeleopSwerveWithDetune(subsytems.swerve, driverController, 1.0));
+        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
+    driverController.bind(subsytems);
   }
 
   @Override
