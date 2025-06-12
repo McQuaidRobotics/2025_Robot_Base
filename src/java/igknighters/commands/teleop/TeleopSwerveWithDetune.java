@@ -36,6 +36,9 @@ public class TeleopSwerveWithDetune extends TeleopSwerveBaseCmd {
         m_driveRequest
             .withVelocityX(vt.getX() * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * detune)
             .withVelocityY(vt.getY() * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * detune)
-            .withRotationalRate(detune * RotationsPerSecond.of(0.75).in(RadiansPerSecond)));
+            .withRotationalRate(
+                detune
+                    * RotationsPerSecond.of(0.75).in(RadiansPerSecond)
+                    * rotationStick().getX()));
   }
 }
