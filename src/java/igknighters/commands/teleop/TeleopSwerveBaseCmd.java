@@ -1,7 +1,5 @@
 package igknighters.commands.teleop;
 
-import java.util.function.DoubleSupplier;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,6 +11,7 @@ import igknighters.TunableValues.TunableDouble;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.swerve.generated.TunerConstants;
+import java.util.function.DoubleSupplier;
 import monologue.ProceduralStructGenerator;
 import wpilibExt.AllianceSymmetry;
 
