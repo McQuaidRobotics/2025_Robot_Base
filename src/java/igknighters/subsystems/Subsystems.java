@@ -11,10 +11,8 @@ public class Subsystems {
   public Subsystems(CommandSwerveDrivetrain drivetrain) {
     this.swerve = drivetrain;
     this.lockedResources = new ExclusiveSubsystem[] {this.swerve};
-    this.locklessResources = new SharedSubsystem[]{};
+    this.locklessResources = new SharedSubsystem[] {};
   }
-
-  
 
   public static interface ExclusiveSubsystem extends Subsystem {}
 
