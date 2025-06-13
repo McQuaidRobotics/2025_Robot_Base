@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import igknighters.subsystems.Subsystems.ExclusiveSubsystem;
-import igknighters.subsystems.swerve.generated.TunerConstants.TunerSwerveDrivetrain;
+import igknighters.subsystems.swerve.generated.knightshadeConsts.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
 
 /**

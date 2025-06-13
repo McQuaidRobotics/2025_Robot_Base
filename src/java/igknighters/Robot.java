@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.Subsystems;
-import igknighters.subsystems.swerve.generated.TunerConstants;
+import igknighters.subsystems.swerve.generated.knightshadeConsts;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -21,9 +21,9 @@ public class Robot extends TimedRobot {
   private final DriverController driverController = new DriverController(0);
 
   private final Telemetry logger =
-      new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
+      new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
 
-  public final Subsystems subsytems = new Subsystems(TunerConstants.createDrivetrain());
+  public final Subsystems subsytems = new Subsystems(knightshadeConsts.createDrivetrain());
 
   private final boolean kUseLimelight = false;
 
