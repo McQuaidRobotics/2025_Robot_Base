@@ -1,5 +1,6 @@
 package igknighters.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -13,5 +14,9 @@ public class SwerveCommands {
         Commands.runOnce(() -> swerve.resetRotation(new Rotation2d(0.0))),
         Commands.runOnce(() -> swerve.resetRotation(new Rotation2d(Math.PI))),
         AllianceSymmetry::isBlue);
+  }
+
+  public static Pose2d getPose(CommandSwerveDrivetrain swerve) {
+    return swerve.getState().Pose;
   }
 }
