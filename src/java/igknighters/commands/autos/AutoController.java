@@ -1,5 +1,3 @@
 package igknighters.commands.autos;
 
-public class AutoController {
-  
-}
+public class AutoController {}

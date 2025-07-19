@@ -1,5 +1,3 @@
 package igknighters.subsystems.LimeLightVision.LimeLightCameras;
 
-public class limelightCameraReal {
-  
-}
+public class limelightCameraReal {}

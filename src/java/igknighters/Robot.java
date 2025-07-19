@@ -35,7 +35,6 @@ public class Robot extends TimedRobot {
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
-    
   }
 
   @Override

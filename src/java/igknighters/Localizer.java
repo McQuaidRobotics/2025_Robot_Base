@@ -20,7 +20,5 @@ public class Localizer {
     return dot > Math.cos(toleranceRadians);
   }
 
-  public Localizer(){
-
-  }
+  public Localizer() {}
 }

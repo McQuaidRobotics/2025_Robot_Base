@@ -1,5 +1,3 @@
 package igknighters.commands.autos;
 
-public class AutoCommands {
-  
-}
+public class AutoCommands {}

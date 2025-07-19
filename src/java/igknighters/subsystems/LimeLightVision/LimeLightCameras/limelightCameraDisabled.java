@@ -1,5 +1,3 @@
 package igknighters.subsystems.LimeLightVision.LimeLightCameras;
 
-public class limelightCameraDisabled {
-  
-}
+public class limelightCameraDisabled {}
