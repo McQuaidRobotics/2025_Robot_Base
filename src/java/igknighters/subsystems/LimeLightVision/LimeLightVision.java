@@ -26,9 +26,10 @@ public class LimeLightVision implements Subsystems.SharedSubsystem {
       LimelightHelpers.SetRobotOrientation(
           cameraName, rotationOfRobotInDegrees, 0.0, 0.0, 0.0, 0.0, 0.0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
-      timestamp += llMeasurement.timestampSeconds;
+
       if (llMeasurement != null && llMeasurement.tagCount > 0) {
         poses.add(llMeasurement.pose);
+        timestamp += llMeasurement.timestampSeconds;
       }
     }
     if (!cameraNames.isEmpty()) {

@@ -4,9 +4,10 @@
 
 package igknighters;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.util.Units;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,7 +31,7 @@ public class Robot extends TimedRobot {
           knightshadeConsts.createDrivetrain(),
           new LimeLightVision("frontLeft", "frontRight", "backLeft", "backRight"));
 
-  private final boolean kUseLimelight = false;
+  private final boolean kUseLimelight = true;
 
   public Robot() {
     subsytems.swerve.setDefaultCommand(
