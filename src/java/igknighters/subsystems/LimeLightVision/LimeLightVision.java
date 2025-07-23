@@ -1,15 +1,16 @@
 package igknighters.subsystems.LimeLightVision;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import igknighters.LimelightHelpers;
 import igknighters.subsystems.Subsystems;
+import java.util.ArrayList;
+import java.util.List;
 
-public class LimeLightVision implements Subsystems.SharedSubsystem{
+public class LimeLightVision implements Subsystems.SharedSubsystem {
   private final List<String> cameraNames;
+  private double lastTimeStamp = 0.0;
 
   public LimeLightVision(String... cameraNames) {
     this.cameraNames = new ArrayList<>();
@@ -18,23 +19,33 @@ public class LimeLightVision implements Subsystems.SharedSubsystem{
     }
   }
 
-  public Pose2d getRobotPoseFromVision(Rotation2d rotationOfRobotInDegrees){
+  public Pose2d getRobotPoseFromVision(double rotationOfRobotInDegrees) {
     List<Pose2d> poses = new ArrayList<>();
-    for (String cameraName : cameraNames){
-      LimelightHelpers.SetRobotOrientation(cameraName, rotationOfRobotInDegrees.getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    double timestamp = 0.0;
+    for (String cameraName : cameraNames) {
+      LimelightHelpers.SetRobotOrientation(
+          cameraName, rotationOfRobotInDegrees, 0.0, 0.0, 0.0, 0.0, 0.0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
+      timestamp += llMeasurement.timestampSeconds;
       if (llMeasurement != null && llMeasurement.tagCount > 0) {
         poses.add(llMeasurement.pose);
+      }
     }
-  }
-  return averagePose2ds(poses);
-}
+    if (!cameraNames.isEmpty()) {
+      timestamp /= cameraNames.size();
+    }
+    lastTimeStamp = timestamp;
 
-  public Pose2d averagePose2ds(List<Pose2d> poses){
+    return averagePose2ds(poses);
+  }
+
+  public Pose2d averagePose2ds(List<Pose2d> poses) {
     // This method averages multiple Pose2d objects to return a single Pose2d.
     // The averaging logic can be customized based on the requirements.
-    
+
     if (poses.isEmpty()) {
+      DogLog.log(
+          "Robot/Subsystmes/LimeLightVision/TagsSeen", "NO TAGS SEEN RETURNING EMPTY POSE 2D");
       return new Pose2d(); // Return a default pose if no poses are provided
     }
 
@@ -49,6 +60,13 @@ public class LimeLightVision implements Subsystems.SharedSubsystem{
     }
 
     int count = poses.size();
+    DogLog.log(
+        "Robot/Subsystmes/LimeLightVision/TagsSeen",
+        new Pose2d(xSum / count, ySum / count, new Rotation2d(rotationSum / count)));
     return new Pose2d(xSum / count, ySum / count, new Rotation2d(rotationSum / count));
+  }
+
+  public double getLastTimeStamp() {
+    return lastTimeStamp;
   }
 }
