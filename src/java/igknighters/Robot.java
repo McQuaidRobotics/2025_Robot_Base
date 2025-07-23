@@ -4,10 +4,10 @@
 
 package igknighters;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
+import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -19,6 +19,7 @@ import igknighters.subsystems.swerve.generated.knightshadeConsts;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final AutoFactory autoFactory;
+  public final AutoChooser autoChooser = new AutoChooser();
 
   private final DriverController driverController = new DriverController(0);
 
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
+
   }
 
   @Override
