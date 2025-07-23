@@ -1,84 +1,49 @@
 package igknighters.commands.teleop;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import igknighters.Localizer;
-import igknighters.constants.ConstValues;
 import igknighters.controllers.DriverController;
-import igknighters.subsystems.swerve.ControllerFactories;
-import igknighters.subsystems.swerve.Swerve;
-import igknighters.subsystems.swerve.SwerveConstants.kSwerve;
-import java.util.function.Supplier;
-import wayfinder.controllers.Types.ChassisConstraints;
-import wayfinder.controllers.Types.Constraints;
-import wayfinder.controllers.Types.Controller;
-import wpilibExt.Speeds;
+import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
+import igknighters.subsystems.swerve.generated.knightshadeConsts;
 
 public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
-
-  private final Localizer localizer;
-  private final Supplier<Rotation2d> headingSupplier;
-  private final Controller<Rotation2d, Double, Rotation2d, Constraints> rotController;
-  private final ChassisConstraints constraints;
-  private final boolean fullConstraints;
-
-  private Rotation2d lastHeading = Rotation2d.kZero;
+  private final double heading;
+  private final double currentHeading;
+  private final SwerveRequest.FieldCentric m_driveRequest =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
+          .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
+          .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+          .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
+  PIDController rotationController = new PIDController(.5, 0.0, 0.0);
 
   public TeleopSwerveHeadingCmd(
-      Swerve swerve,
+      CommandSwerveDrivetrain swerve,
       DriverController controller,
-      Localizer localizer,
-      Supplier<Rotation2d> heading,
-      ChassisConstraints constraints,
-      boolean fullConstraints) {
+      double heading,
+      double currentHeading) {
     super(swerve, controller);
+    this.heading = heading;
+    this.currentHeading = currentHeading;
     addRequirements(swerve);
-    this.localizer = localizer;
-    this.headingSupplier = heading;
-    this.rotController = ControllerFactories.basicRotationalController();
-    this.constraints = constraints;
-    this.fullConstraints = fullConstraints;
-  }
-
-  private void reset() {
-    rotController.reset(
-        localizer.pose().getRotation(), swerve.getRobotSpeeds().omega(), headingSupplier.get());
-  }
-
-  @Override
-  public void initialize() {
-    reset();
   }
 
   @Override
   public void execute() {
+    double omega = rotationController.calculate(currentHeading, heading);
     super.execute();
+    Translation2d vt = translationStick();
 
-    Translation2d vt = translationStick().times(kSwerve.MAX_DRIVE_VELOCITY);
-
-    Rotation2d heading = this.headingSupplier.get();
-    if (!lastHeading.equals(heading)) {
-      reset();
-      lastHeading = heading;
-    }
-
-    double omega =
-        rotController.calculate(
-            ConstValues.PERIODIC_TIME,
-            localizer.pose().getRotation(),
-            swerve.getRobotSpeeds().omega(),
-            heading,
-            constraints.rotation());
-
-    if (fullConstraints) {
-      swerve.drive(Speeds.fromFieldRelative(vt.getX(), vt.getY(), omega), constraints);
-    } else {
-      swerve.drivePreProfiled(Speeds.fromFieldRelative(vt.getX(), vt.getY(), omega));
-    }
-  }
-
-  @Override
-  public String getName() {
-    return "TeleopSwerveHeadingCmd";
+    swerve.setControl(
+        m_driveRequest
+            .withVelocityX(vt.getX() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond))
+            .withVelocityY(vt.getY() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond))
+            .withRotationalRate(omega));
   }
 }
