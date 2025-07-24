@@ -1,7 +1,5 @@
 package igknighters.commands.autos;
 
-import java.util.function.Supplier;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -11,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.Robot;
 import igknighters.subsystems.Subsystems;
+import java.util.function.Supplier;
 
-public class AutoRoutines extends AutoCommands{
-  
+public class AutoRoutines extends AutoCommands {
 
   public AutoRoutines(Subsystems subsystems, AutoFactory factory) {
     super(subsystems, factory);
@@ -33,7 +31,7 @@ public class AutoRoutines extends AutoCommands{
   }
 
   @FunctionalInterface
-  public interface DualSideAuto{
+  public interface DualSideAuto {
     Command generate(boolean leftSide);
   }
 
@@ -41,9 +39,10 @@ public class AutoRoutines extends AutoCommands{
     chooser.addCmd(name + " left", () -> auto.generate(true));
     chooser.addCmd(name + " right", () -> auto.generate(false));
   }
-  
-  // public Command threePieceL4(boolean leftSide){
-    
-  // }
 
+  public Command driveAround(boolean leftSide) {
+    return newAuto("ZOOOMMMM", leftSide)
+        .addDrivingTrajectory(Waypoints.StartingCenter, Waypoints.FarMid_R)
+        .build();
+  }
 }
