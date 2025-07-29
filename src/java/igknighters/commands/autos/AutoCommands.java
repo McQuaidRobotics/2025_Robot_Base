@@ -115,13 +115,13 @@ public class AutoCommands {
 
     public GenericAuto addDrivingTrajectory(Waypoints... waypoints) {
       headCommand.addCommands(getTrajectory(waypoints[0], waypoints[1]).resetOdometry());
-      for (int i = 0; i < waypoints.length - 2; i += 2) {
-        bodyCommand.addCommands(
-            getTrajectory(waypoints[i], waypoints[i + 1]).cmd(),
-            Commands.waitSeconds(3.0),
-            getTrajectory(waypoints[i + 1], waypoints[i + 2]).cmd(),
-            Commands.waitSeconds(3.0));
-      }
+      // for (int i = 0; i < waypoints.length - 2; i += 2) {
+      //   bodyCommand.addCommands(
+      //       getTrajectory(waypoints[i], waypoints[i + 1]).cmd(),
+      //       Commands.waitSeconds(3.0),
+      //       getTrajectory(waypoints[i + 1], waypoints[i + 2]).cmd(),
+      //       Commands.waitSeconds(3.0));
+      // }
       return this;
     }
 
@@ -129,17 +129,21 @@ public class AutoCommands {
       final AtomicBoolean flag = new AtomicBoolean(false);
       headCommand.addCommands(Commands.print(bodyCommand.getRequirements().toString()));
       bodyCommand.addCommands(new ScheduleCommand(Commands.runOnce(() -> flag.set(true))));
+      bodyCommand.addCommands(
+          Commands.print("Build was successfully completed body command is made"));
       routine
           .active()
           .onTrue(
               headCommand
                   .andThen(new ScheduleCommand(bodyCommand))
+                  .andThen(new ScheduleCommand(Commands.print("BODY COMMAND IS SCHEDULED")))
                   .withName(routine.toString() + "_AutoHead"));
       return routine.cmd(flag::get);
     }
   }
 
   protected GenericAuto newAuto(String name, boolean leftSide) {
+    DogLog.log("Robot/Commands/Autos/Creation", "Creating new auto: " + name);
     return new GenericAuto(autoFactory.newRoutine(name), leftSide);
   }
 }
