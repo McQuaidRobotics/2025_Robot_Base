@@ -4,6 +4,8 @@
 
 package igknighters;
 
+import java.util.function.Supplier;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -13,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.LimeLightVision.LimeLightVision;
-import igknighters.subsystems.LimeLightVision.LimelightVisionContsants;
+import igknighters.subsystems.LimeLightVision.LimelightVisionConstants;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
 
@@ -29,9 +31,11 @@ public class Robot extends TimedRobot {
   public final Subsystems subsytems =
       new Subsystems(
           knightshadeConsts.createDrivetrain(),
-          new LimeLightVision(LimelightVisionContsants.frontLeft, LimelightVisionContsants.frontRight, LimelightVisionContsants.backLeft, LimelightVisionContsants.backRight));
+          new LimeLightVision(LimelightVisionConstants.frontLeft, LimelightVisionConstants.frontRight, LimelightVisionConstants.backLeft, LimelightVisionConstants.backRight));
 
   private final boolean kUseLimelight = true;
+
+  private final Supplier<Double> robotRotation;
 
   public Robot() {
     subsytems.swerve.setDefaultCommand(
@@ -39,6 +43,7 @@ public class Robot extends TimedRobot {
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
+    robotRotation = () -> subsytems.swerve.getState().Pose.getRotation().getDegrees();
   }
 
   @Override
