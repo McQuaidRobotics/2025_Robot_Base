@@ -4,15 +4,18 @@
 
 package igknighters;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
+import java.util.function.Supplier;
 
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.controllers.DriverController;
+import igknighters.subsystems.LimeLightVision.LimeLightVision;
+import igknighters.subsystems.LimeLightVision.LimelightVisionConstants;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
 
@@ -25,9 +28,14 @@ public class Robot extends TimedRobot {
   private final Telemetry logger =
       new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
 
-  public final Subsystems subsytems = new Subsystems(knightshadeConsts.createDrivetrain());
+  public final Subsystems subsytems =
+      new Subsystems(
+          knightshadeConsts.createDrivetrain(),
+          new LimeLightVision(LimelightVisionConstants.frontLeft, LimelightVisionConstants.frontRight, LimelightVisionConstants.backLeft, LimelightVisionConstants.backRight));
 
-  private final boolean kUseLimelight = false;
+  private final boolean kUseLimelight = true;
+
+  private final Supplier<Double> robotRotation;
 
   public Robot() {
     subsytems.swerve.setDefaultCommand(
@@ -35,6 +43,7 @@ public class Robot extends TimedRobot {
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
+    robotRotation = () -> subsytems.swerve.getState().Pose.getRotation().getDegrees();
   }
 
   @Override
@@ -53,12 +62,8 @@ public class Robot extends TimedRobot {
       var driveState = subsytems.swerve.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-      LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-      if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-        subsytems.swerve.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
-      }
+      subsytems.swerve.addVisionMeasurement(
+          subsytems.vision.getRobotPoseFromVision(headingDeg), subsytems.vision.getLastTimeStamp());
     }
   }
 
