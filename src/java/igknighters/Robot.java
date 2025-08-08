@@ -4,11 +4,10 @@
 
 package igknighters;
 
-import java.util.function.Supplier;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.util.Units;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,6 +17,7 @@ import igknighters.subsystems.LimeLightVision.LimeLightVision;
 import igknighters.subsystems.LimeLightVision.LimelightVisionConstants;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import java.util.function.Supplier;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -31,7 +31,11 @@ public class Robot extends TimedRobot {
   public final Subsystems subsytems =
       new Subsystems(
           knightshadeConsts.createDrivetrain(),
-          new LimeLightVision(LimelightVisionConstants.frontLeft, LimelightVisionConstants.frontRight, LimelightVisionConstants.backLeft, LimelightVisionConstants.backRight));
+          new LimeLightVision(
+              LimelightVisionConstants.frontLeft,
+              LimelightVisionConstants.frontRight,
+              LimelightVisionConstants.backLeft,
+              LimelightVisionConstants.backRight));
 
   private final boolean kUseLimelight = true;
 

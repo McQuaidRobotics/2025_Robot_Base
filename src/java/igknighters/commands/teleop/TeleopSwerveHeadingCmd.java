@@ -14,7 +14,6 @@ import igknighters.subsystems.swerve.generated.knightshadeConsts;
 
 public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
   private final double heading;
-  private final double currentHeading;
   private final SwerveRequest.FieldCentric m_driveRequest =
       new SwerveRequest.FieldCentric()
           .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
@@ -24,19 +23,15 @@ public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
   PIDController rotationController = new PIDController(.5, 0.0, 0.0);
 
   public TeleopSwerveHeadingCmd(
-      CommandSwerveDrivetrain swerve,
-      DriverController controller,
-      double heading,
-      double currentHeading) {
+      CommandSwerveDrivetrain swerve, DriverController controller, double heading) {
     super(swerve, controller);
     this.heading = heading;
-    this.currentHeading = currentHeading;
     addRequirements(swerve);
   }
 
   @Override
   public void execute() {
-    double omega = rotationController.calculate(currentHeading, heading);
+    double omega = rotationController.calculate(swerve.getState().RawHeading.getDegrees(), heading);
     super.execute();
     Translation2d vt = translationStick();
 

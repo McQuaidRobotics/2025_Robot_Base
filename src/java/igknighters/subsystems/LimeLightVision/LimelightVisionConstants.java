@@ -5,5 +5,4 @@ public class LimelightVisionConstants {
   public static final String frontRight = "frontRight";
   public static final String backLeft = "backLeft";
   public static final String backRight = "backRight";
-  
 }
