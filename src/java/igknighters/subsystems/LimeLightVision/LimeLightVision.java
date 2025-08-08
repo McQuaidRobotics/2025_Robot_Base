@@ -1,5 +1,6 @@
 package igknighters.subsystems.LimeLightVision;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,12 +20,12 @@ public class LimeLightVision implements Subsystems.SharedSubsystem {
     }
   }
 
-  public Pose2d getRobotPoseFromVision(double rotationOfRobotInDegrees) {
+  public Pose2d getRobotPoseFromVision(SwerveDrivetrain.SwerveDriveState driveState) {
     List<Pose2d> poses = new ArrayList<>();
     double timestamp = 0.0;
     for (String cameraName : cameraNames) {
       LimelightHelpers.SetRobotOrientation(
-          cameraName, rotationOfRobotInDegrees, 0.0, 0.0, 0.0, 0.0, 0.0);
+          cameraName, driveState.Pose.getRotation().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0);
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
       if (llMeasurement != null && llMeasurement.tagCount > 0) {

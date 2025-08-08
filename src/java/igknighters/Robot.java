@@ -17,7 +17,6 @@ import igknighters.subsystems.LimeLightVision.LimeLightVision;
 import igknighters.subsystems.LimeLightVision.LimelightVisionConstants;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
-import java.util.function.Supplier;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -39,15 +38,12 @@ public class Robot extends TimedRobot {
 
   private final boolean kUseLimelight = true;
 
-  private final Supplier<Double> robotRotation;
-
   public Robot() {
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
-    robotRotation = () -> subsytems.swerve.getState().Pose.getRotation().getDegrees();
   }
 
   @Override
@@ -67,7 +63,8 @@ public class Robot extends TimedRobot {
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
       subsytems.swerve.addVisionMeasurement(
-          subsytems.vision.getRobotPoseFromVision(headingDeg), subsytems.vision.getLastTimeStamp());
+          subsytems.vision.getRobotPoseFromVision(subsytems.swerve.getState()),
+          subsytems.vision.getLastTimeStamp());
     }
   }
 
