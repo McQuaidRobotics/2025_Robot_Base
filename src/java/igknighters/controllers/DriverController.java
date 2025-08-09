@@ -1,11 +1,14 @@
 package igknighters.controllers;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.SwerveCommands;
 import igknighters.commands.teleop.TeleopSwerveHeadingCmd;
+import igknighters.commands.teleop.TeleopSwerveTargetingCmd;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
@@ -93,6 +96,8 @@ public class DriverController {
     this.Start.onTrue(SwerveCommands.zeroGyro(swerve));
     this.A.whileTrue(new TeleopSwerveWithDetune(swerve, this, 1.0));
     this.B.whileTrue(new TeleopSwerveHeadingCmd(swerve, this, 180.0));
+    this.X.whileTrue(
+        new TeleopSwerveTargetingCmd(swerve, this, new Pose2d(5, 5, new Rotation2d(0))));
   }
 
   private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {
