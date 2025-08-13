@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.SwerveCommands;
 import igknighters.commands.teleop.TeleopSwerveHeadingCmd;
 import igknighters.commands.teleop.TeleopSwerveTargetingCmd;
+import igknighters.commands.teleop.TeleopSwerveTargetingFutureCmd;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
@@ -98,6 +99,8 @@ public class DriverController {
     this.B.whileTrue(new TeleopSwerveHeadingCmd(swerve, this, 180.0));
     this.X.whileTrue(
         new TeleopSwerveTargetingCmd(swerve, this, new Pose2d(5, 5, new Rotation2d(0))));
+    this.Y.whileTrue(
+        new TeleopSwerveTargetingFutureCmd(swerve, this, new Pose2d(5, 5, new Rotation2d(0))));
   }
 
   private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {
