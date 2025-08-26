@@ -41,31 +41,30 @@ public class LimeLightVision implements Subsystems.SharedSubsystem {
   }
 
   public Pose2d averagePose2ds(List<Pose2d> poses) {
-    // This method averages multiple Pose2d objects to return a single Pose2d.
-    // The averaging logic can be customized based on the requirements.
-
     if (poses.isEmpty()) {
-      DogLog.log(
-          "Robot/Subsystmes/LimeLightVision/TagsSeen", "NO TAGS SEEN RETURNING EMPTY POSE 2D");
-      return new Pose2d(); // Return a default pose if no poses are provided
+        DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", "NO TAGS SEEN");
+        return null; // safer than returning (0,0,0)
     }
 
-    double xSum = 0;
-    double ySum = 0;
-    double rotationSum = 0;
+    double xSum = 0.0, ySum = 0.0;
+    double sinSum = 0.0, cosSum = 0.0;
 
     for (Pose2d pose : poses) {
-      xSum += pose.getX();
-      ySum += pose.getY();
-      rotationSum += pose.getRotation().getRadians();
+        xSum += pose.getX();
+        ySum += pose.getY();
+        sinSum += Math.sin(pose.getRotation().getRadians());
+        cosSum += Math.cos(pose.getRotation().getRadians());
     }
 
     int count = poses.size();
-    DogLog.log(
-        "Robot/Subsystmes/LimeLightVision/TagsSeen",
-        new Pose2d(xSum / count, ySum / count, new Rotation2d(rotationSum / count)));
-    return new Pose2d(xSum / count, ySum / count, new Rotation2d(rotationSum / count));
-  }
+    double avgX = xSum / count;
+    double avgY = ySum / count;
+    Rotation2d avgRot = new Rotation2d(Math.atan2(sinSum / count, cosSum / count));
+
+    Pose2d averaged = new Pose2d(avgX, avgY, avgRot);
+    DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", averaged);
+    return averaged;
+}
 
   public double getLastTimeStamp() {
     return lastTimeStamp;
