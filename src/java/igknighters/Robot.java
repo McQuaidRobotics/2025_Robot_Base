@@ -63,7 +63,8 @@ public class Robot extends TimedRobot {
       var driveState = subsytems.swerve.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-      Pose2d currentPose = subsytems.vision.getRobotPoseFromVision(headingDeg);
+      Pose2d currentPose =
+          subsytems.vision.getRobotPoseFromVision(headingDeg, omegaRps, 0, 0, 0, 0);
       if (currentPose != null) {
         subsytems.swerve.addVisionMeasurement(currentPose, subsytems.vision.getLastTimeStamp());
       }

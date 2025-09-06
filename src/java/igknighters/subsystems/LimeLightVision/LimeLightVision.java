@@ -20,11 +20,13 @@ public class LimeLightVision implements Subsystems.SharedSubsystem {
     }
   }
 
-  public Pose2d getRobotPoseFromVision(double rotationOfRobotInDegrees) {
+  public Pose2d getRobotPoseFromVision(
+      double yaw, double yawRate, double pitch, double pitchRate, double roll, double rollRate) {
     List<Pose2d> poses = new ArrayList<>();
     double timestamp = 0.0;
     for (String cameraName : cameraNames) {
-
+      LimelightHelpers.SetRobotOrientation(
+          cameraName, yaw, yawRate, pitch, pitchRate, roll, rollRate);
       var llMeasurement =
           DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
                   == DriverStation.Alliance.Red
