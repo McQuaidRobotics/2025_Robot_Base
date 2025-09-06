@@ -20,7 +20,7 @@ public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  PIDController rotationController = new PIDController(.5, 0.0, 0.0);
+  PIDController rotationController = new PIDController(.07, 0.0, 0.0);
 
   public TeleopSwerveHeadingCmd(
       CommandSwerveDrivetrain swerve, DriverController controller, double heading) {
