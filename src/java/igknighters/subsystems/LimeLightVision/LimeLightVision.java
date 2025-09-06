@@ -36,24 +36,28 @@ public class LimeLightVision implements Subsystems.SharedSubsystem {
       timestamp /= cameraNames.size();
     }
     lastTimeStamp = timestamp;
+    DogLog.log("Robot/Subsystems/LimeLightVision/TimeStampOfMeasurments", timestamp);
+    DogLog.log("Robot/Subsystems/LimeLightVision/NumberOfTagsSeen", poses.size());
 
     return averagePose2ds(poses);
   }
 
   public Pose2d averagePose2ds(List<Pose2d> poses) {
     if (poses.isEmpty()) {
-        DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", "NO TAGS SEEN");
-        return null; // safer than returning (0,0,0)
+      DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", "NO TAGS SEEN");
+      return null; // safer than returning (0,0,0)
+    } else {
+      DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", "Tag is seen we have a pose");
     }
 
     double xSum = 0.0, ySum = 0.0;
     double sinSum = 0.0, cosSum = 0.0;
 
     for (Pose2d pose : poses) {
-        xSum += pose.getX();
-        ySum += pose.getY();
-        sinSum += Math.sin(pose.getRotation().getRadians());
-        cosSum += Math.cos(pose.getRotation().getRadians());
+      xSum += pose.getX();
+      ySum += pose.getY();
+      sinSum += Math.sin(pose.getRotation().getRadians());
+      cosSum += Math.cos(pose.getRotation().getRadians());
     }
 
     int count = poses.size();
@@ -64,7 +68,7 @@ public class LimeLightVision implements Subsystems.SharedSubsystem {
     Pose2d averaged = new Pose2d(avgX, avgY, avgRot);
     DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", averaged);
     return averaged;
-}
+  }
 
   public double getLastTimeStamp() {
     return lastTimeStamp;

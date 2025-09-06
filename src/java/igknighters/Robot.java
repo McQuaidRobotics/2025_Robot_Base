@@ -4,11 +4,11 @@
 
 package igknighters;
 
-import java.util.function.Supplier;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import choreo.auto.AutoFactory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,6 +18,7 @@ import igknighters.subsystems.LimeLightVision.LimeLightVision;
 import igknighters.subsystems.LimeLightVision.LimelightVisionConstants;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import java.util.function.Supplier;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -31,7 +32,7 @@ public class Robot extends TimedRobot {
   public final Subsystems subsytems =
       new Subsystems(
           knightshadeConsts.createDrivetrain(),
-          new LimeLightVision(LimelightVisionConstants.frontLeft, LimelightVisionConstants.frontRight, LimelightVisionConstants.backLeft, LimelightVisionConstants.backRight));
+          new LimeLightVision(LimelightVisionConstants.backRight));
 
   private final boolean kUseLimelight = true;
 
@@ -62,8 +63,10 @@ public class Robot extends TimedRobot {
       var driveState = subsytems.swerve.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-      subsytems.swerve.addVisionMeasurement(
-          subsytems.vision.getRobotPoseFromVision(headingDeg), subsytems.vision.getLastTimeStamp());
+      Pose2d currentPose = subsytems.vision.getRobotPoseFromVision(headingDeg);
+      if (currentPose != null) {
+        subsytems.swerve.addVisionMeasurement(currentPose, subsytems.vision.getLastTimeStamp());
+      }
     }
   }
 
