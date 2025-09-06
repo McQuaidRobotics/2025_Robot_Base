@@ -1,16 +1,17 @@
 package igknighters.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import igknighters.subsystems.LimeLightVision.LimeLightVision;
+import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
+import igknighters.subsystems.LimeLightVision.LimeLights;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 
 public class Subsystems {
   public final CommandSwerveDrivetrain swerve;
-  public final LimeLightVision vision;
+  public final LimeLights vision;
   public final ExclusiveSubsystem[] lockedResources;
   public final SharedSubsystem[] locklessResources;
 
-  public Subsystems(CommandSwerveDrivetrain drivetrain, LimeLightVision vision) {
+  public Subsystems(CommandSwerveDrivetrain drivetrain, LimeLights vision) {
     this.swerve = drivetrain;
     this.vision = vision;
     this.lockedResources = new ExclusiveSubsystem[] {this.swerve};

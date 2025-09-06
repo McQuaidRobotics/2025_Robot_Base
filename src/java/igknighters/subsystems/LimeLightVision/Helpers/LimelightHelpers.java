@@ -1,6 +1,6 @@
 // LimelightHelpers v1.10 (REQUIRES LLOS 2024.9.1 OR LATER)
 
-package igknighters.subsystems.LimeLightVision;
+package igknighters.subsystems.LimeLightVision.Helpers;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -21,8 +21,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import igknighters.subsystems.LimeLightVision.LimelightHelpers.LimelightResults;
-import igknighters.subsystems.LimeLightVision.LimelightHelpers.PoseEstimate;
+import igknighters.subsystems.LimeLightVision.Helpers.LimelightHelpers.LimelightResults;
+import igknighters.subsystems.LimeLightVision.Helpers.LimelightHelpers.PoseEstimate;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

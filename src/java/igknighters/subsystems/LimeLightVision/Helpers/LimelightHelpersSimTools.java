@@ -1,4 +1,4 @@
-package igknighters.subsystems.LimeLightVision;
+package igknighters.subsystems.LimeLightVision.Helpers;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 

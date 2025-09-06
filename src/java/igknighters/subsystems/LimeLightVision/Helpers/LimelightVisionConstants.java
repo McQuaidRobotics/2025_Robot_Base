@@ -1,4 +1,4 @@
-package igknighters.subsystems.LimeLightVision;
+package igknighters.subsystems.LimeLightVision.Helpers;
 
 public class LimelightVisionConstants {
   public static final String frontLeft = "limelight-fl";

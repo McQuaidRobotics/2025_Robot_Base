@@ -4,16 +4,17 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import igknighters.LimelightHelpers;
 import igknighters.subsystems.Subsystems;
+import igknighters.subsystems.LimeLightVision.Helpers.LimelightHelpers;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class LimeLightVision implements Subsystems.SharedSubsystem {
+public class LimeLightVisionReal extends LimeLights {
   private final List<String> cameraNames;
   private double lastTimeStamp = 0.0;
 
-  public LimeLightVision(String... cameraNames) {
+  public LimeLightVisionReal(String... cameraNames) {
     this.cameraNames = new ArrayList<>();
     for (String cameraName : cameraNames) {
       this.cameraNames.add(cameraName);
