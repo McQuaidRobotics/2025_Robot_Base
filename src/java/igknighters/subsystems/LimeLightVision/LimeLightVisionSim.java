@@ -3,15 +3,21 @@ package igknighters.subsystems.LimeLightVision;
 import edu.wpi.first.math.geometry.Pose2d;
 
 public class LimeLightVisionSim extends LimeLights {
+
+  public LimeLightVisionSim() {}
+
   @Override
   public Pose2d getRobotPoseFromVision(
       double yaw, double yawRate, double pitch, double pitchRate, double roll, double rollRate) {
+    // In simulation, we can directly get the botpose from LimelightHelpers
+    // This assumes that LimelightHelpersSimTools is populating the NetworkTables
+    // with appropriate simulation data
     return null;
   }
 
   @Override
   public double getLastTimeStamp() {
-    return 0;
+    // In simulation, we can get the timestamp from the latest results
+    return 0.0;
   }
-  
 }

@@ -3,10 +3,7 @@ package igknighters.subsystems.LimeLightVision;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.LimeLightVision.Helpers.LimelightHelpers;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +25,7 @@ public class LimeLightVisionReal extends LimeLights {
     for (String cameraName : cameraNames) {
       LimelightHelpers.SetRobotOrientation(
           cameraName, yaw, yawRate, pitch, pitchRate, roll, rollRate);
-      var llMeasurement =
-          DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
-                  == DriverStation.Alliance.Red
-              ? LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2(cameraName)
-              : LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
+      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
       if (llMeasurement != null && llMeasurement.tagCount > 0) {
         DogLog.log("Robot/Subsystems/LimeLightVision/RawPose_" + cameraName, llMeasurement.pose);

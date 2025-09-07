@@ -23,7 +23,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import igknighters.subsystems.LimeLightVision.Helpers.LimelightHelpers.LimelightResults;
 import igknighters.subsystems.LimeLightVision.Helpers.LimelightHelpers.PoseEstimate;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -605,6 +604,13 @@ public class LimelightHelpers {
       return new Pose2d();
     }
     Translation2d tran2d = new Translation2d(inData[0], inData[1]);
+    System.out.println("inData1 (x): " + inData[0]);
+    System.out.println("inData2 (y): " + inData[1]);
+    System.out.println("inData3 (z): " + inData[2]);
+    System.out.println("inData4 (roll): " + inData[3]);
+    System.out.println("inData5 (pitch): " + inData[4]);
+    System.out.println("inData6 (yaw): " + inData[5]);
+
     DogLog.log("Robot/Subsystems/LimeLights/rawRotationInDegrees", inData[5]);
     Rotation2d r2d = new Rotation2d(Units.degreesToRadians(inData[5]));
     return new Pose2d(tran2d, r2d);
@@ -656,14 +662,24 @@ public class LimelightHelpers {
 
   private static PoseEstimate getBotPoseEstimate(
       String limelightName, String entryName, boolean isMegaTag2) {
+    System.out.println(
+        "Getting Pose Estimate from "
+            + limelightName
+            + " entry "
+            + entryName
+            + "isMegaTag2="
+            + isMegaTag2);
     DoubleArrayEntry poseEntry =
         LimelightHelpers.getLimelightDoubleArrayEntry(limelightName, entryName);
 
     TimestampedDoubleArray tsValue = poseEntry.getAtomic();
     double[] poseArray = tsValue.value;
+
+    System.out.println("Pose Array: " + poseArray);
     long timestamp = tsValue.timestamp;
 
     if (poseArray.length == 0) {
+      System.out.println("No pose data available from Limelight.");
       // Handle the case where no data is available
       return null; // or some default PoseEstimate
     }
@@ -674,6 +690,18 @@ public class LimelightHelpers {
     double tagSpan = extractArrayEntry(poseArray, 8);
     double tagDist = extractArrayEntry(poseArray, 9);
     double tagArea = extractArrayEntry(poseArray, 10);
+
+    System.out.println(
+        "STATS OUT OF POSE ARRAY: latency="
+            + latency
+            + " tagCount="
+            + tagCount
+            + " tagSpan="
+            + tagSpan
+            + " tagDist="
+            + tagDist
+            + " tagArea="
+            + tagArea);
 
     // Convert server timestamp from microseconds to seconds and adjust for latency
     double adjustedTimestamp = (timestamp / 1000000.0) - (latency / 1000.0);
@@ -1278,6 +1306,7 @@ public class LimelightHelpers {
    * @return
    */
   public static PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2(String limelightName) {
+    System.out.println("Starting getBotPoseEstimate_wpiBlue_MegaTag2");
     return getBotPoseEstimate(limelightName, "botpose_orb_wpiblue", true);
   }
 

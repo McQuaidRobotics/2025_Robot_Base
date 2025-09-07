@@ -1,7 +1,6 @@
 package igknighters.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLights;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 

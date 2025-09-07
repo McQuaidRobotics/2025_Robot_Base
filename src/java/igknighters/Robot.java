@@ -14,9 +14,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.controllers.DriverController;
+import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
-import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
 
@@ -34,7 +34,12 @@ public class Robot extends TimedRobot {
   private final boolean kUseLimelight = true;
 
   public Robot() {
-    subsytems = (Robot.isReal()) ?new Subsystems(knightshadeConsts.createDrivetrain() , new LimeLightVisionReal(LimelightVisionConstants.backRight)) : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
+    subsytems =
+        (Robot.isReal())
+            ? new Subsystems(
+                knightshadeConsts.createDrivetrain(),
+                new LimeLightVisionReal(LimelightVisionConstants.backRight))
+            : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
