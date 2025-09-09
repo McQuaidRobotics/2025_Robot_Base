@@ -83,7 +83,6 @@ public class LimelightHelpersTest {
 
     System.out.println("Read back from NT Cam 2: " + Arrays.toString(cam2ReadBack));
 
-    // Call your real LimelightHelpers method
     Pose2d robotVisionPose = vision.getRobotPoseFromVision(40.0, 0, 0, 0, 0, 0);
     for (int i = 0; i < 10; i++) {
       System.out.println("Retrying pose fetch... attempt " + (i + 1));
