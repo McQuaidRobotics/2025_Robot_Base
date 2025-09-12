@@ -17,14 +17,14 @@ public class SwerveCommands {
                     new Pose2d(
                         swerve.getState().Pose.getX(),
                         swerve.getState().Pose.getY(),
-                        new Rotation2d(Math.PI)))),
+                        new Rotation2d(0.0)))),
         Commands.runOnce(
             () ->
                 swerve.resetPose(
                     new Pose2d(
                         swerve.getState().Pose.getX(),
                         swerve.getState().Pose.getY(),
-                        new Rotation2d(0.0)))),
+                        new Rotation2d(Math.PI)))),
         AllianceSymmetry::isBlue);
   }
 
