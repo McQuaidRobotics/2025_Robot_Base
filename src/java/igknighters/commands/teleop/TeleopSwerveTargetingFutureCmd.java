@@ -24,16 +24,21 @@ public class TeleopSwerveTargetingFutureCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  private final PIDController rotationController = new PIDController(.1, .2, .1);
+  private final PIDController rotationController =
+      new PIDController(0.07 * 180 / Math.PI, 0.0, 0.0);
 
-  private final double lookaheadTimeSeconds = 0.1; // Lookahead time in seconds
+  private final double lookaheadTimeSeconds; // Lookahead time in seconds
 
   // Make the PID controller handle wraparound automatically
 
   public TeleopSwerveTargetingFutureCmd(
-      CommandSwerveDrivetrain swerve, DriverController controller, Pose2d targetPose) {
+      CommandSwerveDrivetrain swerve,
+      DriverController controller,
+      Pose2d targetPose,
+      double lookaheadTimeSeconds) {
     super(swerve, controller);
     this.targetPose = targetPose;
+    this.lookaheadTimeSeconds = lookaheadTimeSeconds;
     addRequirements(swerve);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     rotationController.setTolerance(.0001);

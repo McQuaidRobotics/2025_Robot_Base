@@ -15,7 +15,7 @@ import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
 import wpilibExt.AllianceSymmetry;
 
-public class TeleopSwerveTargetingCmd extends TeleopSwerveBaseCmd {
+public class TeleopSwerveForwardTargetingCmd extends TeleopSwerveBaseCmd {
 
   private final Pose2d targetPose;
   private final SwerveRequest.FieldCentric m_driveRequest =
@@ -26,7 +26,7 @@ public class TeleopSwerveTargetingCmd extends TeleopSwerveBaseCmd {
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
   private final PIDController rotationController = new PIDController(0.07 * 180 / Math.PI, 0.0, .0);
 
-  public TeleopSwerveTargetingCmd(
+  public TeleopSwerveForwardTargetingCmd(
       CommandSwerveDrivetrain swerve, DriverController controller, Pose2d targetPose) {
     super(swerve, controller);
     this.targetPose = targetPose;
@@ -58,13 +58,13 @@ public class TeleopSwerveTargetingCmd extends TeleopSwerveBaseCmd {
     double error = wrapAngleRadians(desiredAngleRad - currentAngleRad);
 
     DogLog.log(
-        "Robot/Commands/Swerve/TeleopSwerveTargetingCmd/Desired Angle (deg)",
+        "Robot/Commands/Swerve/TeleopSwerveForwardTargetingCmd/Desired Angle (deg)",
         Math.toDegrees(desiredAngleRad));
     DogLog.log(
-        "Robot/Commands/Swerve/TeleopSwerveTargetingCmd/Current Angle (deg)",
+        "Robot/Commands/Swerve/TeleopSwerveForwardTargetingCmd/Current Angle (deg)",
         Math.toDegrees(currentAngleRad));
     DogLog.log(
-        "Robot/Commands/Swerve/TeleopSwerveTargetingCmd/Wrapped Error (deg)",
+        "Robot/Commands/Swerve/TeleopSwerveForwardTargetingCmd/Wrapped Error (deg)",
         Math.toDegrees(error));
 
     double omega = rotationController.calculate(currentAngleRad, desiredAngleRad);
