@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
@@ -19,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import igknighters.commands.autos.AutoRoutines;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.controllers.DriverController;
+import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
+import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
+import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
 import monologue.LogSink;
@@ -35,11 +39,17 @@ public class Robot extends TimedRobot {
   private final Telemetry logger =
       new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
 
-  public final Subsystems subsytems = new Subsystems(knightshadeConsts.createDrivetrain());
+  public final Subsystems subsytems;
 
-  private final boolean kUseLimelight = false;
+  private final boolean kUseLimelight = true;
 
   public Robot() {
+    subsytems =
+        (Robot.isReal())
+            ? new Subsystems(
+                knightshadeConsts.createDrivetrain(),
+                new LimeLightVisionReal(LimelightVisionConstants.backRight))
+            : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
@@ -68,11 +78,10 @@ public class Robot extends TimedRobot {
       var driveState = subsytems.swerve.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
       double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-      LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-      var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-      if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-        subsytems.swerve.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+      Pose2d currentPose =
+          subsytems.vision.getRobotPoseFromVision(headingDeg, omegaRps, 0, 0, 0, 0);
+      if (currentPose != null) {
+        subsytems.swerve.addVisionMeasurement(currentPose, subsytems.vision.getLastTimeStamp());
       }
     }
   }

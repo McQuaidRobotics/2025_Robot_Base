@@ -19,8 +19,20 @@ public class SwerveCommands {
 
   public static Command zeroGyro(CommandSwerveDrivetrain swerve) {
     return Commands.either(
-        Commands.runOnce(() -> swerve.resetRotation(new Rotation2d(0.0))),
-        Commands.runOnce(() -> swerve.resetRotation(new Rotation2d(Math.PI))),
+        Commands.runOnce(
+            () ->
+                swerve.resetPose(
+                    new Pose2d(
+                        swerve.getState().Pose.getX(),
+                        swerve.getState().Pose.getY(),
+                        new Rotation2d(0.0)))),
+        Commands.runOnce(
+            () ->
+                swerve.resetPose(
+                    new Pose2d(
+                        swerve.getState().Pose.getX(),
+                        swerve.getState().Pose.getY(),
+                        new Rotation2d(Math.PI)))),
         AllianceSymmetry::isBlue);
   }
 
