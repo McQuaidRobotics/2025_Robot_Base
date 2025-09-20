@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import wpilibExt.AllianceSymmetry;
 
 public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
   private final double heading;
@@ -32,13 +33,21 @@ public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
   @Override
   public void execute() {
     double omega = rotationController.calculate(swerve.getState().RawHeading.getDegrees(), heading);
-    super.execute();
     Translation2d vt = translationStick();
+
+    double allianceFlipper = 0.0;
+    if (AllianceSymmetry.isBlue()) {
+      allianceFlipper = 1.0;
+    } else {
+      allianceFlipper = -1.0;
+    }
 
     swerve.setControl(
         m_driveRequest
-            .withVelocityX(vt.getX() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond))
-            .withVelocityY(vt.getY() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond))
+            .withVelocityX(
+                vt.getX() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * allianceFlipper)
+            .withVelocityY(
+                vt.getY() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * allianceFlipper)
             .withRotationalRate(omega));
   }
 }

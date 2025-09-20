@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
 
   public final Subsystems subsytems;
 
-  private final boolean kUseLimelight = false;
+  private final boolean kUseLimelight = true;
 
   public Robot() {
     subsytems =

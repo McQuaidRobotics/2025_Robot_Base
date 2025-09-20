@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import wpilibExt.AllianceSymmetry;
 
 public class TeleopSwerveTargetingCmd extends TeleopSwerveBaseCmd {
 
@@ -23,7 +24,7 @@ public class TeleopSwerveTargetingCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  private final PIDController rotationController = new PIDController(15, .2, .1);
+  private final PIDController rotationController = new PIDController(.1, .2, .1);
 
   // Make the PID controller handle wraparound automatically
 
@@ -65,11 +66,19 @@ public class TeleopSwerveTargetingCmd extends TeleopSwerveBaseCmd {
     double omega = rotationController.calculate(currentAngleRad, desiredAngleRad);
 
     Translation2d vt = translationStick();
+    double allianceFlipper = 0.0;
+    if (AllianceSymmetry.isBlue()) {
+      allianceFlipper = 1.0;
+    } else {
+      allianceFlipper = -1.0;
+    }
 
     swerve.setControl(
         m_driveRequest
-            .withVelocityX(vt.getX() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond))
-            .withVelocityY(vt.getY() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond))
+            .withVelocityX(
+                vt.getX() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * allianceFlipper)
+            .withVelocityY(
+                vt.getY() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * allianceFlipper)
             .withRotationalRate(omega));
   }
 }
