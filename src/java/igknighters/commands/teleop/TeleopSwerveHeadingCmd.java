@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import igknighters.controllers.DriverController;
@@ -21,18 +22,27 @@ public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  PIDController rotationController = new PIDController(.07, 0.0, 0.0);
+  PIDController rotationController = new PIDController(.07, .000, 0.00);
 
   public TeleopSwerveHeadingCmd(
       CommandSwerveDrivetrain swerve, DriverController controller, double heading) {
     super(swerve, controller);
     this.heading = heading;
+    rotationController.enableContinuousInput(-180, 180);
     addRequirements(swerve);
   }
 
   @Override
   public void execute() {
-    double omega = rotationController.calculate(swerve.getState().RawHeading.getDegrees(), heading);
+    double omega =
+        rotationController.calculate(swerve.getState().Pose.getRotation().getDegrees(), heading);
+    DogLog.log(
+        "Robot/Commands/Swerve/TeleopSwerveHeadingCmd/Swerve Heading: ",
+        (swerve.getState().Pose.getRotation().getDegrees()));
+    DogLog.log(
+        "Robot/Commands/Swerve/TeleopSwerveHeadingCmd/error: ",
+        (swerve.getState().Pose.getRotation().getDegrees() - heading));
+    DogLog.log("Robot/Commands/Swerve/TeleopSwerveHeadingCmd/PID CALCULATION: ", omega);
     Translation2d vt = translationStick();
 
     double allianceFlipper = 0.0;
