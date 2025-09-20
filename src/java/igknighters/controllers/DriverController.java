@@ -98,7 +98,7 @@ public class DriverController {
     this.A.whileTrue(new TeleopSwerveWithDetune(swerve, this, 1.0));
     this.B.whileTrue(new TeleopSwerveHeadingCmd(swerve, this, 180.0));
     this.X.whileTrue(
-        new TeleopSwerveTargetingCmd(swerve, this, new Pose2d(5, 5, new Rotation2d(0))));
+        new TeleopSwerveTargetingCmd(swerve, this, new Pose2d(13, 4, new Rotation2d(0))));
     this.Y.whileTrue(
         new TeleopSwerveTargetingFutureCmd(swerve, this, new Pose2d(5, 5, new Rotation2d(0))));
   }
