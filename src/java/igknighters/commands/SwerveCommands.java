@@ -40,6 +40,20 @@ public class SwerveCommands {
     return swerve.getState().Pose;
   }
 
+  public static Command stopDriving(CommandSwerveDrivetrain swerve) {
+    final SwerveRequest.FieldCentric m_driveRequest =
+        new SwerveRequest.FieldCentric()
+            .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 1.0)
+            .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 1.0)
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+            .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
+    return swerve.run(
+        () -> {
+          swerve.setControl(
+              m_driveRequest.withVelocityX(0.0).withVelocityY(0.0).withRotationalRate(0.0));
+        });
+  }
+
   public static Command moveToSimple(CommandSwerveDrivetrain swerve, Pose2d targetPose) {
     final SwerveRequest.FieldCentric m_driveRequest =
         new SwerveRequest.FieldCentric()

@@ -81,13 +81,8 @@ public class AutoCommands {
     }
 
     private AutoTrajectory getTrajectory(Waypoints start, Waypoints end) {
-      if (leftSide) {
-        return routine.trajectory(start.to(end));
-      } else {
-        Trajectory<?> rawTraj = autoFactory.cache().loadTrajectory(start.to(end)).orElseThrow();
-        rawTraj = rawTraj.flipped();
-        return routine.trajectory(rawTraj);
-      }
+      Trajectory<?> rawTraj = autoFactory.cache().loadTrajectory(start.to(end)).orElseThrow();
+      return routine.trajectory(rawTraj);
     }
 
     private Command finishAlignment(AutoTrajectory trajectory, double distOffset) {
@@ -115,22 +110,21 @@ public class AutoCommands {
 
     public GenericAuto addDrivingTrajectory(Waypoints... waypoints) {
       headCommand.addCommands(getTrajectory(waypoints[0], waypoints[1]).resetOdometry());
-      // for (int i = 0; i < waypoints.length - 2; i += 2) {
-      //   bodyCommand.addCommands(
-      //       getTrajectory(waypoints[i], waypoints[i + 1]).cmd(),
-      //       Commands.waitSeconds(3.0),
-      //       getTrajectory(waypoints[i + 1], waypoints[i + 2]).cmd(),
-      //       Commands.waitSeconds(3.0));
-      // }
+      for (int i = 0; i < waypoints.length - 1; i += 1) {
+        bodyCommand.addCommands(
+            getTrajectory(waypoints[i], waypoints[i + 1]).cmd(),
+            Commands.runOnce(() -> DogLog.log("Robot/Autos/Finished Trajectory", true)),
+            SwerveCommands.stopDriving(swerve).withTimeout(3.0));
+      }
       return this;
     }
 
     public Command build() {
       final AtomicBoolean flag = new AtomicBoolean(false);
       headCommand.addCommands(Commands.print(bodyCommand.getRequirements().toString()));
-      bodyCommand.addCommands(new ScheduleCommand(Commands.runOnce(() -> flag.set(true))));
       bodyCommand.addCommands(
-          Commands.print("Build was successfully completed body command is made"));
+          Commands.runOnce(() -> DogLog.log("Robot/Autos/ending the auto", true)),
+          new ScheduleCommand(Commands.runOnce(() -> flag.set(true))));
       routine
           .active()
           .onTrue(

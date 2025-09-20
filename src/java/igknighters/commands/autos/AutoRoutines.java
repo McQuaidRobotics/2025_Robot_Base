@@ -42,7 +42,7 @@ public class AutoRoutines extends AutoCommands {
 
   public Command driveAround(boolean leftSide) {
     return newAuto("ZOOOMMMM", leftSide)
-        .addDrivingTrajectory(Waypoints.StartingCenter, Waypoints.FarMid_R)
+        .addDrivingTrajectory(Waypoints.StartingCenter, Waypoints.FarMid_R, Waypoints.IntakeSneaky)
         .build();
   }
 }
