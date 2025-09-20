@@ -32,16 +32,15 @@ public class AutoRoutines extends AutoCommands {
 
   @FunctionalInterface
   public interface DualSideAuto {
-    Command generate(boolean leftSide);
+    Command generate();
   }
 
   public static void addCmd(AutoChooser chooser, String name, DualSideAuto auto) {
-    chooser.addCmd(name + " left", () -> auto.generate(true));
-    chooser.addCmd(name + " right", () -> auto.generate(false));
+    chooser.addCmd(name, () -> auto.generate());
   }
 
-  public Command driveAround(boolean leftSide) {
-    return newAuto("ZOOOMMMM", leftSide)
+  public Command driveAround() {
+    return newAuto("ZOOOMMMM")
         .addDrivingTrajectory(Waypoints.StartingCenter, Waypoints.FarMid_R, Waypoints.IntakeSneaky)
         .build();
   }

@@ -72,12 +72,10 @@ public class AutoCommands {
     private final AutoRoutine routine;
     private final ParallelCommandGroup headCommand = new ParallelCommandGroup();
     private final SequentialCommandGroup bodyCommand = new SequentialCommandGroup();
-    private final boolean leftSide;
     private boolean trajectorybeenadded = false;
 
-    private GenericAuto(AutoRoutine routine, boolean leftSide) {
+    private GenericAuto(AutoRoutine routine) {
       this.routine = routine;
-      this.leftSide = leftSide;
     }
 
     private AutoTrajectory getTrajectory(Waypoints start, Waypoints end) {
@@ -114,6 +112,7 @@ public class AutoCommands {
         bodyCommand.addCommands(
             getTrajectory(waypoints[i], waypoints[i + 1]).cmd(),
             Commands.runOnce(() -> DogLog.log("Robot/Autos/Finished Trajectory", true)),
+            finishAlignment(getTrajectory(waypoints[i], waypoints[i + 1]), 0.0),
             SwerveCommands.stopDriving(swerve).withTimeout(3.0));
       }
       return this;
@@ -136,8 +135,8 @@ public class AutoCommands {
     }
   }
 
-  protected GenericAuto newAuto(String name, boolean leftSide) {
+  protected GenericAuto newAuto(String name) {
     DogLog.log("Robot/Commands/Autos/Creation", "Creating new auto: " + name);
-    return new GenericAuto(autoFactory.newRoutine(name), leftSide);
+    return new GenericAuto(autoFactory.newRoutine(name));
   }
 }
