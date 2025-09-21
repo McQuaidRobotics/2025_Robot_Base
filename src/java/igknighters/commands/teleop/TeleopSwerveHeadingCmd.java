@@ -22,11 +22,17 @@ public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  PIDController rotationController = new PIDController(.07, .000, 0.00);
+  private final PIDController rotationController;
 
   public TeleopSwerveHeadingCmd(
-      CommandSwerveDrivetrain swerve, DriverController controller, double heading) {
+      CommandSwerveDrivetrain swerve,
+      DriverController controller,
+      double heading,
+      double kP,
+      double kI,
+      double kD) {
     super(swerve, controller);
+    rotationController = new PIDController(kP, kI, kD);
     this.heading = heading;
     rotationController.enableContinuousInput(-180, 180);
     addRequirements(swerve);
