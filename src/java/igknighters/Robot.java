@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
     final var routines = new AutoRoutines(subsytems, autoFactory);
-    AutoRoutines.addCmd(autoChooser, "tested", routines::driveAround);
+    AutoRoutines.addCmd(autoChooser, "ZOOOOOOOOMMMMMMM", routines::driveAround);
     autoChooser.addCmd("TRAJECTORY TEST", routines.trajTest("Straight"));
     SmartDashboard.putData("AUTO CHOOSER", autoChooser);
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
