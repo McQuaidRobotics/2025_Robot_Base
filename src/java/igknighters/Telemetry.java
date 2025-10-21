@@ -3,6 +3,7 @@ package igknighters;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -18,17 +19,31 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import igknighters.subsystems.Subsystems;
+import igknighters.util.AprilTagLayout;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class Telemetry {
   private final double MaxSpeed;
+  private final Subsystems subsystems;
+  private AprilTagLayout aprilTagLayout;
 
   /**
    * Construct a telemetry object, with the specified max speed of the robot
    *
    * @param maxSpeed Maximum speed in meters per second
    */
-  public Telemetry(double maxSpeed) {
+  public Telemetry(double maxSpeed, Subsystems subsystems) {
     MaxSpeed = maxSpeed;
+    this.subsystems = subsystems;
+    try {
+      aprilTagLayout = new AprilTagLayout();
+    } catch (IOException e) {
+      System.out.println("Could not load AprilTag layout");
+      e.printStackTrace();
+    }
     SignalLogger.start();
   }
 
@@ -56,6 +71,9 @@ public class Telemetry {
   private final NetworkTable table = inst.getTable("Pose");
   private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
   private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
+  private final DoubleArrayPublisher seenTagsPub = table.getDoubleArrayTopic("seenTags").publish();
+    private final DoubleArrayPublisher unseenTagsPub =
+        table.getDoubleArrayTopic("unseenTags").publish();
 
   /* Mechanisms to represent the swerve module states */
   private final Mechanism2d[] m_moduleMechanisms =
@@ -129,6 +147,39 @@ public class Telemetry {
     /* Telemeterize the pose to a Field2d */
     fieldTypePub.set("Field2d");
     fieldPub.set(m_poseArray);
+
+    if (aprilTagLayout != null) {
+      List<Integer> visibleIds = subsystems.vision.getVisibleTagIds();
+      Map<Integer, Pose3d> allTagPoses = aprilTagLayout.getTagPoses();
+      List<Pose2d> seenTagPoses = new java.util.ArrayList<>();
+      List<Pose2d> unseenTagPoses = new java.util.ArrayList<>();
+
+      for (Map.Entry<Integer, Pose3d> entry : allTagPoses.entrySet()) {
+        if (visibleIds.contains(entry.getKey())) {
+          seenTagPoses.add(entry.getValue().toPose2d());
+        } else {
+          unseenTagPoses.add(entry.getValue().toPose2d());
+        }
+      }
+
+      double[] seenTagsArray = new double[seenTagPoses.size() * 3];
+      int i = 0;
+      for (Pose2d pose : seenTagPoses) {
+        seenTagsArray[i++] = pose.getX();
+        seenTagsArray[i++] = pose.getY();
+        seenTagsArray[i++] = pose.getRotation().getDegrees();
+      }
+      seenTagsPub.set(seenTagsArray);
+
+      double[] unseenTagsArray = new double[unseenTagPoses.size() * 3];
+      i = 0;
+      for (Pose2d pose : unseenTagPoses) {
+        unseenTagsArray[i++] = pose.getX();
+        unseenTagsArray[i++] = pose.getY();
+        unseenTagsArray[i++] = pose.getRotation().getDegrees();
+      }
+      unseenTagsPub.set(unseenTagsArray);
+    }
 
     /* Telemeterize the module states to a Mechanism2d */
     for (int i = 0; i < 4; ++i) {

@@ -34,8 +34,7 @@ public class Robot extends TimedRobot {
 
   private final DriverController driverController = new DriverController(0);
 
-  private final Telemetry logger =
-      new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
+  private final Telemetry logger;
 
   public final Subsystems subsytems;
 
@@ -53,6 +52,7 @@ public class Robot extends TimedRobot {
                 knightshadeConsts.createDrivetrain(),
                 new LimeLightVisionReal(LimelightVisionConstants.backRight))
             : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
+    logger = new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond), subsytems);
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
@@ -138,5 +138,9 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    for (var subsystem : subsytems.locklessResources) {
+      subsystem.simulationPeriodic();
+    }
+  }
 }

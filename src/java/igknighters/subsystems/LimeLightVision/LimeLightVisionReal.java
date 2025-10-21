@@ -18,10 +18,13 @@ public class LimeLightVisionReal extends LimeLights {
     }
   }
 
+  private List<Integer> visibleTagIds = new ArrayList<>();
+
   public Pose2d getRobotPoseFromVision(
       double yaw, double yawRate, double pitch, double pitchRate, double roll, double rollRate) {
     List<Pose2d> poses = new ArrayList<>();
     double timestamp = 0.0;
+    visibleTagIds.clear();
     for (String cameraName : cameraNames) {
       LimelightHelpers.SetRobotOrientation(
           cameraName, yaw, yawRate, pitch, pitchRate, roll, rollRate);
@@ -31,6 +34,9 @@ public class LimeLightVisionReal extends LimeLights {
         DogLog.log("Robot/Subsystems/LimeLightVision/RawPose_" + cameraName, llMeasurement.pose);
         poses.add(llMeasurement.pose);
         timestamp += llMeasurement.timestampSeconds;
+        for (var fiducial : llMeasurement.rawFiducials) {
+          visibleTagIds.add(fiducial.id);
+        }
       }
     }
     if (!cameraNames.isEmpty()) {
@@ -41,6 +47,10 @@ public class LimeLightVisionReal extends LimeLights {
     DogLog.log("Robot/Subsystems/LimeLightVision/NumberOfTagsSeen", poses.size());
 
     return averagePose2ds(poses);
+  }
+
+  public List<Integer> getVisibleTagIds() {
+    return visibleTagIds;
   }
 
   public Pose2d averagePose2ds(List<Pose2d> poses) {
