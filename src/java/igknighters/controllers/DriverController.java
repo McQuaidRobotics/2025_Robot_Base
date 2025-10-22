@@ -16,7 +16,7 @@ import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
 
 public class DriverController {
-  // TODO --> all of the triggers need to be bound to commands.
+
   // Define the bindings for the controller
 
   // Define the buttons on the controller
