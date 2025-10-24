@@ -12,7 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.swerve.generated.DemoBotConsts;
 import wpilibExt.AllianceSymmetry;
 
 public class SwerveCommands {
@@ -43,7 +43,7 @@ public class SwerveCommands {
   public static Command stopDriving(CommandSwerveDrivetrain swerve) {
     final SwerveRequest.FieldCentric m_driveRequest =
         new SwerveRequest.FieldCentric()
-            .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 1.0)
+            .withDeadband(DemoBotConsts.kSpeedAt12Volts.in(MetersPerSecond) * 1.0)
             .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 1.0)
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
@@ -57,7 +57,7 @@ public class SwerveCommands {
   public static Command moveToSimple(CommandSwerveDrivetrain swerve, Pose2d targetPose) {
     final SwerveRequest.FieldCentric m_driveRequest =
         new SwerveRequest.FieldCentric()
-            .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 1.0)
+            .withDeadband(DemoBotConsts.kSpeedAt12Volts.in(MetersPerSecond) * 1.0)
             .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 1.0)
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
             .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);

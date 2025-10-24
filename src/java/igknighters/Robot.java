@@ -24,7 +24,7 @@ import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.swerve.generated.DemoBotConsts;
 import monologue.LogSink;
 import monologue.Monologue;
 
@@ -36,8 +36,7 @@ public class Robot extends TimedRobot {
 
   private final DriverController driverController = new DriverController(0);
 
-  private final Telemetry logger =
-      new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
+  private final Telemetry logger = new Telemetry(DemoBotConsts.kSpeedAt12Volts.in(MetersPerSecond));
 
   public final Subsystems subsytems;
 
@@ -47,9 +46,9 @@ public class Robot extends TimedRobot {
     subsytems =
         (Robot.isReal())
             ? new Subsystems(
-                knightshadeConsts.createDrivetrain(),
+                DemoBotConsts.createDrivetrain(),
                 new LimeLightVisionReal(LimelightVisionConstants.backRight))
-            : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
+            : new Subsystems(DemoBotConsts.createDrivetrain(), new LimeLightVisionSim());
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
