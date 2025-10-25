@@ -678,7 +678,7 @@ public class LimelightHelpers {
     long timestamp = tsValue.timestamp;
 
     if (poseArray.length == 0) {
-      System.out.println("No pose data available from Limelight.");
+      // System.out.println("No pose data available from Limelight.");
       // Handle the case where no data is available
       return null; // or some default PoseEstimate
     }
