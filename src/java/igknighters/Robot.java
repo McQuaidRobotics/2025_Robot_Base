@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import igknighters.commands.SubsystemTriggers;
 import igknighters.commands.autos.AutoRoutines;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.controllers.DriverController;
@@ -24,6 +25,7 @@ import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
+import igknighters.subsystems.led.Led;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
 import monologue.LogSink;
 import monologue.Monologue;
@@ -60,6 +62,7 @@ public class Robot extends TimedRobot {
     autoChooser.addCmd("TRAJECTORY TEST", routines.trajTest("Straight"));
     SmartDashboard.putData("AUTO CHOOSER", autoChooser);
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    new SubsystemTriggers(new Led());
   }
 
   @Override
