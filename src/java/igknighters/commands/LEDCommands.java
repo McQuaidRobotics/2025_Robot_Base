@@ -23,7 +23,7 @@ public class LEDCommands {
       List<Integer> lengths,
       List<Integer> index,
       List<String> names) {
-    final AddressableLEDBuffer slate = new AddressableLEDBuffer(73);
+    final AddressableLEDBuffer slate = new AddressableLEDBuffer(led.pwm1.length);
     final LEDPattern eraser = LEDPattern.solid(Color.kBlack);
     return led.startRun(
             () -> {
@@ -36,20 +36,39 @@ public class LEDCommands {
                 return;
               }
               for (int i = 0; i < patterns.size(); i++) {
-                if (index.get(i) == 0) {
-                  AddressableLEDBufferView controlledZone =
-                      slate.createView(
-                          MathUtil.clamp(offsets.get(i), 0, 34),
-                          MathUtil.clamp(offsets.get(i) + lengths.get(i) - 1, 0, 35));
-                  patterns.get(i).applyTo(controlledZone);
-                } else {
-                  AddressableLEDBufferView controlledZone =
-                      slate.createView(
-                          MathUtil.clamp(36 + offsets.get(i), 37, slate.getLength() - 1),
-                          MathUtil.clamp(
-                              36 + offsets.get(i) + lengths.get(i) - 1, 37, slate.getLength() - 1));
-                  patterns.get(i).applyTo(controlledZone);
-                }
+                // if (index.get(i) == 0) {
+                //   AddressableLEDBufferView controlledZone =
+                //       slate.createView(
+                //           MathUtil.clamp(offsets.get(i), 0, 34),
+                //           MathUtil.clamp(offsets.get(i) + lengths.get(i) - 1, 0, 35));
+                //   patterns.get(i).applyTo(controlledZone);
+                // } else {
+                //   AddressableLEDBufferView controlledZone =
+                //       slate.createView(
+                //           MathUtil.clamp(36 + offsets.get(i), 37, slate.getLength() - 1),
+                //           MathUtil.clamp(
+                //               36 + offsets.get(i) + lengths.get(i) - 1, 37, slate.getLength() -
+                // 1));
+                //   patterns.get(i).applyTo(controlledZone);
+                // }
+                AddressableLEDBufferView controlledZone =
+                    slate.createView(
+                        MathUtil.clamp(
+                            i * (led.pwm1.length / led.pwm1.numberOfStrips) + offsets.get(i),
+                            i * (led.pwm1.length / led.pwm1.numberOfStrips),
+                            i * (led.pwm1.length / led.pwm1.numberOfStrips)
+                                + (led.pwm1.length / led.pwm1.numberOfStrips)
+                                - 1),
+                        MathUtil.clamp(
+                            i * (led.pwm1.length / led.pwm1.numberOfStrips)
+                                + offsets.get(i)
+                                + lengths.get(i)
+                                - 1,
+                            i * (led.pwm1.length / led.pwm1.numberOfStrips),
+                            i * (led.pwm1.length / led.pwm1.numberOfStrips)
+                                + (led.pwm1.length / led.pwm1.numberOfStrips)
+                                - 1));
+                patterns.get(i).applyTo(controlledZone);
               }
               led.animate(slate);
               LedUtil.logBuffer("fullPattern", led, slate);

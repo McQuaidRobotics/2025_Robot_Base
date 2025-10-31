@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
   private final AutoFactory autoFactory;
   public final AutoChooser autoChooser = new AutoChooser();
   private final CommandScheduler scheduler = CommandScheduler.getInstance();
+  private final SubsystemTriggers subsystemTriggers = new SubsystemTriggers();
 
   private final DriverController driverController = new DriverController(0);
 
@@ -50,8 +51,10 @@ public class Robot extends TimedRobot {
         (Robot.isReal())
             ? new Subsystems(
                 knightshadeConsts.createDrivetrain(),
-                new LimeLightVisionReal(LimelightVisionConstants.backRight))
-            : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
+                new LimeLightVisionReal(LimelightVisionConstants.backRight),
+                new Led(40, 1))
+            : new Subsystems(
+                knightshadeConsts.createDrivetrain(), new LimeLightVisionSim(), new Led(40, 1));
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
@@ -62,7 +65,7 @@ public class Robot extends TimedRobot {
     autoChooser.addCmd("TRAJECTORY TEST", routines.trajTest("Straight"));
     SmartDashboard.putData("AUTO CHOOSER", autoChooser);
     // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
-    new SubsystemTriggers(new Led());
+    subsystemTriggers.SetupTriggers(subsytems.led);
   }
 
   @Override

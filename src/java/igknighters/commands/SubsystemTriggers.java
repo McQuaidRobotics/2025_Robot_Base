@@ -13,7 +13,7 @@ public class SubsystemTriggers {
   private final Trigger autonomous = RobotModeTriggers.autonomous();
   private final Trigger teleop = RobotModeTriggers.teleop();
 
-  public SubsystemTriggers(Led led) {
+  public void SetupTriggers(Led led) {
     disabled.onTrue(
         LEDCommands.run(led, new LEDSection(0, 0, LEDPattern.solid(Color.kRed), 73, "DISABLED")));
     autonomous.onTrue(
