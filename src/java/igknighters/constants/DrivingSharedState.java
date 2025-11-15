@@ -1,5 +1,7 @@
 package igknighters.constants;
 
+import edu.wpi.first.math.MathUtil;
+
 public class DrivingSharedState {
 
   private DrivingSharedState() {}
@@ -30,6 +32,6 @@ public class DrivingSharedState {
   }
 
   public void setDetune(double detune) {
-    this.detune = detune;
+    this.detune = MathUtil.clamp(detune, 0, 1.0);
   }
 }

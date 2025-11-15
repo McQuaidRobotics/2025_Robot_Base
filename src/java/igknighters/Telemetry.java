@@ -72,8 +72,8 @@ public class Telemetry {
   private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
   private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
   private final DoubleArrayPublisher seenTagsPub = table.getDoubleArrayTopic("seenTags").publish();
-    private final DoubleArrayPublisher unseenTagsPub =
-        table.getDoubleArrayTopic("unseenTags").publish();
+  private final DoubleArrayPublisher unseenTagsPub =
+      table.getDoubleArrayTopic("unseenTags").publish();
 
   /* Mechanisms to represent the swerve module states */
   private final Mechanism2d[] m_moduleMechanisms =
