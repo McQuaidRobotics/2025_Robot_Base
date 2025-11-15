@@ -24,13 +24,20 @@ public class TeleopSwerveReverseTargetingCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  private final PIDController rotationController = new PIDController(0.07 * 180 / Math.PI, 0.0, .0);
+  private final PIDController rotationController;
 
   public TeleopSwerveReverseTargetingCmd(
-      CommandSwerveDrivetrain swerve, DriverController controller, Pose2d targetPose) {
+      CommandSwerveDrivetrain swerve,
+      DriverController controller,
+      Pose2d targetPose,
+      double kP,
+      double kI,
+      double kD) {
     super(swerve, controller);
     this.targetPose = targetPose;
     addRequirements(swerve);
+    rotationController =
+        new PIDController(kP * 180.0 / Math.PI, kI * 180.0 / Math.PI, kD * 180.0 / Math.PI);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     rotationController.setTolerance(.0001);
   }

@@ -10,23 +10,21 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.PubSubOption;
-import edu.wpi.first.networktables.StringSubscriber;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import igknighters.commands.autos.AutoRoutines;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
+import igknighters.constants.DrivingSharedState;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.generated.knightshadeConsts;
-import monologue.LogSink;
-import monologue.Monologue;
+import igknighters.util.TunableValues;
+import igknighters.util.TunableValues.TunableDouble;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -36,12 +34,16 @@ public class Robot extends TimedRobot {
 
   private final DriverController driverController = new DriverController(0);
 
-  private final Telemetry logger =
-      new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
+  private final Telemetry logger;
 
   public final Subsystems subsytems;
 
   private final boolean kUseLimelight = true;
+
+  TunableDouble detune = TunableValues.getDouble("Tunables/Detune", 0.6);
+  TunableDouble targetingP = TunableValues.getDouble("Tunables/TargetingP", 0.07);
+  TunableDouble targetingI = TunableValues.getDouble("Tunables/TargetingI", 0.00);
+  TunableDouble targetingD = TunableValues.getDouble("Tunables/TargetingD", 0.00);
 
   public Robot() {
     subsytems =
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
                 knightshadeConsts.createDrivetrain(),
                 new LimeLightVisionReal(LimelightVisionConstants.backRight))
             : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
+    logger = new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond), subsytems);
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
     subsytems.swerve.registerTelemetry(logger::telemeterize);
@@ -59,21 +62,12 @@ public class Robot extends TimedRobot {
     AutoRoutines.addCmd(autoChooser, "ZOOOOOOOOMMMMMMM", routines::driveAround);
     autoChooser.addCmd("TRAJECTORY TEST", routines.trajTest("Straight"));
     SmartDashboard.putData("AUTO CHOOSER", autoChooser);
-    // RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    /*
-     * This example of adding Limelight is very simple and may not be sufficient for on-field use.
-     * Users typically need to provide a standard deviation that scales with the distance to target
-     * and changes with number of tags available.
-     *
-     * This example is sufficient to show that vision integration is possible, though exact implementation
-     * of how to use vision should be tuned per-robot and to the team's specification.
-     */
     if (kUseLimelight) {
       var driveState = subsytems.swerve.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
@@ -89,6 +83,14 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     scheduler.cancelAll();
+    subsytems.swerve.setDefaultCommand(
+        new TeleopSwerveWithDetune(subsytems.swerve, driverController, detune.value()));
+    DrivingSharedState.getInstance().setDetune(detune.value());
+    DrivingSharedState.getInstance().setKP(targetingP.value());
+    DrivingSharedState.getInstance().setKI(targetingI.value());
+    DrivingSharedState.getInstance().setKD(targetingD.value());
+
+    driverController.bind(subsytems);
   }
 
   @Override
@@ -100,9 +102,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Command autoCmd = autoChooser.selectedCommand();
-    String msg = "---- Starting auto command: " + autoCmd.getName() + " ----";
-    if (false) System.out.println(msg);
-    Monologue.log("AutoEvent", msg);
     scheduler.schedule(autoCmd);
   }
 
@@ -139,28 +138,9 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   @Override
-  public void simulationPeriodic() {}
-
-  private void setupAutoChooser() {
-    Monologue.publishSendable("/Choosers/AutoChooser", autoChooser, LogSink.NT);
-    final StringSubscriber sub =
-        NetworkTableInstance.getDefault()
-            .getStringTopic("/Choosers/AutoChooser/selected")
-            .subscribe(
-                "",
-                PubSubOption.pollStorage(1),
-                PubSubOption.periodic(0.5),
-                PubSubOption.sendAll(true),
-                PubSubOption.keepDuplicates(false));
-    this.addPeriodic(
-        () -> {
-          var queue = sub.readQueueValues();
-          if (queue.length > 0) {
-            System.out.println("AutoChooser selected: " + queue[0]);
-            autoChooser.select(queue[0]);
-          }
-        },
-        kDefaultPeriod,
-        0.01);
+  public void simulationPeriodic() {
+    for (var subsystem : subsytems.locklessResources) {
+      subsystem.simulationPeriodic();
+    }
   }
 }
