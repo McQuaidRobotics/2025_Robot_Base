@@ -25,15 +25,19 @@ public class SwerveConsts {
       return Robots.UNKNOWN;
     }
   }
-
+  /**
+   * Get the swerve constants for the current robot
+   * the way it is configured curently it will return DemoBotConsts for unknown robots
+   * @return CommonSwerveConsts for the current robot
+   */
   public CommonSwerveConsts getSwerveConsts() {
     Robots robot = getRobot();
     if (robot.equals(Robots.DEMO_BOT)) {
-      return new knightshadeConsts();
+      return new DemoBotConsts();
     } else if (robot.equals(Robots.COMPETITION_BOT)) {
       return new knightshadeConsts();
     } else {
-      return new knightshadeConsts();
+      return new DemoBotConsts();
     }
   }
 }
