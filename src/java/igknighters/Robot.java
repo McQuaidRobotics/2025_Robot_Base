@@ -146,27 +146,4 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {}
-
-  private void setupAutoChooser() {
-    Monologue.publishSendable("/Choosers/AutoChooser", autoChooser, LogSink.NT);
-    final StringSubscriber sub =
-        NetworkTableInstance.getDefault()
-            .getStringTopic("/Choosers/AutoChooser/selected")
-            .subscribe(
-                "",
-                PubSubOption.pollStorage(1),
-                PubSubOption.periodic(0.5),
-                PubSubOption.sendAll(true),
-                PubSubOption.keepDuplicates(false));
-    this.addPeriodic(
-        () -> {
-          var queue = sub.readQueueValues();
-          if (queue.length > 0) {
-            System.out.println("AutoChooser selected: " + queue[0]);
-            autoChooser.select(queue[0]);
-          }
-        },
-        kDefaultPeriod,
-        0.01);
-  }
 }
