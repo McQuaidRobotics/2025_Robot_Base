@@ -1,5 +1,7 @@
 package igknighters.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -12,9 +14,23 @@ public class SubsystemTriggers {
   private final Trigger disabled = RobotModeTriggers.disabled();
   private final Trigger autonomous = RobotModeTriggers.autonomous();
   private final Trigger teleop = RobotModeTriggers.teleop();
+  public static Trigger falseOnce() {
+    return new Trigger(
+        new BooleanSupplier() {
+          boolean ret = false;
 
+          public boolean getAsBoolean() {
+            try {
+              return ret;
+            } finally {
+              ret = true;
+            }
+          };
+        }
+      );
+  }
   public void SetupTriggers(Led led) {
-    disabled.onTrue(
+    falseOnce().and(disabled).whileTrue(
         LEDCommands.run(led, new LEDSection(0, 0, LEDPattern.solid(Color.kRed), 73, "DISABLED")));
     autonomous.onTrue(
         LEDCommands.run(
