@@ -24,8 +24,7 @@ public class TeleopSwerveTargetingFutureCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  private final PIDController rotationController =
-      new PIDController(0.07 * 180 / Math.PI, 0.0, 0.0);
+  private final PIDController rotationController;
 
   private final double lookaheadTimeSeconds; // Lookahead time in seconds
 
@@ -35,10 +34,15 @@ public class TeleopSwerveTargetingFutureCmd extends TeleopSwerveBaseCmd {
       CommandSwerveDrivetrain swerve,
       DriverController controller,
       Pose2d targetPose,
-      double lookaheadTimeSeconds) {
+      double lookaheadTimeSeconds,
+      double kP,
+      double kI,
+      double kD) {
     super(swerve, controller);
     this.targetPose = targetPose;
     this.lookaheadTimeSeconds = lookaheadTimeSeconds;
+    rotationController =
+        new PIDController(kP * 180.0 / Math.PI, kI * 180.0 / Math.PI, kD * 180.0 / Math.PI);
     addRequirements(swerve);
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     rotationController.setTolerance(.0001);
@@ -76,9 +80,15 @@ public class TeleopSwerveTargetingFutureCmd extends TeleopSwerveBaseCmd {
 
     double error = wrapAngleRadians(desiredAngleRad - futureAngleRad);
 
-    DogLog.log("Desired Angle (deg)", Math.toDegrees(desiredAngleRad));
-    DogLog.log("Current Angle (deg)", Math.toDegrees(futureAngleRad));
-    DogLog.log("Wrapped Error (deg)", Math.toDegrees(error));
+    DogLog.log(
+        "Robot/Commands/Swerve/TeleopSwerveTargetingFutureCmd/Desired Angle (deg)",
+        Math.toDegrees(desiredAngleRad));
+    DogLog.log(
+        "Robot/Commands/Swerve/TeleopSwerveTargetingFutureCmd/Current Angle (deg)",
+        Math.toDegrees(futureAngleRad));
+    DogLog.log(
+        "Robot/Commands/Swerve/TeleopSwerveTargetingFutureCmd/Wrapped Error (deg)",
+        Math.toDegrees(error));
 
     double omega = rotationController.calculate(futureAngleRad, desiredAngleRad);
 
