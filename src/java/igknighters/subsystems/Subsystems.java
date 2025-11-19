@@ -1,5 +1,6 @@
 package igknighters.subsystems;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import igknighters.subsystems.LimeLightVision.LimeLights;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
@@ -15,6 +16,23 @@ public class Subsystems {
     this.vision = vision;
     this.lockedResources = new ExclusiveSubsystem[] {this.swerve};
     this.locklessResources = new SharedSubsystem[] {vision};
+
+    CommandScheduler.getInstance().registerSubsystem(this.lockedResources);
+    for (SharedSubsystem subsystem : this.locklessResources) {
+      CommandScheduler.getInstance()
+          .registerSubsystem(
+              new Subsystem() {
+                @Override
+                public void periodic() {
+                  subsystem.periodic();
+                }
+
+                @Override
+                public String getName() {
+                  return subsystem.getName();
+                }
+              });
+    }
   }
 
   public static interface ExclusiveSubsystem extends Subsystem {}

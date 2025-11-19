@@ -12,7 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.swerve.swerveconstants.knightshadeConsts;
 import wpilibExt.AllianceSymmetry;
 
 public class SwerveCommands {

@@ -4,10 +4,9 @@
 
 package igknighters;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -22,7 +21,8 @@ import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.swerve.swerveconstants.CommonSwerveConsts;
+import igknighters.subsystems.swerve.swerveconstants.SwerveConsts;
 import igknighters.util.TunableValues;
 import igknighters.util.TunableValues.TunableDouble;
 
@@ -34,27 +34,33 @@ public class Robot extends TimedRobot {
 
   private final DriverController driverController = new DriverController(0);
 
-  private final Telemetry logger;
-
   public final Subsystems subsytems;
 
   private final boolean kUseLimelight = true;
 
+  private final SwerveConsts swerveConstGetter = new SwerveConsts();
+
+  private final CommonSwerveConsts swerveConsts = swerveConstGetter.getSwerveConsts();
+
+  private final Telemetry logger;
   TunableDouble detune = TunableValues.getDouble("Tunables/Detune", 0.6);
   TunableDouble targetingP = TunableValues.getDouble("Tunables/TargetingP", 0.07);
   TunableDouble targetingI = TunableValues.getDouble("Tunables/TargetingI", 0.00);
   TunableDouble targetingD = TunableValues.getDouble("Tunables/TargetingD", 0.00);
 
   public Robot() {
-    subsytems =
-        (Robot.isReal())
-            ? new Subsystems(
-                knightshadeConsts.createDrivetrain(),
-                new LimeLightVisionReal(LimelightVisionConstants.backRight))
-            : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
-    logger = new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond), subsytems);
+    if (Robot.isReal()) {
+      subsytems =
+          new Subsystems(
+              swerveConsts.createDrivetrain(),
+              new LimeLightVisionReal(LimelightVisionConstants.backLeft));
+    } else {
+      subsytems = new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim());
+    }
     subsytems.swerve.setDefaultCommand(
-        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
+        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .8));
+
+    logger = new Telemetry(swerveConsts.getMaxSpeedMetersPerSecond(), subsytems);
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
@@ -102,6 +108,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Command autoCmd = autoChooser.selectedCommand();
+    String msg = "---- Starting auto command: " + autoCmd.getName() + " ----";
+    DogLog.log("AutoEvent", msg);
     scheduler.schedule(autoCmd);
   }
 
