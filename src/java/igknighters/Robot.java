@@ -4,10 +4,9 @@
 
 package igknighters;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -26,7 +25,7 @@ import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.swerve.swerveconstants.CommonSwerveConsts;
 import igknighters.subsystems.swerve.swerveconstants.SwerveConsts;
-import igknighters.subsystems.swerve.swerveconstants.knightshadeConsts;
+// import igknighters.subsystems.swerve.swerveconstants.knightshadeConsts;
 import monologue.LogSink;
 import monologue.Monologue;
 
@@ -38,9 +37,6 @@ public class Robot extends TimedRobot {
 
   private final DriverController driverController = new DriverController(0);
 
-  private final Telemetry logger =
-      new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
-
   public final Subsystems subsytems;
 
   private final boolean kUseLimelight = true;
@@ -49,15 +45,20 @@ public class Robot extends TimedRobot {
 
   private final CommonSwerveConsts swerveConsts = swerveConstGetter.getSwerveConsts();
 
+  private final Telemetry logger = new Telemetry(swerveConsts.getMaxSpeedMetersPerSecond());
+
   public Robot() {
-    subsytems =
-        (Robot.isReal())
-            ? new Subsystems(
-                swerveConsts.createDrivetrain(),
-                new LimeLightVisionReal(LimelightVisionConstants.backRight))
-            : new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim());
+    if (Robot.isReal()) {
+      subsytems =
+          new Subsystems(
+              swerveConsts.createDrivetrain(),
+              new LimeLightVisionReal(LimelightVisionConstants.backLeft));
+    } else {
+      subsytems = new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim());
+    }
     subsytems.swerve.setDefaultCommand(
-        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
+        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .8));
+
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
@@ -107,8 +108,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Command autoCmd = autoChooser.selectedCommand();
     String msg = "---- Starting auto command: " + autoCmd.getName() + " ----";
-    if (false) System.out.println(msg);
-    Monologue.log("AutoEvent", msg);
+    DogLog.log("AutoEvent", msg);
     scheduler.schedule(autoCmd);
   }
 
