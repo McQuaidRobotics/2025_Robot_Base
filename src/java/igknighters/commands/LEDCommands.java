@@ -36,21 +36,6 @@ public class LEDCommands {
                 return;
               }
               for (int i = 0; i < patterns.size(); i++) {
-                // if (index.get(i) == 0) {
-                //   AddressableLEDBufferView controlledZone =
-                //       slate.createView(
-                //           MathUtil.clamp(offsets.get(i), 0, 34),
-                //           MathUtil.clamp(offsets.get(i) + lengths.get(i) - 1, 0, 35));
-                //   patterns.get(i).applyTo(controlledZone);
-                // } else {
-                //   AddressableLEDBufferView controlledZone =
-                //       slate.createView(
-                //           MathUtil.clamp(36 + offsets.get(i), 37, slate.getLength() - 1),
-                //           MathUtil.clamp(
-                //               36 + offsets.get(i) + lengths.get(i) - 1, 37, slate.getLength() -
-                // 1));
-                //   patterns.get(i).applyTo(controlledZone);
-                // }
                 AddressableLEDBufferView controlledZone =
                     slate.createView(
                         MathUtil.clamp(
