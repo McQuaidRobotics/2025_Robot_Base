@@ -1,6 +1,8 @@
 package igknighters.subsystems.LimeLightVision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LimeLightVisionSim extends LimeLights {
 
@@ -19,5 +21,15 @@ public class LimeLightVisionSim extends LimeLights {
   public double getLastTimeStamp() {
     // In simulation, we can get the timestamp from the latest results
     return 0.0;
+  }
+
+  @Override
+  public void simulationPeriodic() {}
+
+  @Override
+  public List<Integer> getVisibleTagIds() {
+    List<Integer> demoTags = new ArrayList<>();
+    demoTags.add(15);
+    return demoTags;
   }
 }
