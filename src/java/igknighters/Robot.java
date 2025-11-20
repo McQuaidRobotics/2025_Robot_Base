@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import igknighters.commands.SubsystemTriggers;
 import igknighters.commands.autos.AutoRoutines;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.constants.DrivingSharedState;
@@ -21,6 +22,7 @@ import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
+import igknighters.subsystems.led.Led;
 import igknighters.subsystems.swerve.swerveconstants.CommonSwerveConsts;
 import igknighters.subsystems.swerve.swerveconstants.SwerveConsts;
 import igknighters.util.TunableValues;
@@ -31,6 +33,7 @@ public class Robot extends TimedRobot {
   private final AutoFactory autoFactory;
   public final AutoChooser autoChooser = new AutoChooser();
   private final CommandScheduler scheduler = CommandScheduler.getInstance();
+  private final SubsystemTriggers subsystemTriggers = new SubsystemTriggers();
 
   private final DriverController driverController = new DriverController(0);
 
@@ -53,9 +56,11 @@ public class Robot extends TimedRobot {
       subsytems =
           new Subsystems(
               swerveConsts.createDrivetrain(),
-              new LimeLightVisionReal(LimelightVisionConstants.backLeft));
+              new LimeLightVisionReal(LimelightVisionConstants.backLeft),
+              new Led(40, 1));
     } else {
-      subsytems = new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim());
+      subsytems =
+          new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim(), new Led(40, 1));
     }
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .8));
@@ -68,6 +73,7 @@ public class Robot extends TimedRobot {
     AutoRoutines.addCmd(autoChooser, "ZOOOOOOOOMMMMMMM", routines::driveAround);
     autoChooser.addCmd("TRAJECTORY TEST", routines.trajTest("Straight"));
     SmartDashboard.putData("AUTO CHOOSER", autoChooser);
+    subsystemTriggers.SetupTriggers(subsytems.led);
   }
 
   @Override
