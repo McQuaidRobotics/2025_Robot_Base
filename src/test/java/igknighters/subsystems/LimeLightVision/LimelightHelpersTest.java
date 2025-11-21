@@ -25,7 +25,7 @@ public class LimelightHelpersTest {
     LimeLightVisionReal vision = new LimeLightVisionReal(cam1, cam2);
 
     // Fake botpose array: [x, y, z, roll, pitch, yaw, latency, tagCount, ...]
-    double[] fakeBotpose1 = new double[11];
+    double[] fakeBotpose1 = new double[18];
     fakeBotpose1[0] = 2.0; // x
     fakeBotpose1[1] = 3.0; // y
     fakeBotpose1[2] = 0.0; // z
@@ -37,9 +37,16 @@ public class LimelightHelpersTest {
     fakeBotpose1[8] = 0.5; // tagSpan
     fakeBotpose1[9] = 1.0; // avgTagDist
     fakeBotpose1[10] = 0.1; // avgTagArea
+    fakeBotpose1[11] = 1; // id
+    fakeBotpose1[12] = 0; // txnc
+    fakeBotpose1[13] = 0; // tync
+    fakeBotpose1[14] = 0; // ta
+    fakeBotpose1[15] = 0; // distToCamera
+    fakeBotpose1[16] = 0; // distToRobot
+    fakeBotpose1[17] = 0; // ambiguity
 
     // [x, y, z, roll, pitch, yaw, latency, tagCount, ...]
-    double[] fakeBotpose2 = new double[11];
+    double[] fakeBotpose2 = new double[18];
     fakeBotpose2[0] = 2.0; // x
     fakeBotpose2[1] = 3.0; // y
     fakeBotpose2[2] = 0.0; // z
@@ -51,6 +58,13 @@ public class LimelightHelpersTest {
     fakeBotpose2[8] = 0.5; // tagSpan
     fakeBotpose2[9] = 1.0; // avgTagDist
     fakeBotpose2[10] = 0.1; // avgTag
+    fakeBotpose2[11] = 2; // id
+    fakeBotpose2[12] = 0; // txnc
+    fakeBotpose2[13] = 0; // tync
+    fakeBotpose2[14] = 0; // ta
+    fakeBotpose2[15] = 0; // distToCamera
+    fakeBotpose2[16] = 0; // distToRobot
+    fakeBotpose2[17] = 0; // ambiguity
     // Inject into NetworkTables
     NetworkTableInstance.getDefault()
         .getTable(cam1)

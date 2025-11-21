@@ -19,6 +19,7 @@ public enum Waypoints {
   FarMid_R,
   FarMid_L,
   FarMid_M,
+  IntakeSneaky,
   Intake,
   StartingInside,
   StartingCenter,

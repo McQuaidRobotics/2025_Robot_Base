@@ -4,61 +4,82 @@
 
 package igknighters;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
+import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import igknighters.commands.SubsystemTriggers;
+import igknighters.commands.autos.AutoRoutines;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
+import igknighters.constants.DrivingSharedState;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.LimeLightVision.Helpers.LimelightVisionConstants;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.led.Led;
+import igknighters.subsystems.swerve.swerveconstants.CommonSwerveConsts;
+import igknighters.subsystems.swerve.swerveconstants.SwerveConsts;
+import igknighters.util.TunableValues;
+import igknighters.util.TunableValues.TunableDouble;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final AutoFactory autoFactory;
+  public final AutoChooser autoChooser = new AutoChooser();
+  private final CommandScheduler scheduler = CommandScheduler.getInstance();
+  private final SubsystemTriggers subsystemTriggers = new SubsystemTriggers();
 
   private final DriverController driverController = new DriverController(0);
-
-  private final Telemetry logger =
-      new Telemetry(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond));
 
   public final Subsystems subsytems;
 
   private final boolean kUseLimelight = true;
 
+  private final SwerveConsts swerveConstGetter = new SwerveConsts();
+
+  private final CommonSwerveConsts swerveConsts = swerveConstGetter.getSwerveConsts();
+
+  private final Telemetry logger;
+  TunableDouble detune = TunableValues.getDouble("Tunables/Detune", 0.6);
+  TunableDouble targetingP = TunableValues.getDouble("Tunables/TargetingP", 0.07);
+  TunableDouble targetingI = TunableValues.getDouble("Tunables/TargetingI", 0.00);
+  TunableDouble targetingD = TunableValues.getDouble("Tunables/TargetingD", 0.00);
+
   public Robot() {
-    subsytems =
-        (Robot.isReal())
-            ? new Subsystems(
-                knightshadeConsts.createDrivetrain(),
-                new LimeLightVisionReal(LimelightVisionConstants.backRight))
-            : new Subsystems(knightshadeConsts.createDrivetrain(), new LimeLightVisionSim());
+    if (Robot.isReal()) {
+      subsytems =
+          new Subsystems(
+              swerveConsts.createDrivetrain(),
+              new LimeLightVisionReal(LimelightVisionConstants.backLeft),
+              new Led(40, 1));
+    } else {
+      subsytems =
+          new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim(), new Led(40, 1));
+    }
     subsytems.swerve.setDefaultCommand(
-        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .3));
+        new TeleopSwerveWithDetune(subsytems.swerve, driverController, .8));
+
+    logger = new Telemetry(swerveConsts.getMaxSpeedMetersPerSecond(), subsytems);
     subsytems.swerve.registerTelemetry(logger::telemeterize);
     driverController.bind(subsytems);
     autoFactory = subsytems.swerve.createAutoFactory();
+    final var routines = new AutoRoutines(subsytems, autoFactory);
+    AutoRoutines.addCmd(autoChooser, "ZOOOOOOOOMMMMMMM", routines::driveAround);
+    autoChooser.addCmd("TRAJECTORY TEST", routines.trajTest("Straight"));
+    SmartDashboard.putData("AUTO CHOOSER", autoChooser);
+    subsystemTriggers.SetupTriggers(subsytems.led);
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    /*
-     * This example of adding Limelight is very simple and may not be sufficient for on-field use.
-     * Users typically need to provide a standard deviation that scales with the distance to target
-     * and changes with number of tags available.
-     *
-     * This example is sufficient to show that vision integration is possible, though exact implementation
-     * of how to use vision should be tuned per-robot and to the team's specification.
-     */
     if (kUseLimelight) {
       var driveState = subsytems.swerve.getState();
       double headingDeg = driveState.Pose.getRotation().getDegrees();
@@ -72,7 +93,17 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    scheduler.cancelAll();
+    subsytems.swerve.setDefaultCommand(
+        new TeleopSwerveWithDetune(subsytems.swerve, driverController, detune.value()));
+    DrivingSharedState.getInstance().setDetune(detune.value());
+    DrivingSharedState.getInstance().setKP(targetingP.value());
+    DrivingSharedState.getInstance().setKI(targetingI.value());
+    DrivingSharedState.getInstance().setKD(targetingD.value());
+
+    driverController.bind(subsytems);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -81,13 +112,20 @@ public class Robot extends TimedRobot {
   public void disabledExit() {}
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    Command autoCmd = autoChooser.selectedCommand();
+    String msg = "---- Starting auto command: " + autoCmd.getName() + " ----";
+    DogLog.log("AutoEvent", msg);
+    scheduler.schedule(autoCmd);
+  }
 
   @Override
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    scheduler.cancelAll();
+  }
 
   @Override
   public void teleopInit() {
@@ -114,5 +152,9 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    for (var subsystem : subsytems.locklessResources) {
+      subsystem.simulationPeriodic();
+    }
+  }
 }

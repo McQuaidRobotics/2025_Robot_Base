@@ -12,7 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.swerve.swerveconstants.knightshadeConsts;
 import wpilibExt.AllianceSymmetry;
 
 public class TeleopSwerveForwardTargetingCmd extends TeleopSwerveBaseCmd {
@@ -24,13 +24,22 @@ public class TeleopSwerveForwardTargetingCmd extends TeleopSwerveBaseCmd {
           .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
           .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
           .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  private final PIDController rotationController = new PIDController(0.07 * 180 / Math.PI, 0.0, .0);
+  private final PIDController rotationController;
 
   public TeleopSwerveForwardTargetingCmd(
-      CommandSwerveDrivetrain swerve, DriverController controller, Pose2d targetPose) {
+      CommandSwerveDrivetrain swerve,
+      DriverController controller,
+      Pose2d targetPose,
+      double kP,
+      double kI,
+      double kD) {
+
     super(swerve, controller);
+    rotationController =
+        new PIDController(kP * 180.0 / Math.PI, kI * 180.0 / Math.PI, kD * 180.0 / Math.PI);
     this.targetPose = targetPose;
     addRequirements(swerve);
+
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     rotationController.setTolerance(.0001);
   }

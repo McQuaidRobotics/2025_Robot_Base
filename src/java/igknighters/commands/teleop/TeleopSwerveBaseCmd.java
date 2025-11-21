@@ -8,7 +8,7 @@ import edu.wpi.first.util.struct.StructSerializable;
 import edu.wpi.first.wpilibj2.command.Command;
 import igknighters.controllers.DriverController;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
-import igknighters.subsystems.swerve.generated.knightshadeConsts;
+import igknighters.subsystems.swerve.swerveconstants.ControllerConstants;
 import igknighters.util.TunableValues;
 import igknighters.util.TunableValues.TunableDouble;
 import java.util.function.DoubleSupplier;
@@ -59,7 +59,7 @@ public class TeleopSwerveBaseCmd extends Command {
     double angle = Math.atan2(rawY, rawX);
     double rawMagnitude = solveJoystickDiagonalDelta(rawX, rawY);
     rawMagnitude = MathUtil.clamp(rawMagnitude, -1, 1);
-    double magnitude = knightshadeConsts.TELEOP_TRANSLATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
+    double magnitude = ControllerConstants.TELEOP_TRANSLATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
     if (demo) magnitude *= translationMod.value();
     double processedX = magnitude * Math.cos(angle);
     double processedY = magnitude * Math.sin(angle);
@@ -76,7 +76,7 @@ public class TeleopSwerveBaseCmd extends Command {
     double angle = Math.atan2(rawY, rawX);
     double rawMagnitude = Math.hypot(rawX, rawY);
     rawMagnitude = MathUtil.clamp(rawMagnitude, -1, 1);
-    double magnitude = knightshadeConsts.TELEOP_ROTATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
+    double magnitude = ControllerConstants.TELEOP_ROTATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
     if (demo) magnitude *= rotationMod.value();
     double processedX = magnitude * Math.cos(angle);
     double processedY = magnitude * Math.sin(angle);

@@ -15,6 +15,10 @@
 *.gch
 *.pch
 
+# Merge Products
+*.bak
+*.orig
+
 # Compiled Dynamic libraries
 *.so
 *.dylib

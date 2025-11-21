@@ -12,11 +12,12 @@ import igknighters.commands.teleop.TeleopSwerveHeadingCmd;
 import igknighters.commands.teleop.TeleopSwerveReverseTargetingCmd;
 import igknighters.commands.teleop.TeleopSwerveTargetingFutureCmd;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
+import igknighters.constants.DrivingSharedState;
 import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
 
 public class DriverController {
-  // TODO --> all of the triggers need to be bound to commands.
+
   // Define the bindings for the controller
 
   // Define the buttons on the controller
@@ -94,16 +95,20 @@ public class DriverController {
   }
 
   public void bind(final Subsystems subsystems) {
+    DrivingSharedState state = DrivingSharedState.getInstance();
     var swerve = subsystems.swerve;
     this.Start.whileTrue(SwerveCommands.zeroGyro(swerve));
     this.A.whileTrue(new TeleopSwerveWithDetune(swerve, this, 1.0));
-    this.B.whileTrue(new TeleopSwerveHeadingCmd(swerve, this, 180.0));
+    this.B.whileTrue(new TeleopSwerveHeadingCmd(swerve, this, 180.0, state.kP, state.kI, state.kD));
     this.Y.whileTrue(
-        new TeleopSwerveTargetingFutureCmd(swerve, this, new Pose2d(13, 4, new Rotation2d(0)), .5));
+        new TeleopSwerveTargetingFutureCmd(
+            swerve, this, new Pose2d(13, 4, new Rotation2d(0)), .5, state.kP, state.kI, state.kD));
     this.LT.whileTrue(
-        new TeleopSwerveReverseTargetingCmd(swerve, this, new Pose2d(13, 4, new Rotation2d(0.0))));
+        new TeleopSwerveReverseTargetingCmd(
+            swerve, this, new Pose2d(13, 4, new Rotation2d(0.0)), state.kP, state.kI, state.kD));
     this.RT.whileTrue(
-        new TeleopSwerveForwardTargetingCmd(swerve, this, new Pose2d(13, 4, new Rotation2d(0.0))));
+        new TeleopSwerveForwardTargetingCmd(
+            swerve, this, new Pose2d(13, 4, new Rotation2d(0.0)), state.kP, state.kI, state.kD));
   }
 
   private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {
