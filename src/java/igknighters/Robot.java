@@ -56,7 +56,8 @@ public class Robot extends TimedRobot {
       subsytems =
           new Subsystems(
               swerveConsts.createDrivetrain(),
-              new LimeLightVisionReal(LimelightVisionConstants.backLeft),
+              new LimeLightVisionReal(
+                  LimelightVisionConstants.backLeft, LimelightVisionConstants.backRight),
               new Led(40, 1));
     } else {
       subsytems =

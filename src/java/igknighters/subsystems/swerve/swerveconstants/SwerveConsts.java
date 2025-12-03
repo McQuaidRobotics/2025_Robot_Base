@@ -29,11 +29,11 @@ public class SwerveConsts {
   public CommonSwerveConsts getSwerveConsts() {
     Robots robot = getRobot();
     if (robot.equals(Robots.DEMO_BOT)) {
-      return new DemoBotConsts();
+      return new NewDemoBotConsts();
     } else if (robot.equals(Robots.COMPETITION_BOT)) {
       return new knightshadeConsts();
     } else {
-      return new DemoBotConsts();
+      return new NewDemoBotConsts();
     }
   }
 }
