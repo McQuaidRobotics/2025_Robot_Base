@@ -14,94 +14,97 @@ import java.util.Map;
 
 public class AprilTagLayout {
 
-  private final Map<Integer, Pose3d> tagPoses = new HashMap<>();
+    private final Map<Integer, Pose3d> tagPoses = new HashMap<>();
 
-  public AprilTagLayout() throws IOException {
-    File file = new File(System.getProperty("user.dir"), "assets/2025-reefscape.json");
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(
-        com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    JsonLayout layout = mapper.readValue(file, JsonLayout.class);
+    public AprilTagLayout() throws IOException {
+        File file = new File(System.getProperty("user.dir"), "assets/2025-reefscape.json");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(
+                com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
+        JsonLayout layout = mapper.readValue(file, JsonLayout.class);
 
-    for (JsonTag tag : layout.tags) {
-      tagPoses.put(
-          tag.id,
-          new Pose3d(
-              new Translation3d(
-                  tag.pose.translation.x, tag.pose.translation.y, tag.pose.translation.z),
-              new Rotation3d(
-                  new Quaternion(
-                      tag.pose.rotation.quaternion.w,
-                      tag.pose.rotation.quaternion.x,
-                      tag.pose.rotation.quaternion.y,
-                      tag.pose.rotation.quaternion.z))));
+        for (JsonTag tag : layout.tags) {
+            tagPoses.put(
+                    tag.id,
+                    new Pose3d(
+                            new Translation3d(
+                                    tag.pose.translation.x,
+                                    tag.pose.translation.y,
+                                    tag.pose.translation.z),
+                            new Rotation3d(
+                                    new Quaternion(
+                                            tag.pose.rotation.quaternion.w,
+                                            tag.pose.rotation.quaternion.x,
+                                            tag.pose.rotation.quaternion.y,
+                                            tag.pose.rotation.quaternion.z))));
+        }
     }
-  }
 
-  public Map<Integer, Pose3d> getTagPoses() {
-    return tagPoses;
-  }
+    public Map<Integer, Pose3d> getTagPoses() {
+        return tagPoses;
+    }
 
-  // Inner classes for JSON deserialization
-  private static class JsonLayout {
-    @JsonProperty("tags")
-    public List<JsonTag> tags;
+    // Inner classes for JSON deserialization
+    private static class JsonLayout {
+        @JsonProperty("tags")
+        public List<JsonTag> tags;
 
-    @JsonProperty("field")
-    public JsonField field;
-  }
+        @JsonProperty("field")
+        public JsonField field;
+    }
 
-  private static class JsonField {
-    @JsonProperty("length")
-    public double length;
+    private static class JsonField {
+        @JsonProperty("length")
+        public double length;
 
-    @JsonProperty("width")
-    public double width;
-  }
+        @JsonProperty("width")
+        public double width;
+    }
 
-  private static class JsonTag {
-    @JsonProperty("ID")
-    public int id;
+    private static class JsonTag {
+        @JsonProperty("ID")
+        public int id;
 
-    @JsonProperty("pose")
-    public JsonPose pose;
-  }
+        @JsonProperty("pose")
+        public JsonPose pose;
+    }
 
-  private static class JsonPose {
-    @JsonProperty("translation")
-    public JsonTranslation translation;
+    private static class JsonPose {
+        @JsonProperty("translation")
+        public JsonTranslation translation;
 
-    @JsonProperty("rotation")
-    public JsonRotation rotation;
-  }
+        @JsonProperty("rotation")
+        public JsonRotation rotation;
+    }
 
-  private static class JsonTranslation {
-    @JsonProperty("x")
-    public double x;
+    private static class JsonTranslation {
+        @JsonProperty("x")
+        public double x;
 
-    @JsonProperty("y")
-    public double y;
+        @JsonProperty("y")
+        public double y;
 
-    @JsonProperty("z")
-    public double z;
-  }
+        @JsonProperty("z")
+        public double z;
+    }
 
-  private static class JsonRotation {
-    @JsonProperty("quaternion")
-    public JsonQuaternion quaternion;
-  }
+    private static class JsonRotation {
+        @JsonProperty("quaternion")
+        public JsonQuaternion quaternion;
+    }
 
-  private static class JsonQuaternion {
-    @JsonProperty("W")
-    public double w;
+    private static class JsonQuaternion {
+        @JsonProperty("W")
+        public double w;
 
-    @JsonProperty("X")
-    public double x;
+        @JsonProperty("X")
+        public double x;
 
-    @JsonProperty("Y")
-    public double y;
+        @JsonProperty("Y")
+        public double y;
 
-    @JsonProperty("Z")
-    public double z;
-  }
+        @JsonProperty("Z")
+        public double z;
+    }
 }

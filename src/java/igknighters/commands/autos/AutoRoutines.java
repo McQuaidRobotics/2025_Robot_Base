@@ -13,35 +13,37 @@ import java.util.function.Supplier;
 
 public class AutoRoutines extends AutoCommands {
 
-  public AutoRoutines(Subsystems subsystems, AutoFactory factory) {
-    super(subsystems, factory);
+    public AutoRoutines(Subsystems subsystems, AutoFactory factory) {
+        super(subsystems, factory);
 
-    if (Robot.isSimulation()) {
-      new Trigger(DriverStation::isAutonomousEnabled)
-          .onTrue(
-              Commands.waitSeconds(15.3)
-                  .andThen(() -> DriverStationSim.setEnabled(false))
-                  .withName("Simulated Auto Ender"));
+        if (Robot.isSimulation()) {
+            new Trigger(DriverStation::isAutonomousEnabled)
+                    .onTrue(
+                            Commands.waitSeconds(15.3)
+                                    .andThen(() -> DriverStationSim.setEnabled(false))
+                                    .withName("Simulated Auto Ender"));
+        }
     }
-  }
 
-  public Supplier<Command> trajTest(String trajName) {
-    return () ->
-        Commands.sequence(autoFactory.resetOdometry(trajName), autoFactory.trajectoryCmd(trajName));
-  }
+    public Supplier<Command> trajTest(String trajName) {
+        return () ->
+                Commands.sequence(
+                        autoFactory.resetOdometry(trajName), autoFactory.trajectoryCmd(trajName));
+    }
 
-  @FunctionalInterface
-  public interface DualSideAuto {
-    Command generate();
-  }
+    @FunctionalInterface
+    public interface DualSideAuto {
+        Command generate();
+    }
 
-  public static void addCmd(AutoChooser chooser, String name, DualSideAuto auto) {
-    chooser.addCmd(name, () -> auto.generate());
-  }
+    public static void addCmd(AutoChooser chooser, String name, DualSideAuto auto) {
+        chooser.addCmd(name, () -> auto.generate());
+    }
 
-  public Command driveAround() {
-    return newAuto("ZOOOMMMM")
-        .addDrivingTrajectory(Waypoints.StartingCenter, Waypoints.FarMid_R, Waypoints.IntakeSneaky)
-        .build();
-  }
+    public Command driveAround() {
+        return newAuto("ZOOOMMMM")
+                .addDrivingTrajectory(
+                        Waypoints.StartingCenter, Waypoints.FarMid_R, Waypoints.IntakeSneaky)
+                .build();
+    }
 }

@@ -16,111 +16,113 @@ import monologue.ProceduralStructGenerator;
 import wpilibExt.AllianceSymmetry;
 
 public class TeleopSwerveBaseCmd extends Command {
-  protected final CommandSwerveDrivetrain swerve;
+    protected final CommandSwerveDrivetrain swerve;
 
-  private final DoubleSupplier rawTranslationXSup;
-  private final DoubleSupplier rawTranslationYSup;
-  private final DoubleSupplier rawRotationXSup;
-  private final DoubleSupplier rawRotationYSup;
+    private final DoubleSupplier rawTranslationXSup;
+    private final DoubleSupplier rawTranslationYSup;
+    private final DoubleSupplier rawRotationXSup;
+    private final DoubleSupplier rawRotationYSup;
 
-  private final TunableDouble translationMod;
-  private final TunableDouble rotationMod;
-  private static final boolean demo = false;
+    private final TunableDouble translationMod;
+    private final TunableDouble rotationMod;
+    private static final boolean demo = false;
 
-  public TeleopSwerveBaseCmd(CommandSwerveDrivetrain swerve, DriverController controller) {
-    this.swerve = swerve;
+    public TeleopSwerveBaseCmd(CommandSwerveDrivetrain swerve, DriverController controller) {
+        this.swerve = swerve;
 
-    this.rawTranslationXSup = controller.leftStickX();
-    this.rawTranslationYSup = controller.leftStickY();
-    this.rawRotationXSup = controller.rightStickX();
-    this.rawRotationYSup = controller.rightStickY();
+        this.rawTranslationXSup = controller.leftStickX();
+        this.rawTranslationYSup = controller.leftStickY();
+        this.rawRotationXSup = controller.rightStickX();
+        this.rawRotationYSup = controller.rightStickY();
 
-    if (demo) { //
-      translationMod = TunableValues.getDouble("DemoSwerveTranslationModifier", 0.8);
-      rotationMod = TunableValues.getDouble("DemoSwerveRotationalModifier", 0.8);
-    } else {
-      translationMod = null;
-      rotationMod = null;
+        if (demo) { //
+            translationMod = TunableValues.getDouble("DemoSwerveTranslationModifier", 0.8);
+            rotationMod = TunableValues.getDouble("DemoSwerveRotationalModifier", 0.8);
+        } else {
+            translationMod = null;
+            rotationMod = null;
+        }
     }
-  }
 
-  private double solveJoystickDiagonalDelta(double x, double y) {
-    double absX = Math.abs(x);
-    double absY = Math.abs(y);
-    double diffPercent = 1.0 - (Math.abs(absX - absY) / Math.max(absX, absY));
-    double out = Math.max(Math.hypot(x, y) - (0.12 * diffPercent), 0.0);
-    if (!Double.isFinite(out)) return 0.0;
-    return out;
-  }
-
-  protected Translation2d translationStick() {
-    double rawX = rawTranslationXSup.getAsDouble();
-    double rawY = rawTranslationYSup.getAsDouble();
-    double angle = Math.atan2(rawY, rawX);
-    double rawMagnitude = solveJoystickDiagonalDelta(rawX, rawY);
-    rawMagnitude = MathUtil.clamp(rawMagnitude, -1, 1);
-    double magnitude = ControllerConstants.TELEOP_TRANSLATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
-    if (demo) magnitude *= translationMod.value();
-    double processedX = magnitude * Math.cos(angle);
-    double processedY = magnitude * Math.sin(angle);
-    if (AllianceSymmetry.isRed()) {
-      return new Translation2d(-processedY, processedX);
-    } else {
-      return new Translation2d(processedY, -processedX);
+    private double solveJoystickDiagonalDelta(double x, double y) {
+        double absX = Math.abs(x);
+        double absY = Math.abs(y);
+        double diffPercent = 1.0 - (Math.abs(absX - absY) / Math.max(absX, absY));
+        double out = Math.max(Math.hypot(x, y) - (0.12 * diffPercent), 0.0);
+        if (!Double.isFinite(out)) return 0.0;
+        return out;
     }
-  }
 
-  protected Translation2d rotationStick() {
-    double rawX = rawRotationXSup.getAsDouble();
-    double rawY = rawRotationYSup.getAsDouble();
-    double angle = Math.atan2(rawY, rawX);
-    double rawMagnitude = Math.hypot(rawX, rawY);
-    rawMagnitude = MathUtil.clamp(rawMagnitude, -1, 1);
-    double magnitude = ControllerConstants.TELEOP_ROTATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
-    if (demo) magnitude *= rotationMod.value();
-    double processedX = magnitude * Math.cos(angle);
-    double processedY = magnitude * Math.sin(angle);
-    return new Translation2d(processedX, processedY);
-  }
+    protected Translation2d translationStick() {
+        double rawX = rawTranslationXSup.getAsDouble();
+        double rawY = rawTranslationYSup.getAsDouble();
+        double angle = Math.atan2(rawY, rawX);
+        double rawMagnitude = solveJoystickDiagonalDelta(rawX, rawY);
+        rawMagnitude = MathUtil.clamp(rawMagnitude, -1, 1);
+        double magnitude =
+                ControllerConstants.TELEOP_TRANSLATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
+        if (demo) magnitude *= translationMod.value();
+        double processedX = magnitude * Math.cos(angle);
+        double processedY = magnitude * Math.sin(angle);
+        if (AllianceSymmetry.isRed()) {
+            return new Translation2d(-processedY, processedX);
+        } else {
+            return new Translation2d(processedY, -processedX);
+        }
+    }
 
-  @Override
-  public void execute() {
-    DogLog.log("Robot/Commands/Teleop/teleopCommand", summarize());
-  }
+    protected Translation2d rotationStick() {
+        double rawX = rawRotationXSup.getAsDouble();
+        double rawY = rawRotationYSup.getAsDouble();
+        double angle = Math.atan2(rawY, rawX);
+        double rawMagnitude = Math.hypot(rawX, rawY);
+        rawMagnitude = MathUtil.clamp(rawMagnitude, -1, 1);
+        double magnitude =
+                ControllerConstants.TELEOP_ROTATION_AXIS_CURVE.lerpKeepSign(rawMagnitude);
+        if (demo) magnitude *= rotationMod.value();
+        double processedX = magnitude * Math.cos(angle);
+        double processedY = magnitude * Math.sin(angle);
+        return new Translation2d(processedX, processedY);
+    }
 
-  @Override
-  public void end(boolean interrupted) {
-    DogLog.log("Robot/Commands/Teleop/teleopCommand", TeleopSwerveCommandSummary.kZero);
-  }
+    @Override
+    public void execute() {
+        DogLog.log("Robot/Commands/Teleop/teleopCommand", summarize());
+    }
 
-  protected record TeleopSwerveCommandSummary(
-      double rawTranslationX,
-      double translationX,
-      double rawTranslationY,
-      double translationY,
-      double rawRotationX,
-      double rotationX,
-      double rawRotationY,
-      double rotationY)
-      implements StructSerializable {
-    public static final Struct<TeleopSwerveCommandSummary> struct =
-        ProceduralStructGenerator.genRecord(TeleopSwerveCommandSummary.class);
+    @Override
+    public void end(boolean interrupted) {
+        DogLog.log("Robot/Commands/Teleop/teleopCommand", TeleopSwerveCommandSummary.kZero);
+    }
 
-    public static final TeleopSwerveCommandSummary kZero =
-        new TeleopSwerveCommandSummary(0, 0, 0, 0, 0, 0, 0, 0);
-  }
+    protected record TeleopSwerveCommandSummary(
+            double rawTranslationX,
+            double translationX,
+            double rawTranslationY,
+            double translationY,
+            double rawRotationX,
+            double rotationX,
+            double rawRotationY,
+            double rotationY)
+            implements StructSerializable {
+        public static final Struct<TeleopSwerveCommandSummary> struct =
+                ProceduralStructGenerator.genRecord(TeleopSwerveCommandSummary.class);
 
-  protected TeleopSwerveCommandSummary summarize() {
-    final Translation2d translation = translationStick();
-    final Translation2d rotation = rotationStick();
-    return new TeleopSwerveCommandSummary(
-        rawTranslationXSup.getAsDouble(),
-        translation.getX(),
-        rawTranslationYSup.getAsDouble(),
-        translation.getY(),
-        rawRotationXSup.getAsDouble(),
-        rotation.getX(),
-        rawRotationYSup.getAsDouble(),
-        rotation.getY());
-  }
+        public static final TeleopSwerveCommandSummary kZero =
+                new TeleopSwerveCommandSummary(0, 0, 0, 0, 0, 0, 0, 0);
+    }
+
+    protected TeleopSwerveCommandSummary summarize() {
+        final Translation2d translation = translationStick();
+        final Translation2d rotation = rotationStick();
+        return new TeleopSwerveCommandSummary(
+                rawTranslationXSup.getAsDouble(),
+                translation.getX(),
+                rawTranslationYSup.getAsDouble(),
+                translation.getY(),
+                rawRotationXSup.getAsDouble(),
+                rotation.getX(),
+                rawRotationYSup.getAsDouble(),
+                rotation.getY());
+    }
 }
