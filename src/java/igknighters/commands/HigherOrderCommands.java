@@ -2,6 +2,7 @@ package igknighters.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +24,7 @@ import igknighters.subsystems.stem.Stem;
 import igknighters.subsystems.stem.StemPosition;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.umbrella.Umbrella;
+import igknighters.util.geom.AllianceFlip;
 
 public class HigherOrderCommands {
 
@@ -63,7 +65,18 @@ public class HigherOrderCommands {
                                 swerve,
                                 controller,
                                 new Pose2d(
-                                        FieldConstants.SPEAKER.toTranslation2d(), new Rotation2d()),
+                                        AllianceFlip.isBlue()
+                                                ? new Translation2d(
+                                                        FieldConstants.SPEAKER.getX(),
+                                                        FieldConstants.SPEAKER.getY())
+                                                : new Translation2d(
+                                                        AllianceFlip.flipTranslation(
+                                                                        FieldConstants.SPEAKER)
+                                                                .getX(),
+                                                        AllianceFlip.flipTranslation(
+                                                                        FieldConstants.SPEAKER)
+                                                                .getY()),
+                                        new Rotation2d()),
                                 DrivingSharedState.getInstance().kP,
                                 DrivingSharedState.getInstance().kI,
                                 DrivingSharedState.getInstance().kD),
@@ -81,7 +94,19 @@ public class HigherOrderCommands {
                 new TeleopSwerveReverseTargetingCmd(
                         swerve,
                         controller,
-                        new Pose2d(kControls.PASS_LAND_LOCATION, new Rotation2d()),
+                        new Pose2d(
+                                AllianceFlip.isBlue()
+                                        ? new Translation2d(
+                                                kControls.PASS_LAND_LOCATION.getX(),
+                                                kControls.PASS_LAND_LOCATION.getY())
+                                        : new Translation2d(
+                                                AllianceFlip.flipTranslation(
+                                                                kControls.PASS_LAND_LOCATION)
+                                                        .getX(),
+                                                AllianceFlip.flipTranslation(
+                                                                kControls.PASS_LAND_LOCATION)
+                                                        .getY()),
+                                new Rotation2d()),
                         DrivingSharedState.getInstance().kP,
                         DrivingSharedState.getInstance().kI,
                         DrivingSharedState.getInstance().kD),
