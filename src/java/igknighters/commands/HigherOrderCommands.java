@@ -1,22 +1,25 @@
 package igknighters.commands;
 
-import igknighters.Localizer;
-import igknighters.commands.led.LedCommands;
+import igknighters.commands.led.LEDCommands;
+import igknighters.commands.led.LEDCommands.LEDSection;
 import igknighters.commands.stem.StemCommands;
-import igknighters.commands.swerve.teleop.TeleopSwerveTargetCmd;
+import igknighters.commands.teleop.TeleopSwerveReverseTargetingCmd;
 import igknighters.commands.umbrella.UmbrellaCommands;
+import igknighters.constants.DrivingSharedState;
 import igknighters.constants.FieldConstants;
 import igknighters.constants.ConstValues.kControls;
 import igknighters.constants.ConstValues.kStem.kTelescope;
 import igknighters.constants.ConstValues.kStem.kWrist;
-import igknighters.controllers.ControllerBase;
+import igknighters.controllers.DriverController;
 import igknighters.subsystems.led.Led;
-import igknighters.subsystems.led.LedAnimations;
+import igknighters.subsystems.led.LedUtil;
 import igknighters.subsystems.stem.Stem;
 import igknighters.subsystems.stem.StemPosition;
-import igknighters.subsystems.swerve.Swerve;
+import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.umbrella.Umbrella;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -39,49 +42,48 @@ public class HigherOrderCommands {
             .andThen(
                 new ScheduleCommand(
                     StemCommands.holdAt(stem, StemPosition.STOW),
-                    LedCommands.animate(led, LedAnimations.Intake, 1.0)
+                    LEDCommands.run(led, new LEDSection(0, 0, LedUtil.makeFlash(Color.kGreen, 0.2), 40, "INTAKE"))
                 )
             ).withName("Intake");
     }
 
     public static Command aim(
-            Swerve swerve,
+            CommandSwerveDrivetrain swerve,
             Stem stem,
-            ControllerBase controller,
-            Localizer localizer
+            DriverController controller
     ) {
         return Commands.parallel(
-                new TeleopSwerveTargetCmd(
+                new TeleopSwerveReverseTargetingCmd(
                     swerve,
                     controller,
-                    localizer,
-                    FieldConstants.SPEAKER.toTranslation2d(),
-                    true,
-                    0.25
+                    new Pose2d(FieldConstants.SPEAKER.toTranslation2d(), new Rotation2d()),
+                    DrivingSharedState.getInstance().kP,
+                    DrivingSharedState.getInstance().kI,
+                    DrivingSharedState.getInstance().kD
                 ),
-                StemCommands.aimAtSpeaker(stem, false, localizer::pose, swerve::getChassisSpeed)).withName("Aim");
+                StemCommands.aimAtSpeaker(stem, false, () -> swerve.getState().Pose, ()->swerve.getState().Speeds)).withName("Aim");
     }
 
     public static Command aimNotePass(
-        Swerve swerve,
+        CommandSwerveDrivetrain swerve,
         Stem stem,
-        ControllerBase controller,
-        Localizer localizer
+        DriverController controller
     ) {
         return Commands.parallel(
-            new TeleopSwerveTargetCmd(
+            new TeleopSwerveReverseTargetingCmd(
                 swerve,
                 controller,
-                localizer,
-                kControls.PASS_LAND_LOCATION,
-                true,
-                0.4
+                new Pose2d(kControls.PASS_LAND_LOCATION, new Rotation2d()),
+                DrivingSharedState.getInstance().kP,
+                DrivingSharedState.getInstance().kI,
+                DrivingSharedState.getInstance().kD
             ),
             StemCommands.aimAtPassPoint(
                 stem,
                 kControls.PASS_LAND_LOCATION,
                 false,
-                localizer::pose
+                // localizer::pose
+                () -> swerve.getState().Pose
             )
         );
     }
@@ -101,36 +103,32 @@ public class HigherOrderCommands {
         }
 
         public static Command autoAimShoot(
-                Swerve swerve,
+                CommandSwerveDrivetrain swerve,
                 Stem stem,
                 Umbrella umbrella,
-                ControllerBase controller,
-                Localizer localizer
+                DriverController controller
         ) {
             return Commands.parallel(
                 HigherOrderCommands.aim(
                     swerve,
                     stem,
-                    controller,
-                    localizer),
+                    controller),
                 UmbrellaCommands.shoot(umbrella, () -> targetRpm(umbrella))
             ).until(() -> controller.leftTrigger(true).getAsDouble() < 0.5)
             .withName("AutoAimShoot");
         }
 
         public static Command autoAimPassShoot(
-                Swerve swerve,
+                CommandSwerveDrivetrain swerve,
                 Stem stem,
                 Umbrella umbrella,
-                ControllerBase controller,
-                Localizer localizer
+                DriverController controller
         ) {
             return Commands.parallel(
                 HigherOrderCommands.aimNotePass(
                     swerve,
                     stem,
-                    controller,
-                    localizer),
+                    controller),
                     UmbrellaCommands.shoot(umbrella, () -> targetRpm(umbrella))
             ).withName("AutoAimShoot");
         }
