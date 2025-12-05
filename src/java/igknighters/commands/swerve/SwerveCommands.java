@@ -1,4 +1,4 @@
-package igknighters.commands;
+package igknighters.commands.swerve;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
