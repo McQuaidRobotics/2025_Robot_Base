@@ -17,7 +17,7 @@ public class Umbrella implements ExclusiveSubsystem {
     public Umbrella() {
         if (Robot.isSimulation()) {
             intake = new IntakeSim();
-            shooter = new ShooterDisabled();
+            shooter = new ShooterSim();
         } else {
             if (false) { // assumes no sunlight
                 intake = new IntakeRealSingleCurrent();
