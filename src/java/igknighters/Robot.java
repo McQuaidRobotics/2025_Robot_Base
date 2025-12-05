@@ -157,4 +157,8 @@ public class Robot extends TimedRobot {
       subsystem.simulationPeriodic();
     }
   }
+
+  public static boolean isDemo(){
+    return true;
+  }
 }
