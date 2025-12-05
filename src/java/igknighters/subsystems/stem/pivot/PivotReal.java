@@ -13,6 +13,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -221,7 +223,7 @@ public class PivotReal extends Pivot {
       home();
     }
 
-    log("SeededPivot", homedThisCycle);
+    DogLog.log("Subsystems/Stem/Pivot/PivotSeededPivot", homedThisCycle);
     homedThisCycle = false;
   }
 }

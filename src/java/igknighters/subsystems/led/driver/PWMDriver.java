@@ -3,9 +3,9 @@ package igknighters.subsystems.led.driver;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import monologue.Logged;
+// import monologue.Logged;
 
-public class PWMDriver implements Logged {
+public class PWMDriver {
 
   private final AddressableLED led;
   private final AddressableLEDBuffer previousBuffer;

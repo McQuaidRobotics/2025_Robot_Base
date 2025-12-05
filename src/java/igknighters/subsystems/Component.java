@@ -1,8 +1,8 @@
 package igknighters.subsystems;
 
-import monologue.Logged;
+// import monologue.Logged;
 
-public abstract class Component implements Logged {
+public abstract class Component {
 
   /** Should be called every cycle in the parent subsystems periodic method */
   public void periodic() {}

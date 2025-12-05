@@ -147,13 +147,13 @@ public class ShooterReal extends Shooter {
 
     super.radiansPerSecondRight =
         Units.rotationsToRadians(veloSignalRight.getValueAsDouble() * kShooter.MECHANISM_RATIO);
-    log("currentRotsRight", veloSignalRight.getValueAsDouble());
+    DogLog.log("Subsystems/Umbrella/Shooter/currentRotsRight", veloSignalRight.getValueAsDouble());
     super.voltsRight = voltSignalRight.getValueAsDouble();
     super.ampsRight = currentSignalRight.getValueAsDouble();
 
     super.radiansPerSecondLeft =
         Units.rotationsToRadians(veloSignalLeft.getValueAsDouble() * kShooter.MECHANISM_RATIO);
-    log("currentRotsLeft", veloSignalLeft.getValueAsDouble());
+    DogLog.log("Subsystems/Shooter/currentRotsLeft", veloSignalLeft.getValueAsDouble());
     super.voltsLeft = voltSignalLeft.getValueAsDouble();
     super.ampsLeft = currentSignalLeft.getValueAsDouble();
 
