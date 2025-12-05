@@ -1,5 +1,6 @@
 package igknighters.subsystems.stem;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -124,9 +125,9 @@ public class Stem implements ExclusiveSubsystem {
     boolean telescopeSuccess = telescope.isAt(position.telescopeMeters, toleranceMult);
     boolean wristSuccess = wrist.isAt(position.wristRads, toleranceMult);
 
-    log("PivotReached", pivotSuccess);
-    log("TelescopeReached", telescopeSuccess);
-    log("WristReached", wristSuccess);
+    DogLog.log("Subsystems/Stem/PivotReached", pivotSuccess);
+    DogLog.log("Subsystems/Stem/TelescopeReached", telescopeSuccess);
+    DogLog.log("Subsystems/Stem/WristReached", wristSuccess);
 
     // Return if all mechanisms have reached their target position
     return pivotSuccess && telescopeSuccess && wristSuccess;
@@ -235,8 +236,10 @@ public class Stem implements ExclusiveSubsystem {
     Tracer.traceFunc("WristPeriodic", wrist::periodic);
 
     // run logging code after loops to have the most up to date information
-    log("CurrentPosition", getStemPosition());
-    log("StemValidator/CurrentStateValidation", StemValidator.validatePosition(getStemPosition()));
+    DogLog.log("Subsystems/Stem/CurrentPosition", getStemPosition());
+    DogLog.log(
+        "Subsystems/Stem/StemValidator/CurrentStateValidation",
+        StemValidator.validatePosition(getStemPosition()).toString());
 
     Tracer.traceFunc("Visualizer", () -> visualizer.updateCurrent(getStemPosition()));
 

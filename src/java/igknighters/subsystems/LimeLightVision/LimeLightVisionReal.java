@@ -31,7 +31,7 @@ public class LimeLightVisionReal extends LimeLights {
       var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
       if (llMeasurement != null && llMeasurement.tagCount > 0) {
-        DogLog.log("Robot/Subsystems/LimeLightVision/RawPose_" + cameraName, llMeasurement.pose);
+        DogLog.log("Subsystems/LimeLightVision/RawPose_" + cameraName, llMeasurement.pose);
         poses.add(llMeasurement.pose);
         timestamp += llMeasurement.timestampSeconds;
         for (var fiducial : llMeasurement.rawFiducials) {
@@ -43,8 +43,8 @@ public class LimeLightVisionReal extends LimeLights {
       timestamp /= poses.size();
     }
     lastTimeStamp = timestamp;
-    DogLog.log("Robot/Subsystems/LimeLightVision/TimeStampOfMeasurments", timestamp);
-    DogLog.log("Robot/Subsystems/LimeLightVision/NumberOfTagsSeen", poses.size());
+    DogLog.log("Subsystems/LimeLightVision/TimeStampOfMeasurments", timestamp);
+    DogLog.log("Subsystems/LimeLightVision/NumberOfTagsSeen", poses.size());
 
     return averagePose2ds(poses);
   }
@@ -55,10 +55,10 @@ public class LimeLightVisionReal extends LimeLights {
 
   public Pose2d averagePose2ds(List<Pose2d> poses) {
     if (poses.isEmpty()) {
-      DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", "NO TAGS SEEN");
+      DogLog.log("Subsystems/LimeLightVision/TagsSeen", "NO TAGS SEEN");
       return null; // safer than returning (0,0,0)
     } else {
-      DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", "Tag is seen we have a pose");
+      DogLog.log("Subsystems/LimeLightVision/TagsSeen", "Tag is seen we have a pose");
     }
 
     double xSum = 0.0, ySum = 0.0;
@@ -76,11 +76,11 @@ public class LimeLightVisionReal extends LimeLights {
     int count = poses.size();
     double avgX = xSum / count;
     double avgY = ySum / count;
-    DogLog.log("Robot/Subsystems/LimeLightVision/RotationList", rotations.toString());
+    DogLog.log("Subsystems/LimeLightVision/RotationList", rotations.toString());
     Rotation2d avgRot = new Rotation2d(Math.atan2(sinSum / count, cosSum / count));
-    DogLog.log("Robot/Subsystems/LimeLightVision/Rotation", avgRot.getDegrees());
+    DogLog.log("Subsystems/LimeLightVision/Rotation", avgRot.getDegrees());
     Pose2d averaged = new Pose2d(avgX, avgY, avgRot);
-    DogLog.log("Robot/Subsystems/LimeLightVision/TagsSeen", averaged);
+    DogLog.log("Subsystems/LimeLightVision/TagsSeen", averaged);
     return averaged;
   }
 

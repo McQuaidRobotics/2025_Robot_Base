@@ -1,5 +1,6 @@
 package igknighters.subsystems.stem;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -8,7 +9,6 @@ import igknighters.constants.ConstValues.kStem.kPivot;
 import igknighters.util.plumbing.TunableValues;
 import igknighters.util.plumbing.TunableValues.TunableBoolean;
 import java.util.function.Function;
-import monologue.Monologue;
 
 public class StemSolvers {
   private static final TunableBoolean DEBUG_SOLVERS =
@@ -40,15 +40,17 @@ public class StemSolvers {
       final String inp = LP + "/linearSolveWristTheta/input";
       final String out = LP + "/linearSolveWristTheta/output";
 
-      Monologue.log(inp + "/stemLength", stemLength);
-      Monologue.log(inp + "/pivotRads", pivotRads);
-      Monologue.log(inp + "/horizDist", horizDist);
-      Monologue.log(inp + "/vertDist", vertDist);
-      Monologue.log(inp + "/offsetPivot", offsetPivot);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/stemLength", stemLength);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/pivotRads", pivotRads);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizDist", horizDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/vertDist", vertDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/offsetPivot", offsetPivot);
 
-      Monologue.log(out + "/wristLocation", wristLocation);
-      Monologue.log(out + "/flatWristRads", flatWristRads);
-      Monologue.log(out + "/ret", offsetPivot ? flatWristRads + pivotRads : flatWristRads);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/wristLocation", wristLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/flatWristRads", flatWristRads);
+      DogLog.log(
+          "Subsystems/Stem/StemSolvers" + out + "/ret",
+          offsetPivot ? flatWristRads + pivotRads : flatWristRads);
     }
 
     return offsetPivot ? flatWristRads + pivotRads : flatWristRads;
@@ -84,18 +86,19 @@ public class StemSolvers {
       final String inp = LP + "/passWristSolveTheta/input";
       final String out = LP + "/passWristSolveTheta/output";
 
-      Monologue.log(inp + "/stemLength", stemLength);
-      Monologue.log(inp + "/pivotRads", pivotRads);
-      Monologue.log(inp + "/horizDist", horizDist);
-      Monologue.log(inp + "/noteVelo", noteVelo);
-      Monologue.log(inp + "/time", time);
-      Monologue.log(inp + "/offsetPivot", offsetPivot);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/stemLength", stemLength);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/pivotRads", pivotRads);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizDist", horizDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/noteVelo", noteVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/time", time);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/offsetPivot", offsetPivot);
 
-      Monologue.log(out + "/wristLocation", wristLocation);
-      Monologue.log(out + "/deltaXVelo", deltaXVelo);
-      Monologue.log(out + "/deltaYVelo", deltaYVelo);
-      Monologue.log(out + "/atan", atan);
-      Monologue.log(out + "/ret", offsetPivot ? atan + pivotRads : atan);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/wristLocation", wristLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/deltaXVelo", deltaXVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/deltaYVelo", deltaYVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/atan", atan);
+      DogLog.log(
+          "Subsystems/Stem/StemSolvers" + out + "/ret", offsetPivot ? atan + pivotRads : atan);
     }
 
     return offsetPivot ? atan + pivotRads : atan;
@@ -147,21 +150,21 @@ public class StemSolvers {
       final String inp = LP + "/gravitySolveWristTheta2/input";
       final String out = LP + "/gravitySolveWristTheta2/output";
 
-      Monologue.log(inp + "/horizDist", horizDist);
-      Monologue.log(inp + "/vertDist", vertDist);
-      Monologue.log(inp + "/noteVelo", noteVelo);
-      Monologue.log(inp + "/offsetPivot", offsetPivot);
-      Monologue.log(inp + "/robotLocation", robotLocation);
-      Monologue.log(inp + "/targetLocation", targetLocation);
-      Monologue.log(inp + "/rising", rising);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizDist", horizDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/vertDist", vertDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/noteVelo", noteVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/offsetPivot", offsetPivot);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/robotLocation", robotLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/targetLocation", targetLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/rising", rising);
 
-      Monologue.log(out + "/wrist2dOffset", wrist2dOffset);
-      Monologue.log(out + "/offset", offset);
-      Monologue.log(out + "/sqrFlightTime", sqrFlightTime);
-      Monologue.log(out + "/dropOverFlight", dropOverFlight);
-      Monologue.log(out + "/flightDistance", flightDistance);
-      Monologue.log(out + "/theta", theta);
-      Monologue.log(out + "/ret", theta + offset);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/wrist2dOffset", wrist2dOffset);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/offset", offset);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/sqrFlightTime", sqrFlightTime);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/dropOverFlight", dropOverFlight);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/flightDistance", flightDistance);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/theta", theta);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/ret", theta + offset);
     }
 
     return theta + offset;
@@ -217,21 +220,21 @@ public class StemSolvers {
       final String inp = LP + "/gravitySolveWristTheta3/input";
       final String out = LP + "/gravitySolveWristTheta3/output";
 
-      Monologue.log(inp + "/horizDist", horizDist);
-      Monologue.log(inp + "/vertDist", vertDist);
-      Monologue.log(inp + "/noteVelo", noteVelo);
-      Monologue.log(inp + "/offsetPivot", offsetPivot);
-      Monologue.log(inp + "/robotLocation", robotLocation);
-      Monologue.log(inp + "/targetLocation", targetLocation);
-      Monologue.log(inp + "/rising", rising);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizDist", horizDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/vertDist", vertDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/noteVelo", noteVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/offsetPivot", offsetPivot);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/robotLocation", robotLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/targetLocation", targetLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/rising", rising);
 
-      Monologue.log(out + "/wrist2dOffset", wrist2dOffset);
-      Monologue.log(out + "/offset", offset);
-      Monologue.log(out + "/sqrFlightTime", sqrFlightTime);
-      Monologue.log(out + "/dropOverFlight", dropOverFlight);
-      Monologue.log(out + "/flightDistance", flightDistance);
-      Monologue.log(out + "/theta", theta);
-      Monologue.log(out + "/ret", (-theta) + offset);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/wrist2dOffset", wrist2dOffset);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/offset", offset);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/sqrFlightTime", sqrFlightTime);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/dropOverFlight", dropOverFlight);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/flightDistance", flightDistance);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/theta", theta);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/ret", (-theta) + offset);
     }
 
     return theta + offset;
@@ -264,16 +267,16 @@ public class StemSolvers {
       final String inp = LP + "/linearSolvePivotTheta/input";
       final String out = LP + "/linearSolvePivotTheta/output";
 
-      Monologue.log(inp + "/stemLength", stemLength);
-      Monologue.log(inp + "/wristRads", wristRads);
-      Monologue.log(inp + "/horizDist", horizDist);
-      Monologue.log(inp + "/vertDist", vertDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/stemLength", stemLength);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/wristRads", wristRads);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizDist", horizDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/vertDist", vertDist);
 
-      Monologue.log(out + "/kHyp", kHyp);
-      Monologue.log(out + "/aK", aK);
-      Monologue.log(out + "/aS", aS);
-      Monologue.log(out + "/aP", aP);
-      Monologue.log(out + "/ret", Math.PI - aK - aP);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/kHyp", kHyp);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/aK", aK);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/aS", aS);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/aP", aP);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/ret", Math.PI - aK - aP);
     }
 
     return Math.PI - aK - aP;
@@ -302,15 +305,15 @@ public class StemSolvers {
       final String inp = LP + "/linearSolveVerticalDistError/input";
       final String out = LP + "/linearSolveVerticalDistError/output";
 
-      Monologue.log(inp + "/wristRads", wristRads);
-      Monologue.log(inp + "/deltaNoteVelo", deltaNoteVelo);
-      Monologue.log(inp + "/horizontalDist", horizontalDist);
-      Monologue.log(inp + "/verticalDist", verticalDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/wristRads", wristRads);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/deltaNoteVelo", deltaNoteVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizontalDist", horizontalDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/verticalDist", verticalDist);
 
-      Monologue.log(out + "/horizontalVi", horizontalVi);
-      Monologue.log(out + "/verticalVi", verticalVi);
-      Monologue.log(out + "/time", time);
-      Monologue.log(out + "/newVerticalDist", newVerticalDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/horizontalVi", horizontalVi);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/verticalVi", verticalVi);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/time", time);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/newVerticalDist", newVerticalDist);
     }
 
     return Math.abs(verticalDist - newVerticalDist);
@@ -379,17 +382,18 @@ public class StemSolvers {
       final String inp = LP + "/gravitySolveWristTheta/input";
       final String out = LP + "/gravitySolveWristTheta/output";
 
-      Monologue.log(inp + "/stemLength", stemLength);
-      Monologue.log(inp + "/pivotRads", pivotRads);
-      Monologue.log(inp + "/horizDist", horizDist);
-      Monologue.log(inp + "/vertDist", vertDist);
-      Monologue.log(inp + "/deltaNoteVelo", deltaNoteVelo);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/stemLength", stemLength);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/pivotRads", pivotRads);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/horizDist", horizDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/vertDist", vertDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + inp + "/deltaNoteVelo", deltaNoteVelo);
 
-      Monologue.log(out + "/wristLocation", wristLocation);
-      Monologue.log(out + "/linearWristRads", linearWristRads);
-      Monologue.log(out + "/vertcialDistanceError", vertcialDistanceError);
-      Monologue.log(out + "/newVerticalDist", newVerticalDist);
-      Monologue.log(out + "/grav", grav);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/wristLocation", wristLocation);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/linearWristRads", linearWristRads);
+      DogLog.log(
+          "Subsystems/Stem/StemSolvers" + out + "/vertcialDistanceError", vertcialDistanceError);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/newVerticalDist", newVerticalDist);
+      DogLog.log("Subsystems/Stem/StemSolvers" + out + "/grav", grav);
     }
 
     return grav;

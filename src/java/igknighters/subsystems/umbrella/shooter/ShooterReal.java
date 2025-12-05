@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -120,8 +121,8 @@ public class ShooterReal extends Shooter {
         Units.radiansToRotations(super.targetRadiansPerSecondRight) / kShooter.MECHANISM_RATIO;
     double targetRotsLeft =
         Units.radiansToRotations(super.targetRadiansPerSecondLeft) / kShooter.MECHANISM_RATIO;
-    log("targetRotsRight", targetRotsRight);
-    log("targetRotsLeft", targetRotsLeft);
+    DogLog.log("Subsystems/Umbrella/Shooter/targetRotsRight", targetRotsRight);
+    DogLog.log("Subsystems/Umbrella/Shooter/targetRotsLeft", targetRotsLeft);
     rightMotor.setControl(controlReq.withVelocity(targetRotsRight));
     leftMotor.setControl(controlReq.withVelocity(targetRotsLeft));
   }

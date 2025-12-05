@@ -1,5 +1,6 @@
 package igknighters.subsystems.stem;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.struct.Struct;
@@ -11,7 +12,6 @@ import igknighters.constants.ConstValues.kStem.kTelescope;
 import igknighters.constants.ConstValues.kStem.kWrist;
 import igknighters.util.geom.Rectangle2d;
 import igknighters.util.logging.ProceduralStructGenerator;
-import monologue.Monologue;
 
 public class StemValidator {
   /** An effectively miniscule value used to define incredibly steep slopes */
@@ -327,15 +327,15 @@ public class StemValidator {
                 currentState.getWristRads(),
                 targetState.getTelescopeMeters()));
 
-    Monologue.log(
-        "/Robot/Stem/StemValidator/StepTowardsTargetPosition/pivotMovementValidationReason",
-        pivotMovementValidReason);
-    Monologue.log(
-        "/Robot/Stem/StemValidator/StepTowardsTargetPosition/wristMovementValidationReason",
-        wristMovementValidReason);
-    Monologue.log(
-        "/Robot/Stem/StemValidator/StepTowardsTargetPosition/telescopeMovementValidationReason",
-        telescopeMovementValidReason);
+    DogLog.log(
+        "Subsystems/Stem/StemValidator/StepTowardsTargetPosition/pivotMovementValidationReason",
+        pivotMovementValidReason.name());
+    DogLog.log(
+        "Subsystems/Stem/StemValidator/StepTowardsTargetPosition/wristMovementValidationReason",
+        wristMovementValidReason.name());
+    DogLog.log(
+        "Subsystems/Stem/StemValidator/StepTowardsTargetPosition/telescopeMovementValidationReason",
+        telescopeMovementValidReason.name());
 
     double midStatePivotRads =
         pivotMovementValidReason.isValid()
@@ -414,8 +414,8 @@ public class StemValidator {
     StemPosition midState =
         StemPosition.fromRadians(midStatePivotRads, midStateWristRads, midStateTelescopeMeters);
 
-    Monologue.log("/Robot/Stem/StemValidator/StepTowardsTargetPosition/MidState", midState);
-    Monologue.log("/Robot/Stem/StemValidator/StepTowardsTargetPosition/Target", targetState);
+    DogLog.log("Subsystems/Stem/StemValidator/StepTowardsTargetPosition/MidState", midState);
+    DogLog.log("Subsystems/Stem/StemValidator/StepTowardsTargetPosition/Target", targetState);
 
     return midState;
   }

@@ -1,5 +1,6 @@
 package igknighters.subsystems.stem.pivot;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotController;
 import igknighters.subsystems.stem.StemPosition;
@@ -31,7 +32,7 @@ public class PivotDisabled extends Pivot {
 
   @Override
   public void periodic() {
-    log("SeededPivot", homed);
+    DogLog.log("Subsystems/Stem/Pivot/SeededPivot", homed);
     homed = false;
   }
 }

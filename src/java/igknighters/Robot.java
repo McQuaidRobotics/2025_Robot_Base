@@ -23,8 +23,10 @@ import igknighters.subsystems.LimeLightVision.LimeLightVisionReal;
 import igknighters.subsystems.LimeLightVision.LimeLightVisionSim;
 import igknighters.subsystems.Subsystems;
 import igknighters.subsystems.led.Led;
+import igknighters.subsystems.stem.Stem;
 import igknighters.subsystems.swerve.swerveconstants.CommonSwerveConsts;
 import igknighters.subsystems.swerve.swerveconstants.SwerveConsts;
+import igknighters.subsystems.umbrella.Umbrella;
 import igknighters.util.TunableValues;
 import igknighters.util.TunableValues.TunableDouble;
 
@@ -57,10 +59,17 @@ public class Robot extends TimedRobot {
           new Subsystems(
               swerveConsts.createDrivetrain(),
               new LimeLightVisionReal(LimelightVisionConstants.backLeft),
-              new Led(40, 1));
+              new Led(40, 1),
+              new Umbrella(),
+              new Stem());
     } else {
       subsytems =
-          new Subsystems(swerveConsts.createDrivetrain(), new LimeLightVisionSim(), new Led(40, 1));
+          new Subsystems(
+              swerveConsts.createDrivetrain(),
+              new LimeLightVisionSim(),
+              new Led(40, 1),
+              new Umbrella(),
+              new Stem());
     }
     subsytems.swerve.setDefaultCommand(
         new TeleopSwerveWithDetune(subsytems.swerve, driverController, .8));
@@ -126,6 +135,74 @@ public class Robot extends TimedRobot {
   public void autonomousExit() {
     scheduler.cancelAll();
   }
+
+  // private void setupLogging() {
+  //   WatchdogSilencer.silence(this, "m_watchdog");
+  //   WatchdogSilencer.silence(scheduler, "m_watchdog");
+
+  //   DriverStation.silenceJoystickConnectionWarning(true);
+
+  //   // turn off auto logging for signal logger, doesn't get us any info we need
+  //   if (isReal()) {
+  //     SignalLogger.enableAutoLogging(false);
+  //   }
+
+  //   if (true) {
+  //     // setup monologue with lazy logging and no datalog prefix
+  //     // robot is the root object
+  //     Monologue.setupMonologue(
+  //         this,
+  //         "/Robot",
+  //         new MonologueConfig().withOptimizeBandwidth(DriverStation::isFMSAttached));
+  //   } else {
+  //     // used for tests and CI, does not actually log anything but asserts the logging is setup
+  //     // // mostly correct
+  //     // Monologue.setupMonologueDisabled(this, "/Robot", true);
+  //   }
+
+  //   // Monologue.capture("Tracer", NetworkTableInstance.getDefault().getTable("Tracer"));
+
+  //   // logs build data to the datalog
+  //   final String meta = "/BuildData/";
+  //   Monologue.log(meta + "RuntimeType", getRuntimeType().toString());
+  //   Monologue.log(meta + "ProjectName", BuildConstants.MAVEN_NAME);
+  //   Monologue.log(meta + "BuildDate", BuildConstants.BUILD_DATE);
+  //   Monologue.log(meta + "GitSHA", BuildConstants.GIT_SHA);
+  //   Monologue.log(meta + "GitDate", BuildConstants.GIT_DATE);
+  //   Monologue.log(meta + "GitBranch", BuildConstants.GIT_BRANCH);
+  //   switch (BuildConstants.DIRTY) {
+  //     case 0:
+  //       Monologue.log(meta + "GitDirty", "All changes committed");
+  //       break;
+  //     case 1:
+  //       Monologue.log(meta + "GitDirty", "Uncomitted changes");
+  //       break;
+  //     default:
+  //       Monologue.log(meta + "GitDirty", "Unknown");
+  //       break;
+  //   }
+  //   Monologue.log(meta + "Debug", false);
+  //   Monologue.log(meta + "Demo", isDemo());
+
+  //   BiConsumer<Command, Boolean> logCommandFunction =
+  //       (Command command, Boolean active) -> {
+  //         Monologue.log("Commands/" + command.getName(), active);
+  //       };
+  //   scheduler.onCommandInitialize(
+  //       (Command command) -> {
+  //         logCommandFunction.accept(command, true);
+  //       });
+  //   scheduler.onCommandFinish(
+  //       (Command command) -> {
+  //         logCommandFunction.accept(command, false);
+  //       });
+  //   scheduler.onCommandInterrupt(
+  //       (Command command) -> {
+  //         logCommandFunction.accept(command, false);
+  //       });
+
+  //   Monologue.getWpilog().get().flush();
+  // }
 
   @Override
   public void teleopInit() {

@@ -1,5 +1,6 @@
 package igknighters.commands.stem;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -19,7 +20,6 @@ import igknighters.util.plumbing.TunableValues;
 import igknighters.util.plumbing.TunableValues.TunableDouble;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import monologue.Monologue;
 
 public class StemCommands {
   /** A command class that continually calculates the wrist radians needed to aim at the speaker */
@@ -134,7 +134,7 @@ public class StemCommands {
     public void execute() {
       Pose2d currentPose = poseSupplier.get();
       double distance = currentPose.getTranslation().getDistance(targetTranslation);
-      Monologue.log("Aim/PassDistance", distance);
+      DogLog.log("Commands/Aim/PassDistance", distance);
 
       double pivotRads = kControls.STATIONARY_PASS_PIVOT_RADIANS;
       double telescopeMeters = kControls.STATIONARY_PASS_TELESCOPE_METERS;

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import igknighters.commands.HigherOrderCommands;
 import igknighters.commands.swerve.SwerveCommands;
 import igknighters.commands.teleop.TeleopSwerveForwardTargetingCmd;
 import igknighters.commands.teleop.TeleopSwerveHeadingCmd;
@@ -109,6 +110,8 @@ public class DriverController {
     this.RT.whileTrue(
         new TeleopSwerveForwardTargetingCmd(
             swerve, this, new Pose2d(13, 4, new Rotation2d(0.0)), state.kP, state.kI, state.kD));
+
+    this.X.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
   }
 
   private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {
