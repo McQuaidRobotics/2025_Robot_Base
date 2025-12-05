@@ -4,9 +4,9 @@ package igknighters.subsystems;
 
 public abstract class Component {
 
-  /** Should be called every cycle in the parent subsystems periodic method */
-  public void periodic() {}
-  ;
+    /** Should be called every cycle in the parent subsystems periodic method */
+    public void periodic() {}
+    ;
 
-  public abstract String getOverrideName();
+    public abstract String getOverrideName();
 }

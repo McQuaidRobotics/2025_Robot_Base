@@ -87,12 +87,12 @@ public class TeleopSwerveBaseCmd extends Command {
 
     @Override
     public void execute() {
-    DogLog.log("Commands/Teleop/teleopCommand", summarize());
+        DogLog.log("Commands/Teleop/teleopCommand", summarize());
     }
 
     @Override
     public void end(boolean interrupted) {
-    DogLog.log("Commands/Teleop/teleopCommand", TeleopSwerveCommandSummary.kZero);
+        DogLog.log("Commands/Teleop/teleopCommand", TeleopSwerveCommandSummary.kZero);
     }
 
     protected record TeleopSwerveCommandSummary(

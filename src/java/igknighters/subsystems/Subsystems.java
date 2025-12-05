@@ -13,24 +13,24 @@ public class Subsystems {
     public final CommandSwerveDrivetrain swerve;
     public final LimeLights vision;
     public final Led led;
-  public final Umbrella umbrella;
-  public final Stem stem;
+    public final Umbrella umbrella;
+    public final Stem stem;
     public final ExclusiveSubsystem[] lockedResources;
     public final SharedSubsystem[] locklessResources;
 
-  public Subsystems(
-      CommandSwerveDrivetrain drivetrain,
-      LimeLights vision,
-      Led led,
-      Umbrella umbrella,
-      Stem stem) {
+    public Subsystems(
+            CommandSwerveDrivetrain drivetrain,
+            LimeLights vision,
+            Led led,
+            Umbrella umbrella,
+            Stem stem) {
         this.swerve = drivetrain;
         this.vision = vision;
         this.led = led;
-    this.umbrella = umbrella;
-    this.stem = stem;
+        this.umbrella = umbrella;
+        this.stem = stem;
 
-    this.lockedResources = new ExclusiveSubsystem[] {this.swerve, led, umbrella, stem};
+        this.lockedResources = new ExclusiveSubsystem[] {this.swerve, led, umbrella, stem};
         this.locklessResources = new SharedSubsystem[] {vision};
 
         CommandScheduler.getInstance().registerSubsystem(this.lockedResources);
@@ -51,7 +51,7 @@ public class Subsystems {
         }
     }
 
-  public static interface ExclusiveSubsystem extends Subsystem, Logged {}
+    public static interface ExclusiveSubsystem extends Subsystem, Logged {}
 
     public static interface SharedSubsystem {
         default void periodic() {}

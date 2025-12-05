@@ -82,7 +82,7 @@ public abstract class TranslationController
                 Translation2d target,
                 Constraints constraints) {
 
-      DogLog.log("Wayfinder/TranslationController", "Profiled");
+            DogLog.log("Wayfinder/TranslationController", "Profiled");
 
             if (isDone(measurement, target)) {
                 return Velocity2d.kZero;
@@ -104,7 +104,7 @@ public abstract class TranslationController
 
             double positionError = distance + prevSetpoint.position();
 
-      DogLog.log("Wayfinder/ProfiledError", positionError);
+            DogLog.log("Wayfinder/ProfiledError", positionError);
 
             double errorDerivative = (positionError - prevError) / period;
             if (kI > 0) {
@@ -157,7 +157,7 @@ public abstract class TranslationController
                 Translation2d target,
                 Constraints constraints) {
 
-      DogLog.log("Wayfinder/TranslationController", "UnProfiled");
+            DogLog.log("Wayfinder/TranslationController", "UnProfiled");
 
             if (isDone(measurement, target)) {
                 return Velocity2d.kZero;
@@ -167,7 +167,7 @@ public abstract class TranslationController
             final Rotation2d direction = target.minus(measurement).getAngle();
 
             double positionError = distance;
-      DogLog.log("Wayfinder/UnProfiledError", positionError);
+            DogLog.log("Wayfinder/UnProfiledError", positionError);
             double errorDerivative = (positionError - prevError) / period;
             if (kI > 0) {
                 totalError += positionError * period;

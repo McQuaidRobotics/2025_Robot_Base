@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.HigherOrderCommands;
 import igknighters.commands.swerve.SwerveCommands;
-import igknighters.commands.teleop.TeleopSwerveForwardTargetingCmd;
 import igknighters.commands.teleop.TeleopSwerveHeadingCmd;
-import igknighters.commands.teleop.TeleopSwerveReverseTargetingCmd;
 import igknighters.commands.teleop.TeleopSwerveTargetingFutureCmd;
 import igknighters.commands.teleop.TeleopSwerveWithDetune;
+import igknighters.commands.umbrella.UmbrellaCommands;
 import igknighters.constants.DrivingSharedState;
 import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
@@ -111,24 +110,13 @@ public class DriverController {
                         state.kP,
                         state.kI,
                         state.kD));
-        this.LT.whileTrue(
-                new TeleopSwerveReverseTargetingCmd(
-                        swerve,
-                        this,
-                        new Pose2d(13, 4, new Rotation2d(0.0)),
-                        state.kP,
-                        state.kI,
-                        state.kD));
-         this.RT.whileTrue(
-                new TeleopSwerveForwardTargetingCmd(
-                        swerve,
-                        this,
-                        new Pose2d(13, 4, new Rotation2d(0.0)),
-                        state.kP,
-                        state.kI,
-                        state.kD));
+        this.LT.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
+        this.RT.whileTrue(
+                UmbrellaCommands.shoot(subsystems.umbrella, subsystems.umbrella::getShooterSpeed));
 
-       this.X.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
+        this.X.whileTrue(
+                HigherOrderCommands.intakeGamepiece(
+                        subsystems.stem, subsystems.umbrella, subsystems.led));
     }
 
     private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {

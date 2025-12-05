@@ -35,7 +35,7 @@ public class AutoCommands {
     }
 
     protected void logAutoEvent(String message, String event) {
-    DogLog.log("Commands/Autos", message + " is " + event);
+        DogLog.log("Commands/Autos", message + " is " + event);
     }
 
     protected Command loggedCmd(Command command) {
@@ -116,7 +116,8 @@ public class AutoCommands {
             for (int i = 0; i < waypoints.length - 1; i += 1) {
                 bodyCommand.addCommands(
                         getTrajectory(waypoints[i], waypoints[i + 1]).cmd(),
-            Commands.runOnce(() -> DogLog.log("Commands/Autos/Finished Trajectory", true)),
+                        Commands.runOnce(
+                                () -> DogLog.log("Commands/Autos/Finished Trajectory", true)),
                         finishAlignment(getTrajectory(waypoints[i], waypoints[i + 1]), 0.0),
                         SwerveCommands.stopDriving(swerve).withTimeout(3.0));
             }
@@ -127,7 +128,7 @@ public class AutoCommands {
             final AtomicBoolean flag = new AtomicBoolean(false);
             headCommand.addCommands(Commands.print(bodyCommand.getRequirements().toString()));
             bodyCommand.addCommands(
-          Commands.runOnce(() -> DogLog.log("Commands/Autos/ending the auto", true)),
+                    Commands.runOnce(() -> DogLog.log("Commands/Autos/ending the auto", true)),
                     new ScheduleCommand(Commands.runOnce(() -> flag.set(true))));
             routine.active()
                     .onTrue(
@@ -142,7 +143,7 @@ public class AutoCommands {
     }
 
     protected GenericAuto newAuto(String name) {
-    DogLog.log("Commands/Autos/Creation", "Creating new auto: " + name);
+        DogLog.log("Commands/Autos/Creation", "Creating new auto: " + name);
         return new GenericAuto(autoFactory.newRoutine(name));
     }
 }
