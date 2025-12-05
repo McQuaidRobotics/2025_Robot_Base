@@ -15,55 +15,60 @@ import igknighters.subsystems.swerve.swerveconstants.knightshadeConsts;
 import wpilibExt.AllianceSymmetry;
 
 public class TeleopSwerveHeadingCmd extends TeleopSwerveBaseCmd {
-  private final double heading;
-  private final SwerveRequest.FieldCentric m_driveRequest =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
-          .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
-          .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
-          .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
-  private final PIDController rotationController;
+    private final double heading;
+    private final SwerveRequest.FieldCentric m_driveRequest =
+            new SwerveRequest.FieldCentric()
+                    .withDeadband(knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * 0.1)
+                    .withRotationalDeadband(RotationsPerSecond.of(0.75).in(RadiansPerSecond) * .1)
+                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage)
+                    .withSteerRequestType(SwerveModule.SteerRequestType.MotionMagicExpo);
+    private final PIDController rotationController;
 
-  public TeleopSwerveHeadingCmd(
-      CommandSwerveDrivetrain swerve,
-      DriverController controller,
-      double heading,
-      double kP,
-      double kI,
-      double kD) {
-    super(swerve, controller);
-    rotationController = new PIDController(kP, kI, kD);
-    this.heading = heading;
-    rotationController.enableContinuousInput(-180, 180);
-    addRequirements(swerve);
-  }
-
-  @Override
-  public void execute() {
-    double omega =
-        rotationController.calculate(swerve.getState().Pose.getRotation().getDegrees(), heading);
-    DogLog.log(
-        "Robot/Commands/Swerve/TeleopSwerveHeadingCmd/Swerve Heading: ",
-        (swerve.getState().Pose.getRotation().getDegrees()));
-    DogLog.log(
-        "Robot/Commands/Swerve/TeleopSwerveHeadingCmd/error: ",
-        (swerve.getState().Pose.getRotation().getDegrees() - heading));
-    DogLog.log("Commands/Swerve/TeleopSwerveHeadingCmd/PID CALCULATION: ", omega);
-    Translation2d vt = translationStick();
-
-    double allianceFlipper = 0.0;
-    if (AllianceSymmetry.isBlue()) {
-      allianceFlipper = 1.0;
-    } else {
-      allianceFlipper = -1.0;
+    public TeleopSwerveHeadingCmd(
+            CommandSwerveDrivetrain swerve,
+            DriverController controller,
+            double heading,
+            double kP,
+            double kI,
+            double kD) {
+        super(swerve, controller);
+        rotationController = new PIDController(kP, kI, kD);
+        this.heading = heading;
+        rotationController.enableContinuousInput(-180, 180);
+        addRequirements(swerve);
     }
 
-    swerve.setControl(
-        m_driveRequest
-            .withVelocityX(
-                vt.getX() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * allianceFlipper)
-            .withVelocityY(
-                vt.getY() * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond) * allianceFlipper)
-            .withRotationalRate(omega));
-  }
+    @Override
+    public void execute() {
+        double omega =
+                rotationController.calculate(
+                        swerve.getState().Pose.getRotation().getDegrees(), heading);
+        DogLog.log(
+                "Robot/Commands/Swerve/TeleopSwerveHeadingCmd/Swerve Heading: ",
+                (swerve.getState().Pose.getRotation().getDegrees()));
+        DogLog.log(
+                "Robot/Commands/Swerve/TeleopSwerveHeadingCmd/error: ",
+                (swerve.getState().Pose.getRotation().getDegrees() - heading));
+    DogLog.log("Commands/Swerve/TeleopSwerveHeadingCmd/PID CALCULATION: ", omega);
+        Translation2d vt = translationStick();
+
+        double allianceFlipper = 0.0;
+        if (AllianceSymmetry.isBlue()) {
+            allianceFlipper = 1.0;
+        } else {
+            allianceFlipper = -1.0;
+        }
+
+        swerve.setControl(
+                m_driveRequest
+                        .withVelocityX(
+                                vt.getX()
+                                        * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond)
+                                        * allianceFlipper)
+                        .withVelocityY(
+                                vt.getY()
+                                        * knightshadeConsts.kSpeedAt12Volts.in(MetersPerSecond)
+                                        * allianceFlipper)
+                        .withRotationalRate(omega));
+    }
 }

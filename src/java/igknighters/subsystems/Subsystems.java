@@ -10,13 +10,13 @@ import igknighters.subsystems.umbrella.Umbrella;
 import monologue.Logged;
 
 public class Subsystems {
-  public final CommandSwerveDrivetrain swerve;
-  public final LimeLights vision;
-  public final Led led;
+    public final CommandSwerveDrivetrain swerve;
+    public final LimeLights vision;
+    public final Led led;
   public final Umbrella umbrella;
   public final Stem stem;
-  public final ExclusiveSubsystem[] lockedResources;
-  public final SharedSubsystem[] locklessResources;
+    public final ExclusiveSubsystem[] lockedResources;
+    public final SharedSubsystem[] locklessResources;
 
   public Subsystems(
       CommandSwerveDrivetrain drivetrain,
@@ -24,42 +24,42 @@ public class Subsystems {
       Led led,
       Umbrella umbrella,
       Stem stem) {
-    this.swerve = drivetrain;
-    this.vision = vision;
-    this.led = led;
+        this.swerve = drivetrain;
+        this.vision = vision;
+        this.led = led;
     this.umbrella = umbrella;
     this.stem = stem;
 
     this.lockedResources = new ExclusiveSubsystem[] {this.swerve, led, umbrella, stem};
-    this.locklessResources = new SharedSubsystem[] {vision};
+        this.locklessResources = new SharedSubsystem[] {vision};
 
-    CommandScheduler.getInstance().registerSubsystem(this.lockedResources);
-    for (SharedSubsystem subsystem : this.locklessResources) {
-      CommandScheduler.getInstance()
-          .registerSubsystem(
-              new Subsystem() {
-                @Override
-                public void periodic() {
-                  subsystem.periodic();
-                }
+        CommandScheduler.getInstance().registerSubsystem(this.lockedResources);
+        for (SharedSubsystem subsystem : this.locklessResources) {
+            CommandScheduler.getInstance()
+                    .registerSubsystem(
+                            new Subsystem() {
+                                @Override
+                                public void periodic() {
+                                    subsystem.periodic();
+                                }
 
-                @Override
-                public String getName() {
-                  return subsystem.getName();
-                }
-              });
+                                @Override
+                                public String getName() {
+                                    return subsystem.getName();
+                                }
+                            });
+        }
     }
-  }
 
   public static interface ExclusiveSubsystem extends Subsystem, Logged {}
 
-  public static interface SharedSubsystem {
-    default void periodic() {}
+    public static interface SharedSubsystem {
+        default void periodic() {}
 
-    default void simulationPeriodic() {}
+        default void simulationPeriodic() {}
 
-    default String getName() {
-      return this.getClass().getSimpleName();
+        default String getName() {
+            return this.getClass().getSimpleName();
+        }
     }
-  }
 }
