@@ -16,285 +16,289 @@ import java.util.Map;
  * the vendor's code is from, the user would be able to flip as expected.
  */
 public final class AllianceSymmetry {
-  private AllianceSymmetry() {
-    throw new UnsupportedOperationException("This is a utility class!");
-  }
+    private AllianceSymmetry() {
+        throw new UnsupportedOperationException("This is a utility class!");
+    }
 
-  public static boolean isBlue() {
-    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
-  }
+    public static boolean isBlue() {
+        return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+    }
 
-  public static boolean isRed() {
-    return !isBlue();
-  }
+    public static boolean isRed() {
+        return !isBlue();
+    }
 
-  /** The strategy to use for flipping coordinates over axis of symmetry. */
-  public enum SymmetryStrategy {
+    /** The strategy to use for flipping coordinates over axis of symmetry. */
+    public enum SymmetryStrategy {
+        /**
+         * X becomes fieldLength - x, leaves the y coordinate unchanged, and heading becomes PI -
+         * heading.
+         */
+        VERTICAL {
+            @Override
+            public double flipX(double x) {
+                return activeYear.fieldLength - x;
+            }
+
+            @Override
+            public double flipY(double y) {
+                return y;
+            }
+
+            @Override
+            public double flipHeading(double heading) {
+                return Math.PI - heading;
+            }
+        },
+        /**
+         * X becomes fieldLength - x, Y becomes fieldWidth - y, and heading becomes PI - heading.
+         */
+        ROTATIONAL {
+            @Override
+            public double flipX(double x) {
+                return activeYear.fieldLength - x;
+            }
+
+            @Override
+            public double flipY(double y) {
+                return activeYear.fieldWidth - y;
+            }
+
+            @Override
+            public double flipHeading(double heading) {
+                return Math.PI - heading;
+            }
+        },
+        /**
+         * Leaves the X coordinate unchanged, Y becomes fieldWidth - y, and heading becomes PI -
+         * heading.
+         */
+        HORIZONTAL {
+            @Override
+            public double flipX(double x) {
+                return x;
+            }
+
+            @Override
+            public double flipY(double y) {
+                return activeYear.fieldWidth - y;
+            }
+
+            @Override
+            public double flipHeading(double heading) {
+                return Math.PI - heading;
+            }
+        };
+
+        /**
+         * Flips the X coordinate.
+         *
+         * @param x The X coordinate to flip.
+         * @return The flipped X coordinate.
+         */
+        public abstract double flipX(double x);
+
+        /**
+         * Flips the Y coordinate.
+         *
+         * @param y The Y coordinate to flip.
+         * @return The flipped Y coordinate.
+         */
+        public abstract double flipY(double y);
+
+        /**
+         * Flips the heading.
+         *
+         * @param heading The heading to flip.
+         * @return The flipped heading.
+         */
+        public abstract double flipHeading(double heading);
+    }
+
     /**
-     * X becomes fieldLength - x, leaves the y coordinate unchanged, and heading becomes PI -
-     * heading.
+     * An interface for objects that can be flipped based on the current alliance.
+     *
+     * @param <Self> The type of the object that is flippable.
      */
-    VERTICAL {
-      @Override
-      public double flipX(double x) {
-        return activeYear.fieldLength - x;
-      }
+    public interface Flippable<Self extends Flippable<Self>> {
+        /**
+         * Flips the object based on the supplied {@link SymmetryStrategy} .
+         *
+         * @param strategy The type of symmetry to use for flipping.
+         * @return The flipped object.
+         */
+        Self flip(SymmetryStrategy strategy);
 
-      @Override
-      public double flipY(double y) {
-        return y;
-      }
+        /**
+         * Flips the object based on the active flipper.
+         *
+         * @return The flipped object.
+         */
+        default Self flip() {
+            return flip(getStrategy());
+        }
+    }
 
-      @Override
-      public double flipHeading(double heading) {
-        return Math.PI - heading;
-      }
-    },
-    /** X becomes fieldLength - x, Y becomes fieldWidth - y, and heading becomes PI - heading. */
-    ROTATIONAL {
-      @Override
-      public double flipX(double x) {
-        return activeYear.fieldLength - x;
-      }
+    private record YearInfo(SymmetryStrategy strategy, double fieldLength, double fieldWidth) {}
 
-      @Override
-      public double flipY(double y) {
-        return activeYear.fieldWidth - y;
-      }
+    private static final HashMap<Integer, YearInfo> flipperMap =
+            new HashMap<Integer, YearInfo>(
+                    Map.of(
+                            2022, new YearInfo(SymmetryStrategy.ROTATIONAL, 16.4592, 8.2296),
+                            2023, new YearInfo(SymmetryStrategy.VERTICAL, 16.54175, 8.0137),
+                            2024, new YearInfo(SymmetryStrategy.VERTICAL, 16.54175, 8.211),
+                            2025, new YearInfo(SymmetryStrategy.ROTATIONAL, 17.548, 8.052)));
 
-      @Override
-      public double flipHeading(double heading) {
-        return Math.PI - heading;
-      }
-    },
+    private static YearInfo activeYear = flipperMap.get(2025);
+
     /**
-     * Leaves the X coordinate unchanged, Y becomes fieldWidth - y, and heading becomes PI -
-     * heading.
+     * Get the flipper that is currently active for flipping coordinates. It's reccomended not to
+     * store this locally as the flipper may change.
+     *
+     * @return The active flipper.
      */
-    HORIZONTAL {
-      @Override
-      public double flipX(double x) {
-        return x;
-      }
+    public static SymmetryStrategy getStrategy() {
+        return activeYear.strategy;
+    }
 
-      @Override
-      public double flipY(double y) {
-        return activeYear.fieldWidth - y;
-      }
-
-      @Override
-      public double flipHeading(double heading) {
-        return Math.PI - heading;
-      }
-    };
+    /**
+     * Set the year to determine the Alliance Coordinate Flipper to use.
+     *
+     * @param year The year to set the flipper to. [2022 - 2024]
+     */
+    public static void setYear(int year) {
+        if (!flipperMap.containsKey(year)) {
+            // Throw an exception instead of just reporting an error
+            // because not flipping correctly during an auto routine
+            // could cause a robot to damage itself or others.
+            throw new IllegalArgumentException("Year " + year + " is not supported.");
+        }
+        activeYear = flipperMap.get(year);
+    }
 
     /**
      * Flips the X coordinate.
      *
      * @param x The X coordinate to flip.
+     * @param strategy The type of symmetry to use for flipping.
      * @return The flipped X coordinate.
      */
-    public abstract double flipX(double x);
+    public static double flipX(double x, SymmetryStrategy strategy) {
+        return strategy.flipX(x);
+    }
 
     /**
      * Flips the Y coordinate.
      *
      * @param y The Y coordinate to flip.
+     * @param strategy The type of symmetry to use for flipping.
      * @return The flipped Y coordinate.
      */
-    public abstract double flipY(double y);
+    public static double flipY(double y, SymmetryStrategy strategy) {
+        return strategy.flipY(y);
+    }
 
     /**
      * Flips the heading.
      *
-     * @param heading The heading to flip.
+     * @param heading The heading in radians to flip.
+     * @param strategy The type of symmetry to use for flipping.
      * @return The flipped heading.
      */
-    public abstract double flipHeading(double heading);
-  }
+    public static double flipHeading(double heading, SymmetryStrategy strategy) {
+        return strategy.flipHeading(heading);
+    }
 
-  /**
-   * An interface for objects that can be flipped based on the current alliance.
-   *
-   * @param <Self> The type of the object that is flippable.
-   */
-  public interface Flippable<Self extends Flippable<Self>> {
     /**
-     * Flips the object based on the supplied {@link SymmetryStrategy} .
+     * Flips the {@link Flippable} object.
      *
+     * @param <T> The type of the object to flip.
+     * @param flippable The object to flip.
+     * @return The flipped object.
+     */
+    public static <T extends Flippable<T>> T flip(Flippable<T> flippable) {
+        return flippable.flip();
+    }
+
+    /**
+     * Flips the {@link Flippable} object.
+     *
+     * @param <T> The type of the object to flip.
+     * @param flippable The object to flip.
      * @param strategy The type of symmetry to use for flipping.
      * @return The flipped object.
      */
-    Self flip(SymmetryStrategy strategy);
+    public static <T extends Flippable<T>> T flip(
+            Flippable<T> flippable, SymmetryStrategy strategy) {
+        return flippable.flip(strategy);
+    }
 
     /**
-     * Flips the object based on the active flipper.
+     * Flips a {@link Translation2d}.
      *
-     * @return The flipped object.
+     * @param translation The translation to flip.
+     * @param strategy The type of symmetry to use for flipping.
+     * @return The flipped translation.
      */
-    default Self flip() {
-      return flip(getStrategy());
+    public static Translation2d flip(Translation2d translation, SymmetryStrategy strategy) {
+        return new Translation2d(
+                flipX(translation.getX(), strategy), flipY(translation.getY(), strategy));
     }
-  }
 
-  private record YearInfo(SymmetryStrategy strategy, double fieldLength, double fieldWidth) {}
-
-  private static final HashMap<Integer, YearInfo> flipperMap =
-      new HashMap<Integer, YearInfo>(
-          Map.of(
-              2022, new YearInfo(SymmetryStrategy.ROTATIONAL, 16.4592, 8.2296),
-              2023, new YearInfo(SymmetryStrategy.VERTICAL, 16.54175, 8.0137),
-              2024, new YearInfo(SymmetryStrategy.VERTICAL, 16.54175, 8.211),
-              2025, new YearInfo(SymmetryStrategy.ROTATIONAL, 17.548, 8.052)));
-
-  private static YearInfo activeYear = flipperMap.get(2025);
-
-  /**
-   * Get the flipper that is currently active for flipping coordinates. It's reccomended not to
-   * store this locally as the flipper may change.
-   *
-   * @return The active flipper.
-   */
-  public static SymmetryStrategy getStrategy() {
-    return activeYear.strategy;
-  }
-
-  /**
-   * Set the year to determine the Alliance Coordinate Flipper to use.
-   *
-   * @param year The year to set the flipper to. [2022 - 2024]
-   */
-  public static void setYear(int year) {
-    if (!flipperMap.containsKey(year)) {
-      // Throw an exception instead of just reporting an error
-      // because not flipping correctly during an auto routine
-      // could cause a robot to damage itself or others.
-      throw new IllegalArgumentException("Year " + year + " is not supported.");
+    /**
+     * Flips a {@link Translation2d}.
+     *
+     * @param translation The translation to flip.
+     * @return The flipped translation.
+     */
+    public static Translation2d flip(Translation2d translation) {
+        return flip(translation, getStrategy());
     }
-    activeYear = flipperMap.get(year);
-  }
 
-  /**
-   * Flips the X coordinate.
-   *
-   * @param x The X coordinate to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped X coordinate.
-   */
-  public static double flipX(double x, SymmetryStrategy strategy) {
-    return strategy.flipX(x);
-  }
+    /**
+     * Flips a {@link Rotation2d}.
+     *
+     * @param rotation The rotation to flip.
+     * @param strategy The type of symmetry to use for flipping.
+     * @return The flipped rotation.
+     */
+    public static Rotation2d flip(Rotation2d rotation, SymmetryStrategy strategy) {
+        return switch (strategy) {
+            case VERTICAL -> new Rotation2d(-rotation.getCos(), rotation.getSin());
+            case HORIZONTAL -> new Rotation2d(rotation.getCos(), -rotation.getSin());
+            case ROTATIONAL -> new Rotation2d(-rotation.getCos(), -rotation.getSin());
+        };
+    }
 
-  /**
-   * Flips the Y coordinate.
-   *
-   * @param y The Y coordinate to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped Y coordinate.
-   */
-  public static double flipY(double y, SymmetryStrategy strategy) {
-    return strategy.flipY(y);
-  }
+    /**
+     * Flips a {@link Rotation2d}.
+     *
+     * @param rotation The rotation to flip.
+     * @return The flipped rotation.
+     */
+    public static Rotation2d flip(Rotation2d rotation) {
+        return flip(rotation, getStrategy());
+    }
 
-  /**
-   * Flips the heading.
-   *
-   * @param heading The heading in radians to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped heading.
-   */
-  public static double flipHeading(double heading, SymmetryStrategy strategy) {
-    return strategy.flipHeading(heading);
-  }
+    /**
+     * Flips a {@link Pose2d}.
+     *
+     * @param pose The pose to flip.
+     * @param strategy The type of symmetry to use for flipping.
+     * @return The flipped pose.
+     */
+    public static Pose2d flip(Pose2d pose, SymmetryStrategy strategy) {
+        return new Pose2d(
+                flip(pose.getTranslation(), strategy), flip(pose.getRotation(), strategy));
+    }
 
-  /**
-   * Flips the {@link Flippable} object.
-   *
-   * @param <T> The type of the object to flip.
-   * @param flippable The object to flip.
-   * @return The flipped object.
-   */
-  public static <T extends Flippable<T>> T flip(Flippable<T> flippable) {
-    return flippable.flip();
-  }
-
-  /**
-   * Flips the {@link Flippable} object.
-   *
-   * @param <T> The type of the object to flip.
-   * @param flippable The object to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped object.
-   */
-  public static <T extends Flippable<T>> T flip(Flippable<T> flippable, SymmetryStrategy strategy) {
-    return flippable.flip(strategy);
-  }
-
-  /**
-   * Flips a {@link Translation2d}.
-   *
-   * @param translation The translation to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped translation.
-   */
-  public static Translation2d flip(Translation2d translation, SymmetryStrategy strategy) {
-    return new Translation2d(
-        flipX(translation.getX(), strategy), flipY(translation.getY(), strategy));
-  }
-
-  /**
-   * Flips a {@link Translation2d}.
-   *
-   * @param translation The translation to flip.
-   * @return The flipped translation.
-   */
-  public static Translation2d flip(Translation2d translation) {
-    return flip(translation, getStrategy());
-  }
-
-  /**
-   * Flips a {@link Rotation2d}.
-   *
-   * @param rotation The rotation to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped rotation.
-   */
-  public static Rotation2d flip(Rotation2d rotation, SymmetryStrategy strategy) {
-    return switch (strategy) {
-      case VERTICAL -> new Rotation2d(-rotation.getCos(), rotation.getSin());
-      case HORIZONTAL -> new Rotation2d(rotation.getCos(), -rotation.getSin());
-      case ROTATIONAL -> new Rotation2d(-rotation.getCos(), -rotation.getSin());
-    };
-  }
-
-  /**
-   * Flips a {@link Rotation2d}.
-   *
-   * @param rotation The rotation to flip.
-   * @return The flipped rotation.
-   */
-  public static Rotation2d flip(Rotation2d rotation) {
-    return flip(rotation, getStrategy());
-  }
-
-  /**
-   * Flips a {@link Pose2d}.
-   *
-   * @param pose The pose to flip.
-   * @param strategy The type of symmetry to use for flipping.
-   * @return The flipped pose.
-   */
-  public static Pose2d flip(Pose2d pose, SymmetryStrategy strategy) {
-    return new Pose2d(flip(pose.getTranslation(), strategy), flip(pose.getRotation(), strategy));
-  }
-
-  /**
-   * Flips a {@link Pose2d}.
-   *
-   * @param pose The pose to flip.
-   * @return The flipped pose.
-   */
-  public static Pose2d flip(Pose2d pose) {
-    return flip(pose, getStrategy());
-  }
+    /**
+     * Flips a {@link Pose2d}.
+     *
+     * @param pose The pose to flip.
+     * @return The flipped pose.
+     */
+    public static Pose2d flip(Pose2d pose) {
+        return flip(pose, getStrategy());
+    }
 }

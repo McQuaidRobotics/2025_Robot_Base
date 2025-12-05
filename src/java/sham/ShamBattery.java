@@ -11,29 +11,30 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class ShamBattery {
-  private final ConcurrentHashMap<Object, Supplier<Current>> electricalAppliances =
-      new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Object, Supplier<Current>> electricalAppliances =
+            new ConcurrentHashMap<>();
 
-  public void addElectricalAppliances(Supplier<Current> customElectricalAppliances) {
-    this.electricalAppliances.put(new Object(), customElectricalAppliances);
-  }
+    public void addElectricalAppliances(Supplier<Current> customElectricalAppliances) {
+        this.electricalAppliances.put(new Object(), customElectricalAppliances);
+    }
 
-  public void addMechanism(ShamMechanism simMechanism) {
-    this.electricalAppliances.put(simMechanism, () -> simMechanism.variables().supplyCurrent());
-  }
+    public void addMechanism(ShamMechanism simMechanism) {
+        this.electricalAppliances.put(simMechanism, () -> simMechanism.variables().supplyCurrent());
+    }
 
-  public void removeMechanism(ShamMechanism simMechanism) {
-    this.electricalAppliances.remove(simMechanism);
-  }
+    public void removeMechanism(ShamMechanism simMechanism) {
+        this.electricalAppliances.remove(simMechanism);
+    }
 
-  public Voltage getBatteryVoltage() {
-    final double[] totalCurrentAmps =
-        electricalAppliances.values().stream()
-            .mapToDouble(currentSupplier -> currentSupplier.get().in(Amps))
-            .toArray();
+    public Voltage getBatteryVoltage() {
+        final double[] totalCurrentAmps =
+                electricalAppliances.values().stream()
+                        .mapToDouble(currentSupplier -> currentSupplier.get().in(Amps))
+                        .toArray();
 
-    double batteryVoltageVolts = BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
+        double batteryVoltageVolts =
+                BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
 
-    return Volts.of(MathUtil.clamp(batteryVoltageVolts, 0, 12));
-  }
+        return Volts.of(MathUtil.clamp(batteryVoltageVolts, 0, 12));
+    }
 }
