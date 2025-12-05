@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kUmbrella;
@@ -16,7 +17,6 @@ import igknighters.constants.HardwareIndex.UmbrellaHW;
 import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
-import monologue.Annotations.Log;
 
 public class IntakeRealSingle extends Intake {
 
@@ -30,7 +30,7 @@ public class IntakeRealSingle extends Intake {
 
     private final VoltageOut controlReqVolts = new VoltageOut(0.0).withUpdateFreqHz(0);
 
-    @Log private boolean wasBeamBroken = false;
+    private boolean wasBeamBroken = false;
 
     public IntakeRealSingle() {
         FaultManager.captureFault(
@@ -122,6 +122,7 @@ public class IntakeRealSingle extends Intake {
     @Override
     public void periodic() {
         FaultManager.captureFault(UmbrellaHW.UpperIntakeMotor, voltUpperSignal, ampUpperSignal);
+        DogLog.log("Subsystems/Umbrella/Intake/wasBeamBroken", wasBeamBroken);
 
         // This requires as little latency as possible so refresh on its own closer to control code
         revLimitSignal.refresh();

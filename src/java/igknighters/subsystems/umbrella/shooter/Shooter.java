@@ -1,36 +1,32 @@
 package igknighters.subsystems.umbrella.shooter;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import igknighters.subsystems.Component;
-import monologue.Annotations.Log;
 
 public abstract class Shooter extends Component {
 
-    @Log protected double radiansPerSecondRight = 0.0;
-    @Log protected double targetRadiansPerSecondRight = 0.0;
-    @Log protected double radiansPerSecondLeft = 0.0;
-    @Log protected double targetRadiansPerSecondLeft = 0.0;
-    @Log protected double voltsRight = 0.0;
-    @Log protected double voltsLeft = 0.0;
-    @Log protected double ampsRight = 0.0;
-    @Log protected double ampsLeft = 0.0;
-    @Log protected double tempRight = 0.0;
-    @Log protected double tempLeft = 0.0;
+    protected double radiansPerSecondRight = 0.0;
+    protected double targetRadiansPerSecondRight = 0.0;
+    protected double radiansPerSecondLeft = 0.0;
+    protected double targetRadiansPerSecondLeft = 0.0;
+    protected double voltsRight = 0.0;
+    protected double voltsLeft = 0.0;
+    protected double ampsRight = 0.0;
+    protected double ampsLeft = 0.0;
+    protected double tempRight = 0.0;
+    protected double tempLeft = 0.0;
 
-    @Log
     protected double shooterRightRPM =
             Units.radiansPerSecondToRotationsPerMinute(radiansPerSecondRight);
 
-    @Log
     protected double shooterLeftRPM =
             Units.radiansPerSecondToRotationsPerMinute(radiansPerSecondLeft);
 
-    @Log
     protected double targetShooterRightRPM =
             Units.radiansPerSecondToRotationsPerMinute(targetRadiansPerSecondRight);
 
-    @Log
     protected double targetShooterLeftRPM =
             Units.radiansPerSecondToRotationsPerMinute(targetRadiansPerSecondLeft);
 
@@ -78,5 +74,27 @@ public abstract class Shooter extends Component {
         double clamped = MathUtil.clamp(rpm, LOW_END_RPM, HIGH_END_RPM);
         double t = (clamped - LOW_END_RPM) / DIFF_RPM;
         return (t * DIFF_MPS) + LOW_END_MPS;
+    }
+
+    @Override
+    public void periodic() {
+        DogLog.log("Subsystems/Umbrella/Shooter/Rads per Second Right", radiansPerSecondRight);
+        DogLog.log(
+                "Subsystems/Umbrella/Shooter/Target Rads per Second Right",
+                targetRadiansPerSecondRight);
+        DogLog.log("Subsystems/Umbrella/Shooter/Rads per Second Left", radiansPerSecondLeft);
+        DogLog.log(
+                "Subsystems/Umbrella/Shooter/Target Rads per Second Left",
+                targetRadiansPerSecondLeft);
+        DogLog.log("Subsystems/Umbrella/Shooter/Volts Right", voltsRight);
+        DogLog.log("Subsystems/Umbrella/Shooter/Volts Left", voltsLeft);
+        DogLog.log("Subsystems/Umbrella/Shooter/Amps Right", ampsRight);
+        DogLog.log("Subsystems/Umbrella/Shooter/Amps Left", ampsLeft);
+        DogLog.log("Subsystems/Umbrella/Shooter/Temp Right", tempRight);
+        DogLog.log("Subsystems/Umbrella/Shooter/Temp Left", tempLeft);
+        DogLog.log("Subsystems/Umbrella/Shooter/Shooter Right RPM", shooterRightRPM);
+        DogLog.log("Subsystems/Umbrella/Shooter/Shooter Left RPM", shooterLeftRPM);
+        DogLog.log("Subsystems/Umbrella/Shooter/Shooter Right Target RPM", targetShooterRightRPM);
+        DogLog.log("Subsystems/Umbrella/Shooter/Shooter Left Target RPM", targetShooterLeftRPM);
     }
 }

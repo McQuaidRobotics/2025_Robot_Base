@@ -1,16 +1,11 @@
 package igknighters.controllers;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.HigherOrderCommands;
 import igknighters.commands.swerve.SwerveCommands;
-import igknighters.commands.teleop.TeleopSwerveHeadingCmd;
-import igknighters.commands.teleop.TeleopSwerveTargetingFutureCmd;
-import igknighters.commands.teleop.TeleopSwerveWithDetune;
 import igknighters.commands.umbrella.UmbrellaCommands;
 import igknighters.constants.DrivingSharedState;
 import igknighters.subsystems.Subsystems;
@@ -98,25 +93,12 @@ public class DriverController {
         DrivingSharedState state = DrivingSharedState.getInstance();
         var swerve = subsystems.swerve;
         this.Start.whileTrue(SwerveCommands.zeroGyro(swerve));
-        this.A.whileTrue(new TeleopSwerveWithDetune(swerve, this, 1.0));
-        this.B.whileTrue(
-                new TeleopSwerveHeadingCmd(swerve, this, 180.0, state.kP, state.kI, state.kD));
-        this.Y.whileTrue(
-                new TeleopSwerveTargetingFutureCmd(
-                        swerve,
-                        this,
-                        new Pose2d(13, 4, new Rotation2d(0)),
-                        .5,
-                        state.kP,
-                        state.kI,
-                        state.kD));
-        this.LT.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
-        this.RT.whileTrue(
-                UmbrellaCommands.shoot(subsystems.umbrella, subsystems.umbrella::getShooterSpeed));
-
+        this.A.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
+        this.B.whileTrue(UmbrellaCommands.shoot(subsystems.umbrella, () -> 1000.0));
         this.X.whileTrue(
                 HigherOrderCommands.intakeGamepiece(
                         subsystems.stem, subsystems.umbrella, subsystems.led));
+        this.Y.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
     }
 
     private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {

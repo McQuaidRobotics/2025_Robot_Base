@@ -1,26 +1,26 @@
 package igknighters.subsystems.stem.pivot;
 
+import dev.doglog.DogLog;
 import igknighters.constants.ConstValues;
 import igknighters.subsystems.Component;
 import igknighters.subsystems.stem.Stem;
-import monologue.Annotations.Log;
 
 /**
  * A standardized interface for a {@link Pivot} {@link Stem} {@link Component}. This allows us to
  * abstract over the underlying implementation of the pivot for various reasons.
  */
 public abstract class Pivot extends Component {
-    @Log protected double radians;
-    @Log protected double targetRadians;
-    @Log protected double radiansPerSecond = 0.0;
-    @Log protected double leftVolts = 0.0;
-    @Log protected double rightVolts = 0.0;
-    @Log protected double leftAmps = 0.0;
-    @Log protected double rightAmps = 0.0;
-    @Log protected double gyroRadians = 0.0;
-    @Log protected double gyroRadiansPerSecondAbs = 0.0;
-    @Log protected boolean isLimitFwdSwitchHit = false;
-    @Log protected boolean isLimitRevSwitchHit = false;
+    protected double radians;
+    protected double targetRadians;
+    protected double radiansPerSecond = 0.0;
+    protected double leftVolts = 0.0;
+    protected double rightVolts = 0.0;
+    protected double leftAmps = 0.0;
+    protected double rightAmps = 0.0;
+    protected double gyroRadians = 0.0;
+    protected double gyroRadiansPerSecondAbs = 0.0;
+    protected boolean isLimitFwdSwitchHit = false;
+    protected boolean isLimitRevSwitchHit = false;
 
     protected Pivot(double startingRadians) {
         this.radians = startingRadians;
@@ -98,4 +98,19 @@ public abstract class Pivot extends Component {
      * @param volts The specified volts: [-12.0 .. 12.0]
      */
     public abstract void setVoltageOut(double volts);
+
+    @Override
+    public void periodic() {
+        DogLog.log("Subsystems/Stem/Pivot/radians", radians);
+        DogLog.log("Subsystems/Stem/Pivot/targetRadians", targetRadians);
+        DogLog.log("Subsystems/Stem/Pivot/radiansPerSecond", radiansPerSecond);
+        DogLog.log("Subsystems/Stem/Pivot/leftVolts", leftVolts);
+        DogLog.log("Subsystems/Stem/Pivot/rightVolts", rightVolts);
+        DogLog.log("Subsystems/Stem/Pivot/leftAmps", leftAmps);
+        DogLog.log("Subsystems/Stem/Pivot/rightAmps", rightAmps);
+        DogLog.log("Subsystems/Stem/Pivot/gyroRadians", gyroRadians);
+        DogLog.log("Subsystems/Stem/Pivot/gyroRadiansPerSecondAbs", gyroRadiansPerSecondAbs);
+        DogLog.log("Subsystems/Stem/Pivot/isLimitFwdSwitchHit", isLimitFwdSwitchHit);
+        DogLog.log("Subsystems/Stem/Pivot/isLimitRevSwitchHit", isLimitRevSwitchHit);
+    }
 }

@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,7 +17,6 @@ import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 import igknighters.util.plumbing.TunableValues;
 import igknighters.util.plumbing.TunableValues.TunableDouble;
-import monologue.Annotations.Log;
 
 /** */
 public class IntakeRealSingleCurrent extends Intake {
@@ -31,7 +31,7 @@ public class IntakeRealSingleCurrent extends Intake {
 
     private TunableDouble currentTripValue = TunableValues.getDouble("IntakeCurrentTrip", 115.0);
 
-    @Log private boolean forcedOutput = false;
+    private boolean forcedOutput = false;
 
     public IntakeRealSingleCurrent() {
         FaultManager.captureFault(
@@ -93,6 +93,7 @@ public class IntakeRealSingleCurrent extends Intake {
 
     @Override
     public void periodic() {
+        DogLog.log("Subsystems/Umbrella/Intake/Forced Output", forcedOutput);
         FaultManager.captureFault(UmbrellaHW.UpperIntakeMotor, voltSignal, ampSignal);
 
         if (DriverStation.isDisabled()) {

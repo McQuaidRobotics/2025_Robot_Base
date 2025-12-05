@@ -1,16 +1,16 @@
 package igknighters.subsystems.umbrella.intake;
 
+import dev.doglog.DogLog;
 import igknighters.subsystems.Component;
-import monologue.Annotations.Log;
 
 public abstract class Intake extends Component {
-    @Log protected boolean exitBeamBroken = false;
-    @Log protected double radiansPerSecondUpper = 0.0;
-    @Log protected double voltsUpper = 0.0;
-    @Log protected double ampsUpper = 0.0;
-    @Log protected double radiansPerSecondLower = 0.0;
-    @Log protected double voltsLower = 0.0;
-    @Log protected double ampsLower = 0.0;
+    protected boolean exitBeamBroken = false;
+    protected double radiansPerSecondUpper = 0.0;
+    protected double voltsUpper = 0.0;
+    protected double ampsUpper = 0.0;
+    protected double radiansPerSecondLower = 0.0;
+    protected double voltsLower = 0.0;
+    protected double ampsLower = 0.0;
 
     @Override
     public String getOverrideName() {
@@ -43,4 +43,15 @@ public abstract class Intake extends Component {
      * @param force If the mechanism should force past the limit switches
      */
     public abstract void setVoltageOut(double volts, boolean force);
+
+    @Override
+    public void periodic() {
+        DogLog.log("Subsystems/Umbrella/Intake/Exit Beam Broken", exitBeamBroken);
+        DogLog.log("Subsystems/Umbrella/Intake/Rads per Second Upper", radiansPerSecondUpper);
+        DogLog.log("Subsystems/Umbrella/Intake/voltsUpper", voltsUpper);
+        DogLog.log("Subsystems/Umbrella/Intake/ampsUpper", ampsUpper);
+        DogLog.log("Subsystems/Umbrella/Intake/radiansPerSecondLower", radiansPerSecondLower);
+        DogLog.log("Subsystems/Umbrella/Intake/voltsLower", voltsLower);
+        DogLog.log("Subsystems/Umbrella/Intake/ampsLower", ampsLower);
+    }
 }

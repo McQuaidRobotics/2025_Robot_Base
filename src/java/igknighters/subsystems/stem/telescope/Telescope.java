@@ -1,19 +1,19 @@
 package igknighters.subsystems.stem.telescope;
 
+import dev.doglog.DogLog;
 import igknighters.constants.ConstValues;
 import igknighters.subsystems.Component;
-import monologue.Annotations.Log;
 
 public abstract class Telescope extends Component {
-    @Log protected double meters;
-    @Log protected double targetMeters;
-    @Log protected double metersPerSecond = 0.0;
-    @Log protected double volts = 0.0;
-    @Log protected double temp = 0.0;
-    @Log protected double amps = 0.0;
-    @Log protected boolean isLimitFwdSwitchHit = false;
-    @Log protected boolean isLimitRevSwitchHit = false;
-    @Log protected boolean isHomed = false;
+    protected double meters;
+    protected double targetMeters;
+    protected double metersPerSecond = 0.0;
+    protected double volts = 0.0;
+    protected double temp = 0.0;
+    protected double amps = 0.0;
+    protected boolean isLimitFwdSwitchHit = false;
+    protected boolean isLimitRevSwitchHit = false;
+    protected boolean isHomed = false;
 
     protected Telescope(double startingMeters) {
         this.meters = startingMeters;
@@ -107,4 +107,17 @@ public abstract class Telescope extends Component {
      * @param volts The specified volts: [-12.0 .. 12.0]
      */
     public abstract void setVoltageOut(double volts);
+
+    @Override
+    public void periodic() {
+        DogLog.log("Subsystems/Stem/Telescope/meters", meters);
+        DogLog.log("Subsystems/Stem/Telescope/targetMeters", targetMeters);
+        DogLog.log("Subsystems/Stem/Telescope/metersPerSecond", metersPerSecond);
+        DogLog.log("Subsystems/Stem/Telescope/volts", volts);
+        DogLog.log("Subsystems/Stem/Telescope/temp", temp);
+        DogLog.log("Subsystems/Stem/Telescope/amps", amps);
+        DogLog.log("Subsystems/Stem/Telescope/isLimitFwdSwitchHit", isLimitFwdSwitchHit);
+        DogLog.log("Subsystems/Stem/Telescope/isLimitRevSwitchHit", isLimitRevSwitchHit);
+        DogLog.log("Subsystems/Stem/Telescope/isHomed", isHomed);
+    }
 }

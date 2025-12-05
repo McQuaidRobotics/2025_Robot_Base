@@ -51,9 +51,8 @@ public class ShooterSim extends Shooter {
 
     @Override
     public void setSpeed(double radiansPerSecond) {
-        // Do nothing in simulation
+        DogLog.log("Subsystems/Umbrella/Shooter/Set Speed", radiansPerSecond);
         positionControled = true;
-        pidController.reset(0.0);
         pidController.setGoal(radiansPerSecond);
     }
 
@@ -71,5 +70,7 @@ public class ShooterSim extends Shooter {
         DogLog.log("Subsystems/Umbrella/Shooter/Goal Speed", pidController.getGoal().position);
 
         flyWheelSim.update(0.02); // Assuming a 20ms periodic update
+        voltageInput = 0.0;
+        positionControled = false;
     }
 }

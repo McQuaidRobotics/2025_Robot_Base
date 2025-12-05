@@ -1,17 +1,17 @@
 package igknighters.subsystems.stem.wrist;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.util.Units;
 import igknighters.constants.ConstValues;
 import igknighters.subsystems.Component;
-import monologue.Annotations.Log;
 
 public abstract class Wrist extends Component {
-    @Log protected double radians;
-    @Log protected double targetRadians;
-    @Log protected double encoderRadians;
-    @Log protected double radiansPerSecond = 0.0;
-    @Log protected double volts = 0.0;
-    @Log protected double amps = 0.0;
+    protected double radians;
+    protected double targetRadians;
+    protected double encoderRadians;
+    protected double radiansPerSecond = 0.0;
+    protected double volts = 0.0;
+    protected double amps = 0.0;
 
     public Wrist(double startingRadians) {
         this.radians = startingRadians;
@@ -98,5 +98,15 @@ public abstract class Wrist extends Component {
 
     protected static double motorRadsToMechanismRads(double motorRads) {
         return motorRotsToMechanismRads(Units.radiansToRotations(motorRads));
+    }
+
+    @Override
+    public void periodic() {
+        DogLog.log("Subsystems/Stem/Wrist/Radians", radians);
+        DogLog.log("Subsystems/Stem/Wrist/Target Radians", targetRadians);
+        DogLog.log("Subsystems/Stem/Wrist/Encoder Radians", encoderRadians);
+        DogLog.log("Subsystems/Stem/Wrist/Rads per Second", radiansPerSecond);
+        DogLog.log("Subsystems/Stem/Wrist/Volts", volts);
+        DogLog.log("Subsystems/Stem/Wrist/Amps", amps);
     }
 }

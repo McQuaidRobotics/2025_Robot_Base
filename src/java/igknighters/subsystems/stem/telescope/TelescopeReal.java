@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -22,7 +23,6 @@ import igknighters.constants.HardwareIndex.StemHW;
 import igknighters.util.can.CANRetrier;
 import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.FaultManager;
-import monologue.Annotations.Log;
 
 public class TelescopeReal extends Telescope {
     private final TalonFX motor;
@@ -39,8 +39,8 @@ public class TelescopeReal extends Telescope {
     private final MotionMagicTorqueCurrentFOC controlReqMotionMagic =
             new MotionMagicTorqueCurrentFOC(0.0).withUpdateFreqHz(0.0);
 
-    @Log private boolean hasHomed = false;
-    @Log private boolean motorAutoseed = true;
+    private boolean hasHomed = false;
+    private boolean motorAutoseed = true;
 
     public TelescopeReal() {
         super(kTelescope.MIN_METERS);
@@ -151,6 +151,8 @@ public class TelescopeReal extends Telescope {
 
     @Override
     public void periodic() {
+        DogLog.log("Subsystems/Stem/Telescope/hasHomed", hasHomed);
+        DogLog.log("Subsystems/Stem/Telescope/motorAutoseed", motorAutoseed);
         FaultManager.captureFault(
                 StemHW.TelescopeMotor,
                 motorRots,
