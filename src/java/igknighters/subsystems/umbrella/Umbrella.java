@@ -7,7 +7,6 @@ import igknighters.constants.ConstValues.kUmbrella.kShooter;
 import igknighters.subsystems.Subsystems.ExclusiveSubsystem;
 import igknighters.subsystems.umbrella.intake.*;
 import igknighters.subsystems.umbrella.shooter.*;
-import igknighters.util.logging.Tracer;
 
 /** */
 public class Umbrella implements ExclusiveSubsystem {
@@ -30,12 +29,8 @@ public class Umbrella implements ExclusiveSubsystem {
 
     @Override
     public void periodic() {
-        Tracer.startTrace("UmbrellaPeriodic");
-
-        Tracer.traceFunc("IntakePeriodic", intake::periodic);
-        Tracer.traceFunc("ShooterPeriodic", shooter::periodic);
-
-        Tracer.endTrace();
+        intake.periodic();
+        shooter.periodic();
     }
 
     /**

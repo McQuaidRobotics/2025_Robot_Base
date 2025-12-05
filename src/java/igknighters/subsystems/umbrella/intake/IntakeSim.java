@@ -47,5 +47,6 @@ public class IntakeSim extends Intake {
     @Override
     public void periodic() {
         if (DriverStation.isDisabled()) setVoltageOut(0.0);
+        super.periodic();
     }
 }
