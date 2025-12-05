@@ -4,6 +4,8 @@
 
 package igknighters.util.logging;
 
+import edu.wpi.first.util.struct.Struct;
+import edu.wpi.first.util.struct.StructSerializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -14,9 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import edu.wpi.first.util.struct.Struct;
-import edu.wpi.first.util.struct.StructSerializable;
 
 /** A utility class for procedurally generating {@link Struct}s from records and enums. */
 public final class ProceduralStructGenerator {
@@ -177,9 +176,9 @@ public final class ProceduralStructGenerator {
 
   /**
    * Introspects a class to determine if it's a fixed size.
-   * 
+   *
    * <p>Fixed size means no collections, no strings, no arrays, etc.
-   * 
+   *
    * @param clazz The class to introspect.
    * @return Whether the class is fixed size.
    */

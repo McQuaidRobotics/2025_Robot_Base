@@ -158,7 +158,7 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public static boolean isDemo(){
+  public static boolean isDemo() {
     return true;
   }
 }
