@@ -4,6 +4,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import igknighters.subsystems.Component;
+import igknighters.subsystems.SuperStructureVisualizer;
 
 public abstract class Shooter extends Component {
 
@@ -78,6 +79,7 @@ public abstract class Shooter extends Component {
 
     @Override
     public void periodic() {
+        SuperStructureVisualizer.getInstance().updateFromShooter(shooterRightRPM);
         DogLog.log("Subsystems/Umbrella/Shooter/Rads per Second Right", radiansPerSecondRight);
         DogLog.log(
                 "Subsystems/Umbrella/Shooter/Target Rads per Second Right",

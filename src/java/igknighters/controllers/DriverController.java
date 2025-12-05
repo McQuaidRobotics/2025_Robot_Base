@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.HigherOrderCommands;
 import igknighters.commands.swerve.SwerveCommands;
-import igknighters.commands.umbrella.UmbrellaCommands;
 import igknighters.constants.DrivingSharedState;
 import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
@@ -93,11 +92,11 @@ public class DriverController {
         DrivingSharedState state = DrivingSharedState.getInstance();
         var swerve = subsystems.swerve;
         this.Start.whileTrue(SwerveCommands.zeroGyro(swerve));
-        this.A.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
-        this.B.whileTrue(UmbrellaCommands.shoot(subsystems.umbrella, () -> 1000.0));
-        this.X.whileTrue(
-                HigherOrderCommands.intakeGamepiece(
-                        subsystems.stem, subsystems.umbrella, subsystems.led));
+        // this.A.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
+        // this.B.whileTrue(UmbrellaCommands.shoot(subsystems.umbrella, () -> 1000.0));
+        // this.X.whileTrue(
+        //         HigherOrderCommands.intakeGamepiece(
+        //                 subsystems.stem, subsystems.umbrella, subsystems.led));
         this.Y.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
     }
 

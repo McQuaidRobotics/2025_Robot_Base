@@ -2,6 +2,7 @@ package igknighters.subsystems.umbrella.intake;
 
 import dev.doglog.DogLog;
 import igknighters.subsystems.Component;
+import igknighters.subsystems.SuperStructureVisualizer;
 
 public abstract class Intake extends Component {
     protected boolean exitBeamBroken = false;
@@ -53,5 +54,8 @@ public abstract class Intake extends Component {
         DogLog.log("Subsystems/Umbrella/Intake/radiansPerSecondLower", radiansPerSecondLower);
         DogLog.log("Subsystems/Umbrella/Intake/voltsLower", voltsLower);
         DogLog.log("Subsystems/Umbrella/Intake/ampsLower", ampsLower);
+
+        SuperStructureVisualizer.getInstance()
+                .updateFromIntake(radiansPerSecondLower * Math.PI * 2);
     }
 }

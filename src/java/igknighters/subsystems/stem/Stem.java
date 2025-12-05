@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.Robot;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.subsystems.Subsystems.ExclusiveSubsystem;
+import igknighters.subsystems.SuperStructureVisualizer;
 import igknighters.subsystems.stem.StemValidator.ValidationResponse;
 import igknighters.subsystems.stem.pivot.*;
 import igknighters.subsystems.stem.telescope.*;
@@ -232,6 +233,11 @@ public class Stem implements ExclusiveSubsystem {
             stopMechanisms();
         }
 
+        SuperStructureVisualizer.getInstance()
+                .updateFromStem(
+                        getStemPosition().pivotRads * 180.0 / (Math.PI),
+                        getStemPosition().telescopeMeters,
+                        getStemPosition().wristRads * 180 / Math.PI);
         // run and time the components periodic loops
         Tracer.traceFunc("PivotPeriodic", pivot::periodic);
         Tracer.traceFunc("TelescopePeriodic", telescope::periodic);
