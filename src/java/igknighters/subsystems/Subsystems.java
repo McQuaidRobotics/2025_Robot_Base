@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import igknighters.subsystems.LimeLightVision.LimeLights;
 import igknighters.subsystems.led.Led;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
+import monologue.Logged;
 
 public class Subsystems {
   public final CommandSwerveDrivetrain swerve;
@@ -38,7 +39,7 @@ public class Subsystems {
     }
   }
 
-  public static interface ExclusiveSubsystem extends Subsystem {}
+  public static interface ExclusiveSubsystem extends Subsystem, Logged {}
 
   public static interface SharedSubsystem {
     default void periodic() {}
