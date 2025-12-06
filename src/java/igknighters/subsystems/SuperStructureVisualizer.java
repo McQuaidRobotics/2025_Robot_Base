@@ -11,8 +11,8 @@ import igknighters.constants.ConstValues.kRobotCollisionGeometry;
 
 public class SuperStructureVisualizer {
     private final Mechanism2d superstructure;
-    private final MechanismRoot2d pivotRoot;
-    private final MechanismLigament2d telescope, shooter, intake;
+    private final MechanismRoot2d pivotRoot, robotRoot;
+    private final MechanismLigament2d telescope, shooter, intake, belly, top, left, right;
     private final double MAX_TELESCOPE_LENGTH = ConstValues.kStem.kTelescope.MAX_METERS;
     private final double UMBRELLA_LENGTH = kRobotCollisionGeometry.UMBRELLA_LENGTH;
     private final double WIDTH = 10;
@@ -20,8 +20,47 @@ public class SuperStructureVisualizer {
     public SuperStructureVisualizer() {
 
         superstructure = new Mechanism2d(1.5, 1.5);
-        pivotRoot = superstructure.getRoot("Pivot", .75, 0);
+        pivotRoot =
+                superstructure.getRoot(
+                        "Pivot",
+                        .75 - kRobotCollisionGeometry.PIVOT_LOCATION.getX(),
+                        kRobotCollisionGeometry.PIVOT_LOCATION.getY());
         telescope = pivotRoot.append(new MechanismLigament2d("telescope", 1.0, 0.0));
+        robotRoot =
+                superstructure.getRoot(
+                        "ROBOT", .75 - kRobotCollisionGeometry.DRIVE_BASE.getWidth() / 2, 0);
+        belly =
+                robotRoot.append(
+                        new MechanismLigament2d(
+                                "belly",
+                                kRobotCollisionGeometry.DRIVE_BASE.getWidth(),
+                                0.0,
+                                5,
+                                new Color8Bit(Color.kHotPink)));
+        right =
+                belly.append(
+                        new MechanismLigament2d(
+                                "right",
+                                kRobotCollisionGeometry.DRIVE_BASE.getHeight(),
+                                90,
+                                5,
+                                new Color8Bit(Color.kHotPink)));
+        top =
+                right.append(
+                        new MechanismLigament2d(
+                                "top",
+                                kRobotCollisionGeometry.DRIVE_BASE.getWidth(),
+                                90,
+                                5,
+                                new Color8Bit(Color.kHotPink)));
+        left =
+                top.append(
+                        new MechanismLigament2d(
+                                "left",
+                                kRobotCollisionGeometry.DRIVE_BASE.getHeight(),
+                                90,
+                                5,
+                                new Color8Bit(Color.kHotPink)));
         shooter = telescope.append(new MechanismLigament2d("wrist", UMBRELLA_LENGTH / 2, 0.0));
 
         intake = shooter.append(new MechanismLigament2d("intake", UMBRELLA_LENGTH / 2, 0.0));

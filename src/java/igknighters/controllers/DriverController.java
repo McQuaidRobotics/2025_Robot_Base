@@ -5,7 +5,9 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.HigherOrderCommands;
+import igknighters.commands.HigherOrderCommands.ShootSequences;
 import igknighters.commands.swerve.SwerveCommands;
+import igknighters.commands.umbrella.UmbrellaCommands;
 import igknighters.constants.DrivingSharedState;
 import igknighters.subsystems.Subsystems;
 import java.util.function.DoubleSupplier;
@@ -97,7 +99,17 @@ public class DriverController {
         // this.X.whileTrue(
         //         HigherOrderCommands.intakeGamepiece(
         //                 subsystems.stem, subsystems.umbrella, subsystems.led));
-        this.Y.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
+        // this.Y.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
+        this.LT.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
+        this.RT.whileTrue(UmbrellaCommands.shoot(subsystems.umbrella, () -> 1000.0));
+
+        this.LB.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
+        this.RB.whileTrue(
+                ShootSequences.autoAimShoot(swerve, subsystems.stem, subsystems.umbrella, this));
+        this.X.whileTrue(
+                HigherOrderCommands.intakeGamepiece(
+                        subsystems.stem, subsystems.umbrella, subsystems.led));
+        this.B.whileTrue(ShootSequences.ampShoot(subsystems.stem, subsystems.umbrella));
     }
 
     private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {

@@ -2,9 +2,12 @@ package igknighters.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import igknighters.commands.stem.StemCommands;
+import igknighters.commands.umbrella.UmbrellaCommands;
 import igknighters.subsystems.LimeLightVision.LimeLights;
 import igknighters.subsystems.led.Led;
 import igknighters.subsystems.stem.Stem;
+import igknighters.subsystems.stem.StemPosition;
 import igknighters.subsystems.swerve.CommandSwerveDrivetrain;
 import igknighters.subsystems.umbrella.Umbrella;
 import monologue.Logged;
@@ -32,8 +35,9 @@ public class Subsystems {
 
         this.lockedResources = new ExclusiveSubsystem[] {this.swerve, led, umbrella, stem};
         this.locklessResources = new SharedSubsystem[] {vision};
-
         CommandScheduler.getInstance().registerSubsystem(this.lockedResources);
+        this.stem.setDefaultCommand(StemCommands.holdAt(stem, StemPosition.STOW));
+        this.umbrella.setDefaultCommand(UmbrellaCommands.idleShooter(umbrella, () -> 500));
         for (SharedSubsystem subsystem : this.locklessResources) {
             CommandScheduler.getInstance()
                     .registerSubsystem(
