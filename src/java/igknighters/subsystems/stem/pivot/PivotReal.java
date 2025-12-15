@@ -24,7 +24,6 @@ import igknighters.constants.ConstValues;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.constants.ConstValues.kStem.kPivot;
 import igknighters.constants.HardwareIndex.StemHW;
-import igknighters.util.can.CANRetrier;
 import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
@@ -72,12 +71,17 @@ public class PivotReal extends Pivot {
         leaderMotor = new TalonFX(kPivot.RIGHT_MOTOR_ID, kStem.CANBUS);
         followerMotor = new TalonFX(kPivot.LEFT_MOTOR_ID, kStem.CANBUS);
 
-        CANRetrier.retryStatusCodeFatal(
-                () -> leaderMotor.getConfigurator().apply(getMotorConfig(true)), 10);
-        CANRetrier.retryStatusCodeFatal(
-                () -> followerMotor.getConfigurator().apply(getMotorConfig(false)), 10);
-        CANRetrier.retryStatusCodeFatal(
-                () -> followerMotor.setControl(new Follower(leaderMotor.getDeviceID(), true)), 10);
+        // CANRetrier.retryStatusCodeFatal(
+        //         () -> leaderMotor.getConfigurator().apply(getMotorConfig(true)), 10);
+        // CANRetrier.retryStatusCodeFatal(
+        //         () -> followerMotor.getConfigurator().apply(getMotorConfig(false)), 10);
+        // CANRetrier.retryStatusCodeFatal(
+        //         () -> followerMotor.setControl(new Follower(leaderMotor.getDeviceID(), true)),
+        // 10);
+
+        leaderMotor.getConfigurator().apply(getMotorConfig(true));
+        followerMotor.getConfigurator().apply(getMotorConfig(false));
+        followerMotor.setControl(new Follower(leaderMotor.getDeviceID(), true));
 
         double startingRads = Units.degreesToRadians(gyroMeasurement.getValueAsDouble());
         super.gyroRadians = startingRads;
@@ -226,5 +230,16 @@ public class PivotReal extends Pivot {
 
         DogLog.log("Subsystems/Stem/Pivot/PivotSeededPivot", homedThisCycle);
         homedThisCycle = false;
+        DogLog.log("Subsystems/Stem/Pivot/radians", radians);
+        DogLog.log("Subsystems/Stem/Pivot/targetRadians", targetRadians);
+        DogLog.log("Subsystems/Stem/Pivot/radiansPerSecond", radiansPerSecond);
+        DogLog.log("Subsystems/Stem/Pivot/leftVolts", leftVolts);
+        DogLog.log("Subsystems/Stem/Pivot/rightVolts", rightVolts);
+        DogLog.log("Subsystems/Stem/Pivot/leftAmps", leftAmps);
+        DogLog.log("Subsystems/Stem/Pivot/rightAmps", rightAmps);
+        DogLog.log("Subsystems/Stem/Pivot/gyroRadians", gyroRadians);
+        DogLog.log("Subsystems/Stem/Pivot/gyroRadiansPerSecondAbs", gyroRadiansPerSecondAbs);
+        DogLog.log("Subsystems/Stem/Pivot/isLimitFwdSwitchHit", isLimitFwdSwitchHit);
+        DogLog.log("Subsystems/Stem/Pivot/isLimitRevSwitchHit", isLimitRevSwitchHit);
     }
 }

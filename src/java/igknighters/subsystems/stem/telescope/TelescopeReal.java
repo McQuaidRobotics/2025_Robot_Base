@@ -20,7 +20,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.constants.ConstValues.kStem.kTelescope;
 import igknighters.constants.HardwareIndex.StemHW;
-import igknighters.util.can.CANRetrier;
 import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.FaultManager;
 
@@ -41,13 +40,14 @@ public class TelescopeReal extends Telescope {
 
     private boolean hasHomed = false;
     private boolean motorAutoseed = true;
+    int iteration = 0;
 
     public TelescopeReal() {
         super(kTelescope.MIN_METERS);
 
         motor = new TalonFX(kTelescope.MOTOR_ID, kStem.CANBUS);
-        CANRetrier.retryStatusCodeFatal(
-                () -> motor.getConfigurator().apply(motorConfig(), 1.0), 10);
+
+        motor.getConfigurator().apply(motorConfig(), 1.0);
 
         motorRots = motor.getRotorPosition();
         motorVelo = motor.getRotorVelocity();
@@ -153,6 +153,8 @@ public class TelescopeReal extends Telescope {
     public void periodic() {
         DogLog.log("Subsystems/Stem/Telescope/hasHomed", hasHomed);
         DogLog.log("Subsystems/Stem/Telescope/motorAutoseed", motorAutoseed);
+        DogLog.log("ITERATIONSTELESCOPE", iteration);
+        iteration += 1;
         FaultManager.captureFault(
                 StemHW.TelescopeMotor,
                 motorRots,
@@ -182,5 +184,14 @@ public class TelescopeReal extends Telescope {
             configurator.apply(cfg);
             motorAutoseed = false;
         }
+        DogLog.log("Subsystems/Stem/Telescope/meters", meters);
+        DogLog.log("Subsystems/Stem/Telescope/targetMeters", targetMeters);
+        DogLog.log("Subsystems/Stem/Telescope/metersPerSecond", metersPerSecond);
+        DogLog.log("Subsystems/Stem/Telescope/volts", volts);
+        DogLog.log("Subsystems/Stem/Telescope/temp", temp);
+        DogLog.log("Subsystems/Stem/Telescope/amps", amps);
+        DogLog.log("Subsystems/Stem/Telescope/isLimitFwdSwitchHit", isLimitFwdSwitchHit);
+        DogLog.log("Subsystems/Stem/Telescope/isLimitRevSwitchHit", isLimitRevSwitchHit);
+        DogLog.log("Subsystems/Stem/Telescope/isHomed", isHomed);
     }
 }

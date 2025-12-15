@@ -122,7 +122,7 @@ public final class ConstValues {
 
     public static final class kUmbrella {
         public static final double NOTE_VELO = 23.5;
-        public static final String CANBUS = "SuperStructureBus";
+        public static final String CANBUS = "Superstructure";
 
         public static final class kShooter {
             public static final double MOTOR_RIGHT_kP = 0.15;

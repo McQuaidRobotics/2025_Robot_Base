@@ -43,6 +43,7 @@ public abstract class Pivot extends Component {
      * @return The current angle of the mechanism
      */
     public double getPosition() {
+        DogLog.log("Subsystems/Stem/Pivot/Returning Position", this.radians);
         return this.radians;
     }
 

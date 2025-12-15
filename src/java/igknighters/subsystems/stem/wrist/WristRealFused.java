@@ -18,7 +18,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.constants.ConstValues.kStem.kWrist;
 import igknighters.constants.HardwareIndex.StemHW;
-import igknighters.util.can.CANRetrier;
 import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
@@ -41,16 +40,18 @@ public class WristRealFused extends Wrist {
     public WristRealFused() {
         super(0.0);
         motor = new TalonFX(kWrist.MOTOR_ID, kStem.CANBUS);
-        CANRetrier.retryStatusCodeFatal(() -> motor.getConfigurator().apply(motorConfig()), 10);
+        // CANRetrier.retryStatusCodeFatal(() -> motor.getConfigurator().apply(motorConfig()), 10);
 
+        motor.getConfigurator().apply(motorConfig());
         motorRots = motor.getPosition();
         motorVelo = motor.getVelocity();
         motorAmps = motor.getTorqueCurrent();
         motorVolts = motor.getMotorVoltage();
 
         cancoder = new CANcoder(kWrist.CANCODER_ID, kStem.CANBUS);
-        CANRetrier.retryStatusCodeFatal(
-                () -> cancoder.getConfigurator().apply(cancoderConfig()), 10);
+        // CANRetrier.retryStatusCodeFatal(
+        //         () -> cancoder.getConfigurator().apply(cancoderConfig()), 10);
+        cancoder.getConfigurator().apply(cancoderConfig());
 
         cancoderRots = cancoder.getAbsolutePosition();
         cancoderVelo = cancoder.getVelocity();

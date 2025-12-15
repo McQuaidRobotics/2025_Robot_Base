@@ -6,10 +6,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import igknighters.commands.HigherOrderCommands;
 import igknighters.commands.HigherOrderCommands.ShootSequences;
+import igknighters.commands.stem.StemCommands;
 import igknighters.commands.swerve.SwerveCommands;
 import igknighters.commands.umbrella.UmbrellaCommands;
 import igknighters.constants.DrivingSharedState;
 import igknighters.subsystems.Subsystems;
+import igknighters.subsystems.stem.StemPosition;
 import java.util.function.DoubleSupplier;
 
 public class DriverController {
@@ -101,15 +103,17 @@ public class DriverController {
         //                 subsystems.stem, subsystems.umbrella, subsystems.led));
         // this.Y.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
         this.LT.whileTrue(HigherOrderCommands.aim(swerve, subsystems.stem, this));
-        this.RT.whileTrue(UmbrellaCommands.shoot(subsystems.umbrella, () -> 1000.0));
+        this.RT.whileTrue(UmbrellaCommands.shoot(subsystems.umbrella, () -> 5000.0));
 
-        this.LB.whileTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
-        this.RB.whileTrue(
+        this.LB.onTrue(HigherOrderCommands.aimNotePass(swerve, subsystems.stem, this));
+        this.RB.onTrue(
                 ShootSequences.autoAimShoot(swerve, subsystems.stem, subsystems.umbrella, this));
-        this.X.whileTrue(
+        this.A.onTrue(
                 HigherOrderCommands.intakeGamepiece(
                         subsystems.stem, subsystems.umbrella, subsystems.led));
-        this.B.whileTrue(ShootSequences.ampShoot(subsystems.stem, subsystems.umbrella));
+        this.B.onTrue(ShootSequences.ampShoot(subsystems.stem, subsystems.umbrella));
+
+        this.X.onTrue(StemCommands.holdAt(subsystems.stem, StemPosition.STOW));
     }
 
     private DoubleSupplier deadbandSupplier(DoubleSupplier supplier, double deadband) {

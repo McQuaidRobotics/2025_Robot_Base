@@ -65,7 +65,7 @@ public class HigherOrderCommands {
                                 swerve,
                                 controller,
                                 new Pose2d(
-                                        AllianceFlip.isRed()
+                                        AllianceFlip.isBlue()
                                                 ? new Translation2d(
                                                         FieldConstants.SPEAKER.getX(),
                                                         FieldConstants.SPEAKER.getY())
@@ -95,7 +95,7 @@ public class HigherOrderCommands {
                         swerve,
                         controller,
                         new Pose2d(
-                                AllianceFlip.isRed()
+                                AllianceFlip.isBlue()
                                         ? new Translation2d(
                                                 kControls.PASS_LAND_LOCATION.getX(),
                                                 kControls.PASS_LAND_LOCATION.getY())
