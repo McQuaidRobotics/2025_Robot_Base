@@ -1,5 +1,6 @@
 package igknighters.subsystems.stem.pivot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -24,7 +25,6 @@ import igknighters.constants.ConstValues;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.constants.ConstValues.kStem.kPivot;
 import igknighters.constants.HardwareIndex.StemHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 
@@ -99,21 +99,30 @@ public class PivotReal extends Pivot {
         forwardLimitSwitch = leaderMotor.getForwardLimit();
         reverseLimitSwitch = leaderMotor.getReverseLimit();
 
-        CANSignalManager.registerSignals(
-                kStem.CANBUS,
-                motorRots,
-                motorVelo,
-                leaderMotorVolts,
-                followerMotorVolts,
-                leaderMotorAmps,
-                followerMotorAmps,
-                forwardLimitSwitch,
-                reverseLimitSwitch,
-                gyroMeasurement);
+        // CANSignalManager.registerSignals(
+        //         kStem.CANBUS,
+        //         motorRots,
+        //         motorVelo,
+        //         leaderMotorVolts,
+        //         followerMotorVolts,
+        //         leaderMotorAmps,
+        //         followerMotorAmps,
+        //         forwardLimitSwitch,
+        //         reverseLimitSwitch,
+        //         gyroMeasurement);
+        motorRots.setUpdateFrequency(50);
+        motorVelo.setUpdateFrequency(50);
+        leaderMotorVolts.setUpdateFrequency(50);
+        followerMotorVolts.setUpdateFrequency(50);
+        leaderMotorAmps.setUpdateFrequency(50);
+        followerMotorAmps.setUpdateFrequency(50);
+        forwardLimitSwitch.setUpdateFrequency(250);
+        reverseLimitSwitch.setUpdateFrequency(250);
+        gyroMeasurement.setUpdateFrequency(50);
 
-        gyro.optimizeBusUtilization(1.0);
-        leaderMotor.optimizeBusUtilization(1.0);
-        followerMotor.optimizeBusUtilization(1.0);
+        gyro.optimizeBusUtilization(50, 1.0);
+        leaderMotor.optimizeBusUtilization(50, 1.0);
+        followerMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Pivot initialized (real)");
     }
@@ -187,6 +196,17 @@ public class PivotReal extends Pivot {
 
     @Override
     public void periodic() {
+        BaseStatusSignal.refreshAll(
+                motorRots,
+                motorVelo,
+                leaderMotorVolts,
+                leaderMotorAmps,
+                forwardLimitSwitch,
+                reverseLimitSwitch,
+                followerMotorAmps,
+                followerMotorVolts,
+                gyroMeasurement);
+
         FaultManager.captureFault(
                 StemHW.LeaderMotor,
                 motorRots,

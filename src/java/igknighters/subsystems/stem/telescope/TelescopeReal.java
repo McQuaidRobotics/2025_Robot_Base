@@ -20,7 +20,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.constants.ConstValues.kStem.kTelescope;
 import igknighters.constants.HardwareIndex.StemHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.FaultManager;
 
 public class TelescopeReal extends Telescope {
@@ -57,16 +56,23 @@ public class TelescopeReal extends Telescope {
         forwardLimitSwitch = motor.getForwardLimit();
         reverseLimitSwitch = motor.getReverseLimit();
 
-        CANSignalManager.registerSignals(
-                kStem.CANBUS,
-                motorRots,
-                motorVelo,
-                motorVolts,
-                motorAmps,
-                forwardLimitSwitch,
-                reverseLimitSwitch);
+        // CANSignalManager.registerSignals(
+        //         kStem.CANBUS,
+        //         motorRots,
+        //         motorVelo,
+        //         motorVolts,
+        //         motorAmps,
+        //         forwardLimitSwitch,
+        //         reverseLimitSwitch);
 
-        motor.optimizeBusUtilization(1.0);
+        motorRots.setUpdateFrequency(50);
+        motorVelo.setUpdateFrequency(50);
+        motorVolts.setUpdateFrequency(50);
+        motorAmps.setUpdateFrequency(50);
+        forwardLimitSwitch.setUpdateFrequency(250);
+        reverseLimitSwitch.setUpdateFrequency(250);
+
+        motor.optimizeBusUtilization(50, 1.0);
     }
 
     private TalonFXConfiguration motorConfig() {

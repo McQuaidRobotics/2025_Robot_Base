@@ -1,5 +1,6 @@
 package igknighters.subsystems.umbrella.intake;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -14,7 +15,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kUmbrella;
 import igknighters.constants.ConstValues.kUmbrella.kIntake;
 import igknighters.constants.HardwareIndex.UmbrellaHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 
@@ -53,8 +53,14 @@ public class IntakeReal extends Intake {
         voltLowerSignal = lowerMotor.getMotorVoltage();
         ampLowerSignal = lowerMotor.getTorqueCurrent();
 
-        CANSignalManager.registerSignals(
-                kUmbrella.CANBUS, voltUpperSignal, ampUpperSignal, voltLowerSignal, ampLowerSignal);
+        // CANSignalManager.registerSignals(
+        //         kUmbrella.CANBUS, voltUpperSignal, ampUpperSignal, voltLowerSignal,
+        // ampLowerSignal);
+
+        voltUpperSignal.setUpdateFrequency(50);
+        ampUpperSignal.setUpdateFrequency(50);
+        voltLowerSignal.setUpdateFrequency(50);
+        ampLowerSignal.setUpdateFrequency(50);
 
         if (kIntake.BEAM_IS_UPPER) {
             revLimitSignal = upperMotor.getReverseLimit();
@@ -64,8 +70,8 @@ public class IntakeReal extends Intake {
 
         revLimitSignal.setUpdateFrequency(250);
 
-        upperMotor.optimizeBusUtilization(1.0);
-        lowerMotor.optimizeBusUtilization(1.0);
+        upperMotor.optimizeBusUtilization(50, 1.0);
+        lowerMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Intake initialized (real)");
     }
@@ -142,13 +148,16 @@ public class IntakeReal extends Intake {
 
     @Override
     public void periodic() {
+        BaseStatusSignal.refreshAll(
+                voltUpperSignal, ampUpperSignal, voltLowerSignal, ampLowerSignal, revLimitSignal);
+
         DogLog.log("Subsystems/Umbrella/Intake/wasBeamBroken", wasBeamBroken);
         FaultManager.captureFault(UmbrellaHW.UpperIntakeMotor, voltUpperSignal, ampUpperSignal);
 
         FaultManager.captureFault(UmbrellaHW.LowerIntakeMotor, voltLowerSignal, ampLowerSignal);
 
         // This requires as little latency as possible so refresh on its own closer to control code
-        revLimitSignal.refresh();
+        // revLimitSignal.refresh();
 
         super.exitBeamBroken = revLimitSignal.getValue().equals(ReverseLimitValue.ClosedToGround);
         super.voltsUpper = voltUpperSignal.getValueAsDouble();

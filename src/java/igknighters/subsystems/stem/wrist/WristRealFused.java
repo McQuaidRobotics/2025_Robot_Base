@@ -18,7 +18,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kStem;
 import igknighters.constants.ConstValues.kStem.kWrist;
 import igknighters.constants.HardwareIndex.StemHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 
@@ -48,6 +47,11 @@ public class WristRealFused extends Wrist {
         motorAmps = motor.getTorqueCurrent();
         motorVolts = motor.getMotorVoltage();
 
+        motorRots.setUpdateFrequency(50);
+        motorVelo.setUpdateFrequency(50);
+        motorAmps.setUpdateFrequency(50);
+        motorVolts.setUpdateFrequency(50);
+
         cancoder = new CANcoder(kWrist.CANCODER_ID, kStem.CANBUS);
         // CANRetrier.retryStatusCodeFatal(
         //         () -> cancoder.getConfigurator().apply(cancoderConfig()), 10);
@@ -56,17 +60,11 @@ public class WristRealFused extends Wrist {
         cancoderRots = cancoder.getAbsolutePosition();
         cancoderVelo = cancoder.getVelocity();
 
-        CANSignalManager.registerSignals(
-                kStem.CANBUS,
-                motorVelo,
-                motorRots,
-                motorAmps,
-                motorVolts,
-                cancoderRots,
-                cancoderVelo);
+        cancoderRots.setUpdateFrequency(50);
+        cancoderVelo.setUpdateFrequency(50);
 
-        cancoder.optimizeBusUtilization(1.0);
-        motor.optimizeBusUtilization(1.0);
+        cancoder.optimizeBusUtilization(50, 1.0);
+        motor.optimizeBusUtilization(50, 1.0);
 
         super.encoderRadians = Units.rotationsToRadians(cancoderRots.getValueAsDouble());
         super.radians = encoderRadians;

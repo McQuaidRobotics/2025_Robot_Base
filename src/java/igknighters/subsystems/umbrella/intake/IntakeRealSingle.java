@@ -14,7 +14,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kUmbrella;
 import igknighters.constants.ConstValues.kUmbrella.kIntake;
 import igknighters.constants.HardwareIndex.UmbrellaHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 
@@ -43,13 +42,16 @@ public class IntakeRealSingle extends Intake {
         voltUpperSignal = upperMotor.getMotorVoltage();
         ampUpperSignal = upperMotor.getTorqueCurrent();
 
-        CANSignalManager.registerSignals(kUmbrella.CANBUS, voltUpperSignal, ampUpperSignal);
+        // CANSignalManager.registerSignals(kUmbrella.CANBUS, voltUpperSignal, ampUpperSignal);
+
+        voltUpperSignal.setUpdateFrequency(50);
+        ampUpperSignal.setUpdateFrequency(50);
 
         revLimitSignal = upperMotor.getReverseLimit();
 
         revLimitSignal.setUpdateFrequency(250);
 
-        upperMotor.optimizeBusUtilization(1.0);
+        upperMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Intake initialized (real)");
     }

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import igknighters.constants.ConstValues.kUmbrella;
 import igknighters.constants.ConstValues.kUmbrella.kIntake;
 import igknighters.constants.HardwareIndex.UmbrellaHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 import igknighters.util.plumbing.TunableValues;
@@ -40,10 +39,11 @@ public class IntakeRealSingleCurrent extends Intake {
         voltSignal = motor.getMotorVoltage();
         ampSignal = motor.getTorqueCurrent();
 
-        CANSignalManager.registerSignals(kUmbrella.CANBUS, voltSignal);
-        ampSignal.setUpdateFrequency(200);
+        // CANSignalManager.registerSignals(kUmbrella.CANBUS, voltSignal);
+        voltSignal.setUpdateFrequency(50);
+        ampSignal.setUpdateFrequency(50);
 
-        motor.optimizeBusUtilization(1.0);
+        motor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Intake initialized (real)");
     }

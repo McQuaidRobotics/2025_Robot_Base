@@ -1,5 +1,6 @@
 package igknighters.subsystems.umbrella.shooter;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -15,7 +16,6 @@ import edu.wpi.first.units.measure.Voltage;
 import igknighters.constants.ConstValues.kUmbrella;
 import igknighters.constants.ConstValues.kUmbrella.kShooter;
 import igknighters.constants.HardwareIndex.UmbrellaHW;
-import igknighters.util.can.CANSignalManager;
 import igknighters.util.logging.BootupLogger;
 import igknighters.util.logging.FaultManager;
 
@@ -43,17 +43,23 @@ public class ShooterReal extends Shooter {
         voltSignalLeft = leftMotor.getMotorVoltage();
         currentSignalLeft = leftMotor.getTorqueCurrent();
 
-        CANSignalManager.registerSignals(
-                kUmbrella.CANBUS,
-                veloSignalRight,
-                voltSignalRight,
-                currentSignalRight,
-                veloSignalLeft,
-                voltSignalLeft,
-                currentSignalLeft);
+        // CANSignalManager.registerSignals(
+        //         kUmbrella.CANBUS,
+        //         veloSignalRight,
+        //         voltSignalRight,
+        //         currentSignalRight,
+        //         veloSignalLeft,
+        //         voltSignalLeft,
+        //         currentSignalLeft);
+        veloSignalRight.setUpdateFrequency(50);
+        voltSignalRight.setUpdateFrequency(50);
+        currentSignalRight.setUpdateFrequency(50);
+        veloSignalLeft.setUpdateFrequency(50);
+        voltSignalLeft.setUpdateFrequency(50);
+        currentSignalLeft.setUpdateFrequency(50);
 
-        rightMotor.optimizeBusUtilization(1.0);
-        leftMotor.optimizeBusUtilization(1.0);
+        rightMotor.optimizeBusUtilization(50, 1.0);
+        leftMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Shooter initialized (real)");
     }
@@ -142,6 +148,14 @@ public class ShooterReal extends Shooter {
 
     @Override
     public void periodic() {
+        BaseStatusSignal.refreshAll(
+                veloSignalRight,
+                voltSignalRight,
+                currentSignalRight,
+                veloSignalLeft,
+                voltSignalLeft,
+                currentSignalLeft);
+
         FaultManager.captureFault(
                 UmbrellaHW.RightShooterMotor, veloSignalRight, voltSignalRight, currentSignalRight);
 
