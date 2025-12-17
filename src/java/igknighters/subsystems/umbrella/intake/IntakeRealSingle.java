@@ -44,14 +44,14 @@ public class IntakeRealSingle extends Intake {
 
         // CANSignalManager.registerSignals(kUmbrella.CANBUS, voltUpperSignal, ampUpperSignal);
 
-        voltUpperSignal.setUpdateFrequency(50);
-        ampUpperSignal.setUpdateFrequency(50);
+        voltUpperSignal.setUpdateFrequency(10);
+        ampUpperSignal.setUpdateFrequency(10);
 
         revLimitSignal = upperMotor.getReverseLimit();
 
         revLimitSignal.setUpdateFrequency(250);
 
-        upperMotor.optimizeBusUtilization(50, 1.0);
+        // upperMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Intake initialized (real)");
     }

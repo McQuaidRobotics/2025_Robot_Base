@@ -110,19 +110,19 @@ public class PivotReal extends Pivot {
         //         forwardLimitSwitch,
         //         reverseLimitSwitch,
         //         gyroMeasurement);
-        motorRots.setUpdateFrequency(50);
-        motorVelo.setUpdateFrequency(50);
-        leaderMotorVolts.setUpdateFrequency(50);
-        followerMotorVolts.setUpdateFrequency(50);
-        leaderMotorAmps.setUpdateFrequency(50);
-        followerMotorAmps.setUpdateFrequency(50);
+        motorRots.setUpdateFrequency(10);
+        motorVelo.setUpdateFrequency(10);
+        leaderMotorVolts.setUpdateFrequency(10);
+        followerMotorVolts.setUpdateFrequency(10);
+        leaderMotorAmps.setUpdateFrequency(10);
+        followerMotorAmps.setUpdateFrequency(10);
         forwardLimitSwitch.setUpdateFrequency(250);
         reverseLimitSwitch.setUpdateFrequency(250);
-        gyroMeasurement.setUpdateFrequency(50);
+        gyroMeasurement.setUpdateFrequency(10);
 
-        gyro.optimizeBusUtilization(50, 1.0);
-        leaderMotor.optimizeBusUtilization(50, 1.0);
-        followerMotor.optimizeBusUtilization(50, 1.0);
+        // gyro.optimizeBusUtilization(50, 1.0);
+        // leaderMotor.optimizeBusUtilization(50, 1.0);
+        // followerMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Pivot initialized (real)");
     }
@@ -232,7 +232,8 @@ public class PivotReal extends Pivot {
         super.isLimitFwdSwitchHit = forwardLimitSwitch.getValue() == ForwardLimitValue.Open;
         super.isLimitRevSwitchHit = reverseLimitSwitch.getValue() == ReverseLimitValue.Open;
 
-        double newGyroRadians = Units.degreesToRadians(gyroMeasurement.getValueAsDouble() + 90.0);
+        double newGyroRadians = Units.degreesToRadians(gyroMeasurement.getValueAsDouble()+ 90);
+
         super.gyroRadiansPerSecondAbs =
                 Math.abs(super.gyroRadians - newGyroRadians) / ConstValues.PERIODIC_TIME;
         super.gyroRadians = newGyroRadians;

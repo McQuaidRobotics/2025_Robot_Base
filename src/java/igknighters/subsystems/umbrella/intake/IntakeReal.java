@@ -57,10 +57,10 @@ public class IntakeReal extends Intake {
         //         kUmbrella.CANBUS, voltUpperSignal, ampUpperSignal, voltLowerSignal,
         // ampLowerSignal);
 
-        voltUpperSignal.setUpdateFrequency(50);
-        ampUpperSignal.setUpdateFrequency(50);
-        voltLowerSignal.setUpdateFrequency(50);
-        ampLowerSignal.setUpdateFrequency(50);
+        voltUpperSignal.setUpdateFrequency(10);
+        ampUpperSignal.setUpdateFrequency(10);
+        voltLowerSignal.setUpdateFrequency(10);
+        ampLowerSignal.setUpdateFrequency(10);
 
         if (kIntake.BEAM_IS_UPPER) {
             revLimitSignal = upperMotor.getReverseLimit();
@@ -70,8 +70,8 @@ public class IntakeReal extends Intake {
 
         revLimitSignal.setUpdateFrequency(250);
 
-        upperMotor.optimizeBusUtilization(50, 1.0);
-        lowerMotor.optimizeBusUtilization(50, 1.0);
+        // upperMotor.optimizeBusUtilization(50, 1.0);
+        // lowerMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Intake initialized (real)");
     }

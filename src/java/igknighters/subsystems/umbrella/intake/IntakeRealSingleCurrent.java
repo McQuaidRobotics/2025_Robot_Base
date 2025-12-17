@@ -40,10 +40,10 @@ public class IntakeRealSingleCurrent extends Intake {
         ampSignal = motor.getTorqueCurrent();
 
         // CANSignalManager.registerSignals(kUmbrella.CANBUS, voltSignal);
-        voltSignal.setUpdateFrequency(50);
-        ampSignal.setUpdateFrequency(50);
+        voltSignal.setUpdateFrequency(10);
+        ampSignal.setUpdateFrequency(10);
 
-        motor.optimizeBusUtilization(50, 1.0);
+        // motor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Intake initialized (real)");
     }

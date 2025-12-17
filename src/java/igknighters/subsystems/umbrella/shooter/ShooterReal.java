@@ -51,15 +51,15 @@ public class ShooterReal extends Shooter {
         //         veloSignalLeft,
         //         voltSignalLeft,
         //         currentSignalLeft);
-        veloSignalRight.setUpdateFrequency(50);
-        voltSignalRight.setUpdateFrequency(50);
-        currentSignalRight.setUpdateFrequency(50);
-        veloSignalLeft.setUpdateFrequency(50);
-        voltSignalLeft.setUpdateFrequency(50);
-        currentSignalLeft.setUpdateFrequency(50);
+        veloSignalRight.setUpdateFrequency(10);
+        voltSignalRight.setUpdateFrequency(10);
+        currentSignalRight.setUpdateFrequency(10);
+        veloSignalLeft.setUpdateFrequency(10);
+        voltSignalLeft.setUpdateFrequency(10);
+        currentSignalLeft.setUpdateFrequency(10);
 
-        rightMotor.optimizeBusUtilization(50, 1.0);
-        leftMotor.optimizeBusUtilization(50, 1.0);
+        // rightMotor.optimizeBusUtilization(50, 1.0);
+        // leftMotor.optimizeBusUtilization(50, 1.0);
 
         BootupLogger.bootupLog("    Shooter initialized (real)");
     }

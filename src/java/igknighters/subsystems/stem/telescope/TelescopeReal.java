@@ -65,14 +65,14 @@ public class TelescopeReal extends Telescope {
         //         forwardLimitSwitch,
         //         reverseLimitSwitch);
 
-        motorRots.setUpdateFrequency(50);
-        motorVelo.setUpdateFrequency(50);
-        motorVolts.setUpdateFrequency(50);
-        motorAmps.setUpdateFrequency(50);
+        motorRots.setUpdateFrequency(10);
+        motorVelo.setUpdateFrequency(10);
+        motorVolts.setUpdateFrequency(10);
+        motorAmps.setUpdateFrequency(10);
         forwardLimitSwitch.setUpdateFrequency(250);
         reverseLimitSwitch.setUpdateFrequency(250);
 
-        motor.optimizeBusUtilization(50, 1.0);
+        // motor.optimizeBusUtilization(50, 1.0);
     }
 
     private TalonFXConfiguration motorConfig() {

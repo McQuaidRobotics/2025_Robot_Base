@@ -170,7 +170,7 @@ public final class ConstValues {
     }
 
     public static final class kStem {
-        public static final String CANBUS = "SuperStructureBus";
+        public static final String CANBUS = "Superstructure";
 
         public static final int COAST_SWITCH_CHANNEL = 9;
 
