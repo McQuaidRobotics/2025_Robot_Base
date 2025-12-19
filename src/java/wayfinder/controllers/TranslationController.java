@@ -1,9 +1,9 @@
 package wayfinder.controllers;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import monologue.Monologue;
 import wayfinder.controllers.Types.Constraints;
 import wayfinder.controllers.Types.Controller;
 import wayfinder.controllers.Types.State;
@@ -82,7 +82,7 @@ public abstract class TranslationController
                 Translation2d target,
                 Constraints constraints) {
 
-            Monologue.log("TranslationController", "Profiled");
+            DogLog.log("Wayfinder/TranslationController", "Profiled");
 
             if (isDone(measurement, target)) {
                 return Velocity2d.kZero;
@@ -104,7 +104,7 @@ public abstract class TranslationController
 
             double positionError = distance + prevSetpoint.position();
 
-            Monologue.log("ProfiledError", positionError);
+            DogLog.log("Wayfinder/ProfiledError", positionError);
 
             double errorDerivative = (positionError - prevError) / period;
             if (kI > 0) {
@@ -157,7 +157,7 @@ public abstract class TranslationController
                 Translation2d target,
                 Constraints constraints) {
 
-            Monologue.log("TranslationController", "UnProfiled");
+            DogLog.log("Wayfinder/TranslationController", "UnProfiled");
 
             if (isDone(measurement, target)) {
                 return Velocity2d.kZero;
@@ -167,7 +167,7 @@ public abstract class TranslationController
             final Rotation2d direction = target.minus(measurement).getAngle();
 
             double positionError = distance;
-            Monologue.log("UnProfiledError", positionError);
+            DogLog.log("Wayfinder/UnProfiledError", positionError);
             double errorDerivative = (positionError - prevError) / period;
             if (kI > 0) {
                 totalError += positionError * period;

@@ -1,4 +1,4 @@
-package igknighters.commands;
+package igknighters.commands.led;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;

@@ -29,5 +29,6 @@
   "editor.tabSize": 2,
   "wpilib.skipSelectSimulateExtension": true,
   "editor.renderWhitespace": "all",
-  "python.analysis.typeCheckingMode": "standard"
+  "python.analysis.typeCheckingMode": "standard",
+  "java.debug.settings.onBuildFailureProceed": true
 }

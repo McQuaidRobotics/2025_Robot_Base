@@ -1,10 +1,12 @@
 package igknighters.subsystems.led.driver;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import monologue.Logged;
 
-public class PWMDriver implements Logged {
+// import monologue.Logged;
+
+public class PWMDriver {
 
     private final AddressableLED led;
     private final AddressableLEDBuffer previousBuffer;
@@ -35,7 +37,7 @@ public class PWMDriver implements Logged {
             newBuffer = true;
             led.setData(appliedBuffer);
         }
-        log("new buffer", newBuffer);
+        DogLog.log("Subsystems/Led/Driver/new buffer", newBuffer);
     }
 
     public void periodic() {}
