@@ -1,5 +1,6 @@
 package igknighters.subsystems.stem.telescope;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -157,6 +158,13 @@ public class TelescopeReal extends Telescope {
 
     @Override
     public void periodic() {
+        BaseStatusSignal.refreshAll(
+                motorRots,
+                motorVelo,
+                motorVolts,
+                motorAmps,
+                forwardLimitSwitch,
+                reverseLimitSwitch);
         DogLog.log("Subsystems/Stem/Telescope/hasHomed", hasHomed);
         DogLog.log("Subsystems/Stem/Telescope/motorAutoseed", motorAutoseed);
         DogLog.log("ITERATIONSTELESCOPE", iteration);

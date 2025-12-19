@@ -1,5 +1,6 @@
 package igknighters.subsystems.umbrella.intake;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -128,6 +129,7 @@ public class IntakeRealSingle extends Intake {
 
         // This requires as little latency as possible so refresh on its own closer to control code
         revLimitSignal.refresh();
+        BaseStatusSignal.refreshAll(ampUpperSignal, voltUpperSignal);
 
         super.exitBeamBroken = revLimitSignal.getValue().equals(ReverseLimitValue.ClosedToGround);
         super.voltsUpper = voltUpperSignal.getValueAsDouble();

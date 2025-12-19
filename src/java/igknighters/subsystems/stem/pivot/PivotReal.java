@@ -186,8 +186,12 @@ public class PivotReal extends Pivot {
         homedThisCycle = true;
     }
 
+    private boolean isCoasting = false;
+
     @Override
     public void setCoast(boolean shouldBeCoasting) {
+        if (shouldBeCoasting == isCoasting) return;
+        isCoasting = shouldBeCoasting;
         this.followerMotor.setNeutralMode(
                 shouldBeCoasting ? NeutralModeValue.Coast : NeutralModeValue.Brake);
         this.leaderMotor.setNeutralMode(
@@ -232,7 +236,7 @@ public class PivotReal extends Pivot {
         super.isLimitFwdSwitchHit = forwardLimitSwitch.getValue() == ForwardLimitValue.Open;
         super.isLimitRevSwitchHit = reverseLimitSwitch.getValue() == ReverseLimitValue.Open;
 
-        double newGyroRadians = Units.degreesToRadians(gyroMeasurement.getValueAsDouble()+ 90);
+        double newGyroRadians = Units.degreesToRadians(gyroMeasurement.getValueAsDouble() + 90);
 
         super.gyroRadiansPerSecondAbs =
                 Math.abs(super.gyroRadians - newGyroRadians) / ConstValues.PERIODIC_TIME;
@@ -246,7 +250,9 @@ public class PivotReal extends Pivot {
                 && Math.abs(super.gyroRadiansPerSecondAbs) < 0.01
                 && (Units.radiansToDegrees(super.gyroRadians) > 20.0 || !hasBeenEnabled)
                 && DriverStation.isDisabled()) {
-            home();
+            if (Math.abs(super.radians - getPivotRadiansPigeon()) > 0.05) {
+                home();
+            }
         }
 
         DogLog.log("Subsystems/Stem/Pivot/PivotSeededPivot", homedThisCycle);

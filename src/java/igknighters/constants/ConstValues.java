@@ -152,8 +152,8 @@ public final class ConstValues {
         }
 
         public static final class kIntake {
-            public static final int UPPER_MOTOR_ID = 19;
-            public static final int LOWER_MOTOR_ID = 20;
+            public static final int UPPER_MOTOR_ID = 46;
+            public static final int LOWER_MOTOR_ID = 46;
 
             public static final double UPPER_DIAMETER = 2.0625 * Conv.INCHES_TO_METERS;
             public static final double LOWER_DIAMETER = 1.25 * Conv.INCHES_TO_METERS;
@@ -185,8 +185,8 @@ public final class ConstValues {
                                 -9.0 * Conv.INCHES_TO_METERS, 7.25 * Conv.INCHES_TO_METERS);
             }
 
-            public static final int LEFT_MOTOR_ID = 11;
-            public static final int RIGHT_MOTOR_ID = 12;
+            public static final int LEFT_MOTOR_ID = 14;
+            public static final int RIGHT_MOTOR_ID = 15;
             public static final int PIGEON_ID = 31;
 
             public static final double MOTOR_kP = 0.7;
@@ -218,7 +218,7 @@ public final class ConstValues {
         }
 
         public static final class kTelescope {
-            public static final int MOTOR_ID = 15;
+            public static final int MOTOR_ID = 19;
 
             public static final double MOTOR_kP = 5.0;
             public static final double MOTOR_kI = 0.0;
@@ -252,7 +252,7 @@ public final class ConstValues {
             }
 
             public static final int MOTOR_ID = 16;
-            public static final int CANCODER_ID = 26;
+            public static final int CANCODER_ID = 27;
 
             public static final double MOTOR_kP = 150.0;
             public static final double MOTOR_kI = 0.0;

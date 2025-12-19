@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -132,10 +133,14 @@ public class WristRealFused extends Wrist {
 
         FaultManager.captureFault(StemHW.WristEncoder, cancoderRots);
 
-        super.radians = Units.rotationsToRadians(motorRots.getValueAsDouble());
-        super.radiansPerSecond = Units.rotationsToRadians(cancoderVelo.getValueAsDouble());
-        super.encoderRadians = Units.rotationsToRadians(cancoderRots.getValueAsDouble());
-        super.amps = motorAmps.getValueAsDouble();
-        super.volts = motorVolts.getValueAsDouble();
+        super.radians = Units.rotationsToRadians(motorRots.refresh().getValueAsDouble());
+        super.radiansPerSecond =
+                Units.rotationsToRadians(cancoderVelo.refresh().getValueAsDouble());
+        super.encoderRadians = Units.rotationsToRadians(cancoderRots.refresh().getValueAsDouble());
+        DogLog.log(
+                "Subsystems/Stem/Wrist/ENCODERRADS NOT FROM SUPER",
+                Units.rotationsToDegrees(cancoderRots.refresh().getValueAsDouble()));
+        super.amps = motorAmps.refresh().getValueAsDouble();
+        super.volts = motorVolts.refresh().getValueAsDouble();
     }
 }
